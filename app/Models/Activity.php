@@ -53,7 +53,7 @@ class Activity extends Model
         return $this->hasMany(ActivityIssue::class);
     }
 
-    public function progress()
+    public function historyProgress()
     {
         return $this->hasMany(ActivityProgress::class);
     }

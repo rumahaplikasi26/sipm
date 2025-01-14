@@ -61,7 +61,7 @@ class ActivityItem extends Component
                 'progress' => $this->progress,
             ]);
 
-            $this->activity->progress()->create([
+            $this->activity->historyProgress()->create([
                 'percentage' => $this->progress,
                 'user_id' => auth()->user()->id,
             ]);

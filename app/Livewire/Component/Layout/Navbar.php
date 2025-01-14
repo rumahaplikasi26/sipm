@@ -76,6 +76,13 @@ class Navbar extends BaseComponent
                 'permissions' => ['activity.index'],
                 'url' => route('activity'),
                 'route' => 'activity'
+            ],
+            [
+                'name' => 'Report Activity',
+                'icon' => 'fas fa-chart-line',
+                'permissions' => ['activity.report.index'],
+                'url' => route('activity.report'),
+                'route' => 'activity.report.index'
             ]
         ];
 

@@ -1,24 +1,18 @@
 <?php
 
-namespace App\Livewire\Activity;
+namespace App\Livewire\Report;
 
+use App\Models\Activity;
 use App\Models\User;
 use App\Models\Group;
 use App\Models\Scope;
-use Livewire\Component;
-use App\Models\Activity;
-use App\Models\Position;
-use Livewire\Attributes\Url;
-use Livewire\WithPagination;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
+use Livewire\Component;
+use App\Models\Position;
 
-class ActivityList extends Component
+class ReportIndex extends Component
 {
-    use LivewireAlert, WithPagination;
-
-    protected $paginationTheme = 'bootstrap';
-
-    #[Url(except: '')]
+    use LivewireAlert;
 
     public $search = '';
     public $perPage = 30;
@@ -33,6 +27,7 @@ class ActivityList extends Component
     public $positions = [];
     public $scopes = [];
     public $supervisors = [];
+    public $activities = [];
 
     protected $listeners = [
         'refreshIndex' => 'handleRefresh',
@@ -50,17 +45,6 @@ class ActivityList extends Component
         $this->supervisors = User::role('Supervisor')->get();
     }
 
-    public function updatingSearch()
-    {
-        $this->resetPage();
-    }
-
-    public function handleRefresh()
-    {
-        $this->alert('success', 'Refreshed successfully');
-        $this->dispatch('$refresh');
-    }
-
     public function resetFilter()
     {
         $this->search = "";
@@ -70,18 +54,12 @@ class ActivityList extends Component
         $this->filterDate = "";
         $this->filterSupervisor = "";
 
-        $this->resetPage();
+        $this->activities = [];
     }
 
     public function filter()
     {
-        $this->resetPage();
-        $this->dispatch('$refresh');
-    }
-
-    public function render()
-    {
-        $activities = Activity::with('group','scope', 'issues','supervisor', 'position', 'historyProgress')
+        $this->activities = Activity::with('group','scope', 'issues.categoryDependency','supervisor', 'position', 'historyProgress')
         ->when($this->search, function ($query) {
             return $query->where('title', 'like', '%' . $this->search . '%');
         })
@@ -100,9 +78,18 @@ class ActivityList extends Component
         ->when($this->filterSupervisor, function ($query) {
             return $query->where('supervisor_id', $this->filterSupervisor);
         })
-        ->orderBy('id', 'desc')
-        ->paginate($this->perPage);
+        ->orderBy('id', 'asc')
+        ->get()->toArray();
 
-        return view('livewire.activity.activity-list', compact('activities'));
+        if(empty($this->activities)) {
+            $this->alert('warning', 'Data Not Found');
+        }
+
+        $this->dispatch('refreshActivities', $this->activities);
+    }
+
+    public function render()
+    {
+        return view('livewire.report.report-index')->layout('layouts.app', ['title' => 'Report Activity']);
     }
 }

@@ -7,6 +7,7 @@ use App\Livewire\Dashboard\DashboardIndex;
 use App\Livewire\Employee\EmployeeIndex;
 use App\Livewire\Group\GroupIndex;
 use App\Livewire\Position\PositionIndex;
+use App\Livewire\Report\ReportIndex;
 use App\Livewire\Scope\ScopeIndex;
 use App\Livewire\User\UserIndex;
 use Illuminate\Support\Facades\Route;
@@ -27,5 +28,5 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/category-dependencies', CategoryDependencyIndex::class)->name('master.category-dependencies');
 
     Route::get('/activities', ActivityIndex::class)->name('activity');
-
+    Route::get('/report', ReportIndex::class)->name('activity.report');
 });

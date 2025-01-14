@@ -21,9 +21,10 @@ class Login extends Component
         if (auth()->attempt(['email' => $this->email, 'password' => $this->password], $this->remember_me)) {
             $this->alert('success', 'Login berhasil');
             return redirect()->route('dashboard');
+        }else{
+            $this->alert('error', 'Email atau password salah');
         }
 
-        $this->alert('error', 'Email atau password salah');
         $this->resetForm();
     }
 
