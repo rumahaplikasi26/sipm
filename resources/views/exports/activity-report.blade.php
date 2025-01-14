@@ -84,7 +84,7 @@
                     <td>
                         @if(!empty($activity['issues']))
                             @foreach($activity['issues'] as $issue)
-                                {{ $issue['category_dependency']['name'] ?? '-' }}@if(!$loop->last),@endif
+                                {{ $issue['category_dependency']['name'].': '.$issue['description'] ?? '-' }}@if(!$loop->last),@endif
                             @endforeach
                         @else
                             -

@@ -52,5 +52,13 @@ class UserSeeder extends Seeder
         ]);
 
         $quality_control->assignRole('Quality Control');
+
+        $quality_control = User::create([
+            'name' => 'HSE',
+            'email' => 'hse@localhost',
+            'password' => bcrypt('password'),
+        ]);
+
+        $quality_control->assignRole('HSE');
     }
 }

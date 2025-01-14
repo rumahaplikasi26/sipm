@@ -44,7 +44,7 @@
                                 <button type="button" class="btn btn-soft-secondary" wire:click="filter"><i
                                         class="mdi mdi-filter-outline align-middle"></i> Filter</button>
                                 <button type="button" class="btn btn-soft-danger" wire:click="resetFilter"><i
-                                        class="mdi mdi-close align-middle"></i> Reset Filter</button>
+                                        class="mdi mdi-close align-middle"></i> Reset</button>
                             </div>
                         </div>
                         <!--end row-->

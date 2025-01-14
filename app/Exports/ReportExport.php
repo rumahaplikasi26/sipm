@@ -64,7 +64,7 @@ class ReportExport implements FromCollection, WithHeadings, WithMapping, WithEve
         // Only show the dependency for the current index
         $currentDependency = '';
         if (!empty($dependencies) && isset($dependencies[$dependencyIndex])) {
-            $currentDependency = $dependencies[$dependencyIndex]['category_dependency']['name'] ?? '';
+            $currentDependency = $dependencies[$dependencyIndex]['category_dependency']['name'].': '.$dependencies[$dependencyIndex]['description'] ?? '';
         }
 
         return [

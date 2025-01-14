@@ -54,7 +54,7 @@
                                         @if (count($activity['issues']) > 0)
                                             <ul>
                                                 @foreach ($activity['issues'] as $dependency)
-                                                    <li>{{ $dependency['category_dependency']['name'] }}</li>
+                                                    <li>{{ $dependency['category_dependency']['name'] }}: {{ $dependency['description'] }}</li>
                                                 @endforeach
                                             </ul>
                                         @endif

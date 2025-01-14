@@ -20,6 +20,7 @@ class RoleSeeder extends Seeder
         Role::create(['name' => 'Project Manager']);
         Role::create(['name' => 'Quality Control']);
         Role::create(['name' => 'Project Director']);
+        Role::create(['name' => 'HSE']);
 
         $permissions = [
             // Dashboard
@@ -154,6 +155,7 @@ class RoleSeeder extends Seeder
                 'Site Manager',
                 'Supervisor',
                 'Quality Control',
+                'HSE'
             ],
             'activity.create' => [
                 'Super Admin',
@@ -173,6 +175,12 @@ class RoleSeeder extends Seeder
                 'Super Admin',
                 'Supervisor',
                 'Site Manager',
+            ],
+
+            // Update Validation Activity
+            'activity.validation.update' => [
+                'Super Admin',
+                'HSE',
             ],
 
             // Update Issue Activity
