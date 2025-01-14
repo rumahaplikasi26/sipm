@@ -12,10 +12,7 @@ use App\Livewire\Scope\ScopeIndex;
 use App\Livewire\User\UserIndex;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
+Route::get('/', Login::class)->name('login')->middleware('guest');
 Route::get('/login', Login::class)->name('login')->middleware('guest');
 
 Route::group(['middleware' => ['auth']], function () {
