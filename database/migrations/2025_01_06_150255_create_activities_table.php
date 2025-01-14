@@ -31,7 +31,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->integer('progress')->default(0);
 
-            $table->foreignId('status_id')->constrained('status_activities')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('status_id')->nullable()->constrained('status_activities')->nullOnDelete()->cascadeOnUpdate();
 
             $table->timestamps();
         });

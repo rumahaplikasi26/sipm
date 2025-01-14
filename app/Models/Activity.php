@@ -26,6 +26,7 @@ class Activity extends Model
         'supervisor_id',
         'description',
         'progress',
+        'status_id'
     ];
 
     public function group()
