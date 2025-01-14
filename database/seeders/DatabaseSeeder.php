@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call(CategoryDependencySeeder::class);
 
+        $this->call(StatusActivitySeeder::class);
         $this->call(ActivitySeeder::class);
     }
 }

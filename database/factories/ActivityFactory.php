@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Group;
 use App\Models\Position;
 use App\Models\Scope;
+use App\Models\StatusActivity;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -34,6 +35,7 @@ class ActivityFactory extends Factory
             'actual_date' => fake('id_ID')->date(),
             'supervisor_id' => User::inRandomOrder()->first()->id,
             'description' => fake('id_ID')->text(100),
+            'status_id' => StatusActivity::inRandomOrder()->first()->id
         ];
     }
 }

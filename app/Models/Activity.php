@@ -58,4 +58,9 @@ class Activity extends Model
     {
         return $this->hasMany(ActivityProgress::class);
     }
+
+    public function status()
+    {
+        return $this->belongsTo(StatusActivity::class, 'status_id');
+    }
 }

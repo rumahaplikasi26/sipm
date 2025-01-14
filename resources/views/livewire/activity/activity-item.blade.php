@@ -7,17 +7,38 @@
                     <i class="mdi mdi-dots-vertical m-0 text-muted h4"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end">
-                    <a class="dropdown-item edittask-details" wire:click="confirmProgress" href="javascript: void(0);">
-                        <i class="mdi mdi-progress-clock"></i> Update Progress</a>
-                    <a href="javascript:void(0);" class="dropdown-item edittask-details"
-                        wire:click="$dispatch('show-canvas-dependency',{activity_id: {{ $activity->id }}})">
-                        <i class="mdi mdi-bug"></i> Manage Dependency</a>
-                    <a class="dropdown-item edittask-details" wire:click="confirmDelete" href="javascript: void(0);">
-                        <i class="mdi mdi-delete"></i> Delete</a>
+                    @can('activity.validation.update')
+                        <a class="dropdown-item edittask-details"
+                            wire:click="$dispatch('show-modal-validation', {activity_id: {{ $activity->id }}})"
+                            href="javascript: void(0);">
+                            <i class="mdi mdi-check"></i> Validasi Activity</a>
+                    @endcan
+
+                    @can('activity.progress.update')
+                        <a class="dropdown-item edittask-details"
+                            wire:click="$dispatch('show-modal-progress', {activity_id: {{ $activity->id }}})"
+                            href="javascript: void(0);">
+                            <i class="mdi mdi-progress-clock"></i> Update Progress</a>
+                    @endcan
+
+                    @can('activity.issue.update')
+                        <a href="javascript:void(0);" class="dropdown-item edittask-details"
+                            wire:click="$dispatch('show-canvas-dependency',{activity_id: {{ $activity->id }}})">
+                            <i class="mdi mdi-bug"></i> Manage Dependency</a>
+                    @endcan
+
+                    @can('activity.destroy')
+                        <a class="dropdown-item edittask-details" wire:click="confirmDelete" href="javascript: void(0);">
+                            <i class="mdi mdi-delete"></i> Delete</a>
+                    @endcan
                 </div>
             </div>
             <div class="float-end ms-2">
-                <span class="badge badge-soft-primary font-size-12" id="task-status">{{ $activity->progress }} %</span>
+                @if ($activity->status_id != null)
+                    <span
+                        class="badge {{ $activity->status->bg_color }} font-size-12">{{ $activity->status->name }}</span>
+                @endif
+                <span class="badge badge-soft-primary font-size-12">{{ $activity->progress }} %</span>
             </div>
             <div>
                 <h5 class="font-size-15">

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Activity;
 
+use App\Models\StatusActivity;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Facades\DB;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
@@ -15,68 +16,10 @@ class ActivityItem extends Component
     public $activity;
     public $number;
     public $activity_id;
-    public $progress = 0;
-
     public function mount($activity, $number)
     {
         $this->activity = $activity;
         $this->number = $number;
-    }
-
-    public function confirmProgress()
-    {
-        $this->activity_id = $this->activity->id;
-        $this->progress = $this->activity->progress;
-
-        $this->alert('question', 'Update Progress', [
-            'position' => 'center',
-            'showCancelButton' => true,
-            'cancelButtonText' => 'Cancel',
-            'showConfirmButton' => true,
-            'confirmButtonText' => 'Update',
-            'input' => 'range',
-            'inputAttributes' => [
-                'min' => 0,
-                'max' => 100,
-                'step' => 1,
-            ],
-            'inputValue' => $this->progress,
-            'inputPlaceholder' => 'Progress',
-            'action' => 'updateProgress',
-            'allowOutsideClick' => false,
-            'onConfirmed' => 'updateProgress',
-            'timer' => null,
-        ]);
-    }
-
-    #[On('updateProgress')]
-    public function updateProgress($value, $isConfirmed, $isDenied, $isDismissed, $data)
-    {
-        $this->progress = $value;
-
-        try {
-            DB::beginTransaction();
-
-            $this->activity->update([
-                'progress' => $this->progress,
-            ]);
-
-            $this->activity->historyProgress()->create([
-                'percentage' => $this->progress,
-                'user_id' => auth()->user()->id,
-            ]);
-
-            DB::commit();
-
-            // Save/update progress here
-            $this->alert('success', 'Progress updated to ' . $this->progress . '%');
-            $this->dispatch('refreshIndex');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            $this->alert('error', $e->getMessage());
-            return;
-        }
-
     }
 
     public function confirmDelete()
