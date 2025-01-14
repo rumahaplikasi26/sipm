@@ -74,7 +74,7 @@
 
     <div class="row">
         @foreach ($activities as $activity)
-            <div class="col-md-3">
+            <div class="col-md-3 mb-3">
                 @livewire('activity.activity-item', ['activity' => $activity, 'number' => $loop->iteration], key($activity->id))
             </div>
         @endforeach
