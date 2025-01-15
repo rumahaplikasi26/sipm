@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\AttendanceJob;
 use App\Jobs\AttendanceSyncJob;
 use App\Models\ConfigAttendance;
 use App\Models\Employee;
@@ -104,7 +105,7 @@ class IClockController extends Controller
                     'is_active' => $is_active,
                 ];
 
-                AttendanceSyncJob::dispatch($attendanceData);
+                AttendanceJob::dispatch($attendanceData);
                 $tot++;
 
                 \Log::info('Attendance Data', $attendanceData);
