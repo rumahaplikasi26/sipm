@@ -22,7 +22,7 @@ class ActivityFactory extends Factory
     public function definition(): array
     {
         return [
-            'date' => fake('id_ID')->date(),
+            'date' =>  fake('id_ID')->date(),
             'title' => fake('id_ID')->sentence(3),
             'slug' => fake('id_ID')->slug(),
             'group_id' => Group::inRandomOrder()->first()->id,
