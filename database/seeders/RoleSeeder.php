@@ -149,6 +149,13 @@ class RoleSeeder extends Seeder
                 'Project Manager',
             ],
 
+            // Attendance
+            'attendance.index' => [
+                'Super Admin',
+                'Site Manager',
+                'Supervisor',
+            ],
+
             // Manage Activity
             'activity.index' => [
                 'Super Admin',
