@@ -64,7 +64,7 @@ class ActivityForm extends Component
             $this->alert('success', 'Activity saved successfully', ['position' => 'top-center']);
             $this->resetForm();
             $this->dispatch('refreshIndex');
-            $this->dispatch('hideForm');
+            return redirect()->route('activity');
         } catch (\Exception $e) {
             $this->alert('error', $e->getMessage(), ['position' => 'top-center']);
         }

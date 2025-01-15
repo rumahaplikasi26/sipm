@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Employee extends Model
 {
+    protected $table = 'employees';
+    protected $primaryKey = 'id';
+
     protected $fillable = [
+        'id',
         'name',
-        'employee_id',
         'email',
         'position_id',
         'group_id',

@@ -18,7 +18,6 @@ class EmployeeImport implements ToModel, WithUpserts, WithHeadingRow
     {
         return new Employee([
             'id' => $row['id'],
-            'employee_id' => $row['employee_id'],
             'name' => $row['name'],
             'email' => $row['email'],
             'phone' => $row['phone'],
@@ -29,6 +28,6 @@ class EmployeeImport implements ToModel, WithUpserts, WithHeadingRow
 
     public function uniqueBy()
     {
-        return 'employee_id';
+        return 'id';
     }
 }

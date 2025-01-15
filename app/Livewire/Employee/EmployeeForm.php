@@ -48,7 +48,7 @@ class EmployeeForm extends Component
             switch ($this->mode) {
                 case 'create':
                     $employee = Employee::create([
-                        'employee_id' => $this->employee_id,
+                        'id' => $this->employee_id,
                         'name' => $this->name,
                         'email' => $this->email,
                         'phone' => $this->phone,
@@ -59,7 +59,7 @@ class EmployeeForm extends Component
                     break;
                 case 'edit':
                     $this->employee->update([
-                        'employee_id' => $this->employee_id,
+                        'id' => $this->employee_id,
                         'name' => $this->name,
                         'email' => $this->email,
                         'phone' => $this->phone,

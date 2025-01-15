@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Activity;
 use App\Models\Attendance;
+use App\Models\Employee;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -31,7 +32,14 @@ class AttendanceJob implements ShouldQueue
         $data = $this->data;
 
         try {
-            $isFirstAttendance = Attendance::whereDate('date', date('Y-m-d', strtotime($data['timestamp'])))
+            $employeeExists = Employee::where('id', $data['employee_id'])->first();
+
+            if (empty($employeeExists)) {
+                \Log::info('Employee not found', $data);
+                return;
+            }
+
+            $isFirstAttendance = Attendance::whereDate('timestamp', date('Y-m-d', strtotime($data['timestamp'])))
                 ->where('employee_id', $data['employee_id'])->first();
 
             if (empty($isFirstAttendance)) {
@@ -42,15 +50,6 @@ class AttendanceJob implements ShouldQueue
                         ->whereDate('date', date('Y-m-d', strtotime($data['timestamp'])))
                         ->first();
                 }
-
-                Attendance::updateOrCreate(
-                    ['uid' => $data['uid']],
-                    [
-                        'employee_id' => $data['employee_id'],
-                        'state' => $data['state'],
-                        'timestamp' => $data['timestamp'],
-                    ]
-                );
 
                 if ($data['phone'] != null) {
                     // Send Activity Notification di ambil dari variabel $activeActivity title, date, scope->name, group->name, forecast_date, plan_date, actual_date, description, supervisor->name buat kalimat pesannya
@@ -66,6 +65,16 @@ class AttendanceJob implements ShouldQueue
                     \Log::info(date('Y-m-d H:i:s') . ' ' . 'Sent Whatsapp ' . $data['phone'] . ' Successfully');
                 }
             }
+
+
+            Attendance::updateOrCreate(
+                ['uid' => $data['uid']],
+                [
+                    'employee_id' => $data['employee_id'],
+                    'state' => $data['state'],
+                    'timestamp' => $data['timestamp'],
+                ]
+            );
 
             \Log::info(date('Y-m-d H:i:s') . ' ' . 'Attendance Sync Job Completed Successfully');
         } catch (\Throwable $th) {
