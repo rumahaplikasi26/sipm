@@ -4,18 +4,7 @@
             <div class="d-flex justify-content-end">
                 <div class="flex-shrink-0">
                     <a href="#!" class="btn btn-primary" wire:click="$dispatch('showForm')">Add New Activity</a>
-                    <a href="#!" class="btn btn-light"><i class="mdi mdi-refresh"></i></a>
-                    <div class="dropdown d-inline-block">
-
-                        <button type="menu" class="btn btn-success" id="dropdownMenuButton1"
-                            data-bs-toggle="dropdown" aria-expanded="false"><i
-                                class="mdi mdi-dots-vertical"></i></button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </div>
+                    <a href="#!" class="btn btn-light" wire:click="$dispatch('refreshIndex')"><i class="mdi mdi-refresh"></i></a>
                 </div>
             </div>
         </div>

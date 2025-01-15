@@ -38,6 +38,14 @@ class UserSeeder extends Seeder
         $supervisor->assignRole('Supervisor');
 
         $project_manager = User::create([
+            'name' => 'Project Director',
+            'email' => 'project_director@localhost',
+            'password' => bcrypt('password'),
+        ]);
+
+        $project_manager->assignRole('Project Director');
+
+        $project_manager = User::create([
             'name' => 'Project Manager',
             'email' => 'project_manager@localhost',
             'password' => bcrypt('password'),
