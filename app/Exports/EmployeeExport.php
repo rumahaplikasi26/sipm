@@ -13,13 +13,14 @@ class EmployeeExport implements FromCollection, WithHeadings
     */
     public function collection()
     {
-        return Employee::select('id', 'name', 'email', 'phone', 'group_id', 'position_id')->get();
+        return Employee::select('id', 'employee_id', 'name', 'email', 'phone', 'group_id', 'position_id')->get();
     }
 
     public function headings(): array
     {
         return [
             'ID',
+            'Employee ID',
             'Name',
             'Email',
             'Phone',

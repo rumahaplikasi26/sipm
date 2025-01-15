@@ -10,7 +10,7 @@ use Livewire\Component;
 class EmployeeForm extends Component
 {
     use LivewireAlert;
-    public $name, $email, $phone, $group, $position, $positions, $groups, $mode = 'create';
+    public $name, $email, $employee_id, $phone, $group, $position, $positions, $groups, $mode = 'create';
     public $employee;
 
     public function mount()
@@ -24,6 +24,7 @@ class EmployeeForm extends Component
     {
         $this->employee = $employee;
         $this->name = $employee->name;
+        $this->employee_id = $employee->id;
         $this->email = $employee->email;
         $this->group = $employee->group_id;
         $this->position = $employee->position_id;
@@ -35,6 +36,7 @@ class EmployeeForm extends Component
     public function submit()
     {
         $this->validate([
+            'employee_id' => 'required',
             'name' => 'required',
             'email' => 'required|email',
             'phone' => 'required',
@@ -46,6 +48,7 @@ class EmployeeForm extends Component
             switch ($this->mode) {
                 case 'create':
                     $employee = Employee::create([
+                        'employee_id' => $this->employee_id,
                         'name' => $this->name,
                         'email' => $this->email,
                         'phone' => $this->phone,
@@ -56,6 +59,7 @@ class EmployeeForm extends Component
                     break;
                 case 'edit':
                     $this->employee->update([
+                        'employee_id' => $this->employee_id,
                         'name' => $this->name,
                         'email' => $this->email,
                         'phone' => $this->phone,
@@ -76,7 +80,7 @@ class EmployeeForm extends Component
 
     public function resetForm()
     {
-        $this->reset('name', 'email', 'phone', 'group', 'position');
+        $this->reset('name', 'email', 'phone', 'group', 'position', 'employee_id');
         $this->mode = 'create';
     }
 

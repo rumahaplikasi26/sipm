@@ -5,6 +5,18 @@
 
             <form wire:submit.prevent="submit" class="needs-validation" novalidate>
                 <div class="mb-3">
+                    <label for="formrow-employee-id-input" class="form-label">Employee ID</label>
+                    <input type="text" class="form-control @error('employee_id') is-invalid @enderror" wire:model="employee_id" id="formrow-employee-id-input"
+                        placeholder="Enter Employee ID" autocomplete="off" value="{{ old('employee_id') }}">
+
+                    @error('employee_id')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
                     <label for="formrow-firstname-input" class="form-label">Name</label>
                     <input type="text" class="form-control @error('name') is-invalid @enderror" wire:model="name" id="formrow-firstname-input"
                         placeholder="Enter Employee Name" autocomplete="off" value="{{ old('name') }}">
