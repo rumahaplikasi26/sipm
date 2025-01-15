@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\IClockController;
 use App\Livewire\Activity\ActivityIndex;
 use App\Livewire\Auth\Login;
 use App\Livewire\CategoryDependency\CategoryDependencyIndex;
@@ -14,6 +15,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', Login::class)->name('login')->middleware('guest');
 Route::get('/login', Login::class)->name('login')->middleware('guest');
+
+Route::get('/iclock/cdata', [IClockController::class, 'handshake']);
+Route::post('/iclock/cdata', [IClockController::class, 'receiveRecords']);
+
+Route::get('/iclock/test', [IClockController::class, 'test']);
+Route::get('/iclock/getrequest', [IClockController::class, 'getrequest']);
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/dashboard', DashboardIndex::class)->name('dashboard');
