@@ -74,7 +74,7 @@ class AttendanceList extends Component
             $query->where('date', '>=', $this->filterStartDate);
         })->when($this->filterEndDate, function ($query) {
             $query->where('date', '<=', $this->filterEndDate);
-        })->paginate($this->perPage);
+        })->latest()->paginate($this->perPage);
 
         return view('livewire.attendance.attendance-list', compact('attendances'));
     }
