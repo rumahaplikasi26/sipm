@@ -13,7 +13,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->validateCsrfTokens([
             '/iclock/cdata',
-            '/iclock/getrequest'
+            '/iclock/getrequest',
+            '/test-attendance',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

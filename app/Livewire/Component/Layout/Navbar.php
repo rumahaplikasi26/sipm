@@ -71,6 +71,13 @@ class Navbar extends BaseComponent
                 ],
             ],
             [
+                'name' => 'Attendance',
+                'icon' => 'fas fa-clock',
+                'permissions' => ['attendance.index'],
+                'url' => route('attendance'),
+                'route' => 'attendance'
+            ],
+            [
                 'name' => 'Activity',
                 'icon' => 'fas fa-tag',
                 'permissions' => ['activity.index'],

@@ -132,4 +132,28 @@ class IClockController extends Controller
     {
         return Employee::find($id) ?? null;
     }
+
+    public function testAttendance(Request $request)
+    {
+        try {
+            $attendanceData = [
+                'uid' => 'test',
+                'employee_id' => 20221224,
+                'state' => 1,
+                'timestamp' => date('Y-m-d H:i:s'),
+                'name' => 'Nurul',
+                'phone' => '6289676490971',
+                'group_id' => 1,
+                'position_id' => 1,
+                'is_active' => 1,
+            ];
+
+            AttendanceJob::dispatch($attendanceData);
+
+            return "OK";
+        } catch (Exception $e) {
+            \Log::error('Error', $e->getMessage());
+            return "ERROR";
+        }
+    }
 }

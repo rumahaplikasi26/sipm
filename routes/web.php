@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\IClockController;
 use App\Livewire\Activity\ActivityIndex;
+use App\Livewire\Attendance\AttendanceIndex;
 use App\Livewire\Auth\Login;
 use App\Livewire\CategoryDependency\CategoryDependencyIndex;
 use App\Livewire\Dashboard\DashboardIndex;
@@ -18,6 +19,7 @@ Route::get('/login', Login::class)->name('login')->middleware('guest');
 
 Route::get('/iclock/cdata', [IClockController::class, 'handshake']);
 Route::post('/iclock/cdata', [IClockController::class, 'receiveRecords']);
+Route::post('/test-attendance', [IClockController::class, 'testAttendance']);
 
 Route::get('/iclock/test', [IClockController::class, 'test']);
 Route::get('/iclock/getrequest', [IClockController::class, 'getrequest']);
@@ -31,6 +33,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/scopes', ScopeIndex::class)->name('master.scopes');
     Route::get('/category-dependencies', CategoryDependencyIndex::class)->name('master.category-dependencies');
 
+    Route::get('/attendances', AttendanceIndex::class)->name('attendance');
     Route::get('/activities', ActivityIndex::class)->name('activity');
     Route::get('/report', ReportIndex::class)->name('activity.report');
 });

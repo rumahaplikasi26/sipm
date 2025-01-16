@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\AttendanceUpdated;
 use App\Models\Activity;
 use App\Models\Attendance;
 use App\Models\Employee;
@@ -49,25 +50,27 @@ class AttendanceJob implements ShouldQueue
                         ->where('position_id', $data['position_id'])
                         ->whereDate('date', date('Y-m-d', strtotime($data['timestamp'])))
                         ->first();
+
+                    if ($data['phone'] != null && $activeActivity != null) {
+                        // Send Activity Notification di ambil dari variabel $activeActivity title, date, scope->name, group->name, forecast_date, plan_date, actual_date, description, supervisor->name buat kalimat pesannya
+                        $message = "Dear {$data['name']}, Anda memiliki aktivitas berikut:\n" .
+                            "Judul: {$activeActivity->title}\n" .
+                            "Tanggal: {$activeActivity->date}\n" .
+                            "Scope: {$activeActivity->scope->name}\n" .
+                            "Grup: {$activeActivity->group->name}\n" .
+                            "Deskripsi: {$activeActivity->description}\n" .
+                            "Supervisor: {$activeActivity->supervisor->name}";
+
+                        $this->sendWhatsAppNotification($data['phone'], $message);
+                        \Log::info(date('Y-m-d H:i:s') . ' ' . 'Sent Whatsapp ' . $data['phone'] . ' Successfully');
+                    }
                 }
 
-                if ($data['phone'] != null) {
-                    // Send Activity Notification di ambil dari variabel $activeActivity title, date, scope->name, group->name, forecast_date, plan_date, actual_date, description, supervisor->name buat kalimat pesannya
-                    $message = "Dear {$data['name']}, Anda memiliki aktivitas berikut:\n" .
-                        "Judul: {$activeActivity->title}\n" .
-                        "Tanggal: {$activeActivity->date}\n" .
-                        "Scope: {$activeActivity->scope->name}\n" .
-                        "Grup: {$activeActivity->group->name}\n" .
-                        "Deskripsi: {$activeActivity->description}\n" .
-                        "Supervisor: {$activeActivity->supervisor->name}";
-
-                    $this->sendWhatsAppNotification($data['phone'], $message);
-                    \Log::info(date('Y-m-d H:i:s') . ' ' . 'Sent Whatsapp ' . $data['phone'] . ' Successfully');
-                }
+                \Log::info(date('Y-m-d H:i:s') . ' ' . 'Attendance Sync Job Completed Successfully');
             }
 
 
-            Attendance::updateOrCreate(
+            $attendance = Attendance::updateOrCreate(
                 ['uid' => $data['uid']],
                 [
                     'employee_id' => $data['employee_id'],

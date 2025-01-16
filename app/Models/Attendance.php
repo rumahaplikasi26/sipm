@@ -15,6 +15,16 @@ class Attendance extends Model
         'state'
     ];
 
+    public function getDateAttribute()
+    {
+        return date('Y-m-d', strtotime($this->timestamp));
+    }
+
+    public function getTimeAttribute()
+    {
+        return date('H:i:s', strtotime($this->timestamp));
+    }
+
     public function employee()
     {
         return $this->belongsTo(Employee::class);
