@@ -63,12 +63,10 @@ class AttendanceJob implements ShouldQueue
 
                         $this->sendWhatsAppNotification($data['phone'], $message);
                         \Log::info(date('Y-m-d H:i:s') . ' ' . 'Sent Whatsapp ' . $data['phone'] . ' Successfully');
+                        \Log::info(date('Y-m-d H:i:s') . ' ' . 'Attendance Sync Job Completed With Send Activity Successfully');
                     }
                 }
-
-                \Log::info(date('Y-m-d H:i:s') . ' ' . 'Attendance Sync Job Completed Successfully');
             }
-
 
             $attendance = Attendance::updateOrCreate(
                 ['uid' => $data['uid']],
