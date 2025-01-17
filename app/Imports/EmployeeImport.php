@@ -19,10 +19,10 @@ class EmployeeImport implements ToModel, WithUpserts, WithHeadingRow
         return new Employee([
             'id' => $row['id'],
             'name' => $row['name'],
-            'email' => $row['email'],
-            'phone' => $row['phone'],
-            'group_id' => $row['group'],
-            'position_id' => $row['position'],
+            'email' => $row['email'] ?? null,
+            'phone' => $row['phone'] ?? null,
+            'group_id' => $row['group'] ?? null,
+            'position_id' => $row['position'] ?? null,
         ]);
     }
 

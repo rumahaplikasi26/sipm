@@ -17,15 +17,17 @@ class AttendanceList extends Component
     #[Url(except: '')]
 
     public $search = '';
-    public $perPage = 30;
+    public $perPage = 25;
 
     public $filterGroup = '';
     public $filterPosition = '';
     public $filterStartDate = '';
     public $filterEndDate = '';
+    public $filterEmployee = '';
 
     public $groups = [];
     public $positions = [];
+    public $employees = [];
 
     protected $listeners = [
         'refreshIndex' => 'handleRefresh',
@@ -34,15 +36,22 @@ class AttendanceList extends Component
 
     protected $queryString = [
         'search' => ['except' => ''],
+        'perPage' => ['except' => 30],
+        'filterGroup' => ['except' => ''],
+        'filterPosition' => ['except' => ''],
+        'filterStartDate' => ['except' => ''],
+        'filterEndDate' => ['except' => ''],
+        'filterEmployee' => ['except' => ''],
     ];
 
-    public function resetForm()
+    public function resetFilter()
     {
         $this->search = '';
         $this->filterGroup = '';
         $this->filterPosition = '';
         $this->filterStartDate = '';
         $this->filterEndDate = '';
+        $this->filterEmployee = '';
     }
 
     public function handleRefresh()
@@ -54,6 +63,13 @@ class AttendanceList extends Component
     {
         $this->groups = \App\Models\Group::all();
         $this->positions = \App\Models\Position::all();
+        $this->employees = \App\Models\Employee::all();
+    }
+
+    public function filter()
+    {
+        $this->resetPage();
+        $this->dispatch('$refresh');
     }
 
     public function render()
@@ -62,6 +78,8 @@ class AttendanceList extends Component
             $query->whereHas('employee', function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%');
             });
+        })->when($this->filterEmployee, function ($query) {
+            $query->where('employee_id', $this->filterEmployee);
         })->when($this->filterGroup, function ($query) {
             $query->whereHas('employee', function ($query) {
                 $query->where('group_id', $this->filterGroup);

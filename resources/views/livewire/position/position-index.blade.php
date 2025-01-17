@@ -11,4 +11,6 @@
         </div>
     </div>
 
+    @livewire('position.employee-added-position', key('employee-added-position'))
+
 </div>

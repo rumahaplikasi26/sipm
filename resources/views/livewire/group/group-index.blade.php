@@ -11,4 +11,5 @@
         </div>
     </div>
 
+    @livewire('group.employee-added-group', key('employee-added-group'))
 </div>

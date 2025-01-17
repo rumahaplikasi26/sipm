@@ -9,8 +9,8 @@
         <p class="text-muted">{{ $employee->email }}</p>
 
         <div>
-            <a href="javascript: void(0);" class="badge bg-primary font-size-11 m-1">Group: {{ $employee->group->name }}</a>
-            <a href="javascript: void(0);" class="badge bg-info font-size-11 m-1">Position: {{ $employee->position->name }}</a>
+            <a href="javascript: void(0);" class="badge bg-primary font-size-11 m-1">Group: {{ $employee->group?->name }}</a>
+            <a href="javascript: void(0);" class="badge bg-info font-size-11 m-1">Position: {{ $employee->position?->name }}</a>
         </div>
     </div>
     <div class="card-footer bg-transparent border-top">

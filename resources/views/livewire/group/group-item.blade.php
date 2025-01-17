@@ -23,6 +23,11 @@
                         <i class="mdi mdi-delete"></i>
                     </div>
                 </div>
+                <div class="avatar-xs align-self-center ms-2">
+                    <div class="avatar-title bg-primary rounded font-size-16" wire:click="$dispatch('show-form-add-group', {group_id: {{ $group->id }} })">
+                        <i class="mdi mdi-account-plus"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </a>
