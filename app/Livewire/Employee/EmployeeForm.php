@@ -40,8 +40,8 @@ class EmployeeForm extends Component
             'name' => 'required',
             'email' => 'required|email',
             'phone' => 'required',
-            'position' => 'required',
-            'group' => 'required',
+            'position' => 'nullable',
+            'group' => 'nullable',
         ]);
 
         try {

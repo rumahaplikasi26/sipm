@@ -91,6 +91,7 @@
                                     <th scope="col">Group</th>
                                     <th scope="col">Position</th>
                                     <th scope="col">Type</th>
+                                    <th scope="col">Machine SN</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -104,6 +105,7 @@
                                         <td>{{ $attendance->employee?->group?->name }}</td>
                                         <td>{{ $attendance->employee?->position?->name }}</td>
                                         <td>{{ $attendance->config ? $attendance->config->name : 'NULL' }}</td>
+                                        <td>{{ $attendance->machine_sn }}</td>
                                     </tr>
                                 @empty
                                     <tr>
