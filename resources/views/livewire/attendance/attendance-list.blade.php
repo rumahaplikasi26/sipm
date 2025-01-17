@@ -106,7 +106,7 @@
                                         <td>{{ $attendance->employee?->position?->name }}</td>
                                         <td>
                                             <span
-                                                class="badge badge-soft-{{ $attendance->config ? $attendance->config->bgColor . ' ' . $attendance->config->textColor : 'danger' }}">
+                                                class="badge font-size-12 rounded-pill bg-{{ $attendance->config ? $attendance->config->bgColor . ' ' . $attendance->config->textColor : 'danger' }}">
                                                 {{ $attendance->config ? $attendance->config->name : 'NULL' }}
                                             </span>
                                         </td>
@@ -114,7 +114,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="text-center">No Data</td>
+                                        <td colspan="9" class="text-center">No Data</td>
                                     </tr>
                                 @endforelse
                             </tbody>
