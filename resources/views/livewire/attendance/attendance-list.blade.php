@@ -107,7 +107,7 @@
                                         <td>
                                             <span
                                                 class="badge badge-soft-{{ $attendance->config ? $attendance->config->bgColor . ' ' . $attendance->config->textColor : 'danger' }}">
-                                                {{ $attendance->config ? $attendance->config->type : 'NULL' }}
+                                                {{ $attendance->config ? $attendance->config->name : 'NULL' }}
                                             </span>
                                         </td>
                                         <td>{{ $attendance->machine_sn }}</td>
