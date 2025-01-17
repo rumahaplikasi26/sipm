@@ -48,6 +48,7 @@ class IClockController extends Controller
         // return "OK: 0";
 
         try {
+            $sn = $request->input('SN');
             $arr = preg_split('/\\r\\n|\\r|,|\\n/', $request->getContent());
 
             $tot = 0;
@@ -97,6 +98,7 @@ class IClockController extends Controller
                 }
 
                 $attendanceData = [
+                    'sn' => $sn,
                     'uid' => $data[0] . date('dHi'),
                     'employee_id' => $data[0],
                     'state' => $data[2],

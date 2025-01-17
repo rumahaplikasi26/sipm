@@ -13,7 +13,8 @@ class Attendance extends Model
         'uid',
         'employee_id',
         'timestamp',
-        'state'
+        'state',
+        'machine_sn'
     ];
 
     public function getDateAttribute()
