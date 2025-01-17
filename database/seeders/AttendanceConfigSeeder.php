@@ -18,20 +18,26 @@ class AttendanceConfigSeeder extends Seeder
             'start_time' => '07:00:00',
             'end_time' => '10:00:00',
             'sequence' => 1,
-        ]);
-
-        AttendanceConfig::create([
-            'name' => 'Break In',
-            'start_time' => '12:00:00',
-            'end_time' => '12:59:00',
-            'sequence' => 2,
+            'bgColor' => 'primary',
+            'textColor' => 'text-white',
         ]);
 
         AttendanceConfig::create([
             'name' => 'Break Out',
+            'start_time' => '12:00:00',
+            'end_time' => '12:59:00',
+            'sequence' => 2,
+            'bgColor' => 'info',
+            'textColor' => 'text-white',
+        ]);
+
+        AttendanceConfig::create([
+            'name' => 'Break In',
             'start_time' => '13:00:00',
             'end_time' => '15:00:00',
             'sequence' => 3,
+            'bgColor' => 'info',
+            'textColor' => 'text-white',
         ]);
 
         AttendanceConfig::create([
@@ -39,6 +45,8 @@ class AttendanceConfigSeeder extends Seeder
             'start_time' => '17:00:00',
             'end_time' => '19:00:00',
             'sequence' => 4,
+            'bgColor' => 'primary',
+            'textColor' => 'text-white',
         ]);
 
         AttendanceConfig::create([
@@ -46,6 +54,8 @@ class AttendanceConfigSeeder extends Seeder
             'start_time' => '19:00:00',
             'end_time' => '06:59:00',
             'sequence' => 5,
+            'bgColor' => 'secondary',
+            'textColor' => 'text-white',
         ]);
     }
 }

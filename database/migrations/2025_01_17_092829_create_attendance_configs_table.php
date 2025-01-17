@@ -17,6 +17,8 @@ return new class extends Migration
             $table->time('start_time');
             $table->time('end_time');
             $table->integer('sequence')->nullable();
+            $table->string('bgColor')->nullable();
+            $table->string('textColor')->nullable();
             $table->timestamps();
         });
     }

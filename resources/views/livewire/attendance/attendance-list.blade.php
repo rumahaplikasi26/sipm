@@ -104,7 +104,12 @@
                                         <td>{{ $attendance->time }}</td>
                                         <td>{{ $attendance->employee?->group?->name }}</td>
                                         <td>{{ $attendance->employee?->position?->name }}</td>
-                                        <td>{{ $attendance->config ? $attendance->config->name : 'NULL' }}</td>
+                                        <td>
+                                            <span
+                                                class="badge badge-soft-{{ $attendance->config ? $attendance->config->bgColor . ' ' . $attendance->config->textColor : 'danger' }}">
+                                                {{ $attendance->config ? $attendance->config->type : 'NULL' }}
+                                            </span>
+                                        </td>
                                         <td>{{ $attendance->machine_sn }}</td>
                                     </tr>
                                 @empty
