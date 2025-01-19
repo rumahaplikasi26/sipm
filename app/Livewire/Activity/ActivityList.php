@@ -163,7 +163,7 @@ class ActivityList extends Component
 
     public function render()
     {
-        $activities = Activity::with('group', 'scope', 'issues', 'supervisor', 'position', 'historyProgress', 'status')
+        $activities = Activity::with('group', 'details.scope', 'issues', 'supervisor', 'position', 'status')
             ->when($this->search, function ($query) {
                 return $query->where('title', 'like', '%' . $this->search . '%');
             })
@@ -171,7 +171,9 @@ class ActivityList extends Component
                 return $query->where('group_id', $this->filterGroup);
             })
             ->when($this->filterScope, function ($query) {
-                return $query->where('scope_id', $this->filterScope);
+                return $query->whereHas('details', function($dt) {
+                    $dt->where('scope_id', $this->filterScope);
+                });
             })
             ->when($this->filterPosition, function ($query) {
                 return $query->where('position_id', $this->filterPosition);

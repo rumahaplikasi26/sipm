@@ -72,15 +72,15 @@
 
             <div class="mb-3">
                 <label for="formrow-scopes" class="form-label">Scope</label>
-                <select class="form-control @error('scope_id') is-invalid @enderror" wire:model.live="scope_id"
-                    data-placeholder="Choose ...">
+                <select class="form-control @error('selectedScopes') is-invalid @enderror" wire:model.live="selectedScopes"
+                    data-placeholder="Choose ..." multiple>
                     <option value="">-- Select Scope --</option>
                     @foreach ($scopes as $scope)
                         <option value="{{ $scope->id }}">{{ $scope->name }}</option>
                     @endforeach
                 </select>
 
-                @error('scope_id')
+                @error('selectedScopes')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>

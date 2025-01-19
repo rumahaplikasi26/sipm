@@ -15,7 +15,8 @@ class ActivityForm extends Component
 {
     use LivewireAlert;
     public $mode = 'create';
-    public $date, $title, $slug, $group_id, $position_id, $scope_id, $total_estimate, $type_estimate, $forecast_date, $plan_date, $actual_date, $supervisor_id, $description;
+    public $date, $title, $slug, $group_id, $position_id, $total_estimate, $type_estimate, $forecast_date, $plan_date, $actual_date, $supervisor_id, $description;
+    public $selectedScopes = [];
 
     public $positions, $scopes, $groups, $supervisors;
 
@@ -34,7 +35,7 @@ class ActivityForm extends Component
             'title' => 'required',
             'group_id' => 'required',
             'position_id' => 'required',
-            'scope_id' => 'required',
+            'selectedScopes.*' => 'required',
             'total_estimate' => 'required|numeric',
             'type_estimate' => 'required',
             'forecast_date' => 'required|date',
@@ -51,7 +52,6 @@ class ActivityForm extends Component
                 'slug' => Str::slug($this->title),
                 'group_id' => $this->group_id,
                 'position_id' => $this->position_id,
-                'scope_id' => $this->scope_id,
                 'total_estimate' => $this->total_estimate,
                 'type_estimate' => $this->type_estimate,
                 'forecast_date' => $this->forecast_date,
@@ -60,6 +60,12 @@ class ActivityForm extends Component
                 'supervisor_id' => $this->supervisor_id,
                 'description' => $this->description,
             ]);
+
+            foreach ($this->selectedScopes as $id) {   
+                $activity->details()->create([
+                    'scope_id' => $id,
+                ]);
+            }
 
             $this->alert('success', 'Activity saved successfully', ['position' => 'top-center']);
             $this->resetForm();
@@ -77,7 +83,7 @@ class ActivityForm extends Component
         $this->slug = null;
         $this->group_id = null;
         $this->position_id = null;
-        $this->scope_id = null;
+        $this->selectedScopes = [];
         $this->total_estimate = null;
         $this->type_estimate = null;
         $this->forecast_date = null;

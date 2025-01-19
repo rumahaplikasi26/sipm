@@ -9,13 +9,13 @@ class ActivityProgress extends Model
     protected $table = 'activity_progress';
 
     protected $fillable = [
-        'activity_id',
+        'activity_detail_id',
         'user_id',
         'percentage',
     ];
 
-    public function activity()
+    public function activityDetail()
     {
-        return $this->belongsTo(Activity::class);
+        return $this->belongsTo(ActivityDetail::class);
     }
 }

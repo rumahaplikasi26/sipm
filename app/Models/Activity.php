@@ -17,7 +17,6 @@ class Activity extends Model
         'slug',
         'group_id',
         'position_id',
-        'scope_id',
         'total_estimate',
         'type_estimate',
         'forecast_date',
@@ -25,7 +24,6 @@ class Activity extends Model
         'actual_date',
         'supervisor_id',
         'description',
-        'progress',
         'status_id'
     ];
 
@@ -39,11 +37,6 @@ class Activity extends Model
         return $this->belongsTo(Position::class);
     }
 
-    public function scope()
-    {
-        return $this->belongsTo(Scope::class);
-    }
-
     public function supervisor()
     {
         return $this->belongsTo(User::class);
@@ -54,13 +47,13 @@ class Activity extends Model
         return $this->hasMany(ActivityIssue::class);
     }
 
-    public function historyProgress()
-    {
-        return $this->hasMany(ActivityProgress::class);
-    }
-
     public function status()
     {
         return $this->belongsTo(StatusActivity::class, 'status_id');
+    }
+
+    public function details()
+    {
+        return $this->hasMany(ActivityDetail::class);
     }
 }

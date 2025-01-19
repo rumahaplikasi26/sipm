@@ -27,7 +27,6 @@ class ActivityFactory extends Factory
             'slug' => fake('id_ID')->slug(),
             'group_id' => Group::inRandomOrder()->first()->id,
             'position_id' => Position::inRandomOrder()->first()->id,
-            'scope_id' => Scope::inRandomOrder()->first()->id,
             'total_estimate' => fake('id_ID')->randomFloat(0, 0, 100),
             'type_estimate' => fake('id_ID')->randomElement(['hour', 'day', 'week', 'month', 'year']),
             'forecast_date' => fake('id_ID')->date(),

@@ -19,8 +19,7 @@ return new class extends Migration
 
             $table->foreignId('group_id')->constrained('groups')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('position_id')->constrained('positions')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('scope_id')->constrained('scopes')->cascadeOnDelete()->cascadeOnUpdate();
-
+            
             $table->integer('total_estimate');
             $table->enum('type_estimate', ['hour', 'day', 'week', 'month', 'year'])->nullable();
             $table->date('forecast_date')->nullable();

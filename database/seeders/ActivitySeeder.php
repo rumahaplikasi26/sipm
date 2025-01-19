@@ -23,7 +23,6 @@ class ActivitySeeder extends Seeder
                 'slug' => fake('id_ID')->slug(),
                 'group_id' => 1,
                 'position_id' => 1,
-                'scope_id' => Scope::inRandomOrder()->first()->id,
                 'total_estimate' => 3,
                 'type_estimate' => 'day',
                 'forecast_date' =>  Carbon::now()->addDays(2),

@@ -53,7 +53,6 @@
             <ul class="ps-3 mb-3 text-muted" id="task-desc">
                 <li class="py-1">Group: {{ $activity->group->name }}</li>
                 <li class="py-1">Position: {{ $activity->position->name }}</li>
-                <li class="py-1">Scope: {{ $activity->scope->name }}</li>
             </ul>
         </div>
 
