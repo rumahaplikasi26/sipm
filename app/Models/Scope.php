@@ -8,8 +8,8 @@ class Scope extends Model
 {
     protected $fillable = ['name', 'description'];
 
-    public function activities()
+    public function activityDetails()
     {
-        return $this->hasMany(Activity::class);
+        return $this->hasMany(ActivityDetail::class);
     }
 }
