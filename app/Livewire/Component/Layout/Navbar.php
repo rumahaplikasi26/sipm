@@ -68,6 +68,13 @@ class Navbar extends BaseComponent
                         'icon' => 'fas fa-chart-line',
                         'permissions' => ['category.dependency.index']
                     ],
+                    [
+                        'name' => 'Shift',
+                        'url' => route('master.shifts'),
+                        'route' => 'master.shifts',
+                        'icon' => 'fas fa-clock',
+                        'permissions' => ['shift.index']
+                    ],
                 ],
             ],
             [

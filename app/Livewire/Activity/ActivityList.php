@@ -119,47 +119,7 @@ class ActivityList extends Component
         }
     }
 
-    #[On('show-modal-progress')]
-    public function updateProgress($activity_id)
-    {
-        $this->activity_id = $activity_id;
-        $this->dispatch('showFormProgress');
-    }
 
-    public function submitProgress()
-    {
-        $this->validate([
-            'activity_id' => 'required',
-            'progress' => 'required',
-        ]);
-
-        try {
-            DB::beginTransaction();
-
-            $activity = Activity::find($this->activity_id);
-            $activity->update([
-                'progress' => $this->progress
-            ]);
-
-            $activity->historyProgress()->create([
-                'percentage' => $this->progress,
-                'user_id' => auth()->user()->id,
-            ]);
-
-            DB::commit();
-
-            // Save/update progress here
-            $this->alert('success', 'Progress updated to ' . $this->progress . '%');
-            $this->dispatch('hideFormProgress');
-            return redirect()->route('activity');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            $this->alert('error', $e->getMessage());
-            $this->dispatch('hideFormProgress');
-            return redirect()->route('activity');
-        }
-
-    }
 
     public function render()
     {

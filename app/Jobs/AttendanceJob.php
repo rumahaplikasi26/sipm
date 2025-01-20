@@ -45,21 +45,25 @@ class AttendanceJob implements ShouldQueue
 
             if (empty($isFirstAttendance)) {
                 if ($data['is_active'] == true) {
-                    $activeActivity = Activity::with('scope', 'group', 'supervisor')
+                    $activeActivity = Activity::with('details.scope', 'group', 'supervisor')
                         ->where('group_id', $data['group_id'])
                         ->where('position_id', $data['position_id'])
                         ->whereDate('date', date('Y-m-d', strtotime($data['timestamp'])))
                         ->first();
 
                     if ($data['phone'] != null && $activeActivity != null) {
+                        $scopes = '';
+
+                        foreach ($activeActivity->details as $detail) {
+                            $scopes .= $detail->scope->name . ', ';
+                        }
+
                         // Send Activity Notification di ambil dari variabel $activeActivity title, date, scope->name, group->name, forecast_date, plan_date, actual_date, description, supervisor->name buat kalimat pesannya
                         $message = "Dear {$data['name']}, Anda memiliki aktivitas berikut:\n" .
                             "Judul: {$activeActivity->title}\n" .
                             "Tanggal: {$activeActivity->date}\n" .
-                            "Scope: {$activeActivity->scope->name}\n" .
                             "Grup: {$activeActivity->group->name}\n" .
-                            "Deskripsi: {$activeActivity->description}\n" .
-                            "Supervisor: {$activeActivity->supervisor->name}";
+                            "Scope: {$scopes}\n";
 
                         $this->sendWhatsAppNotification($data['phone'], $message);
                         \Log::info(date('Y-m-d H:i:s') . ' ' . 'Sent Whatsapp ' . $data['phone'] . ' Successfully');

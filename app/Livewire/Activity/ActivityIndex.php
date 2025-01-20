@@ -13,7 +13,6 @@ class ActivityIndex extends Component
 
     public function render()
     {
-
         return view('livewire.activity.activity-index')->layout('layouts.app', ['title' => 'Activity']);
     }
 }

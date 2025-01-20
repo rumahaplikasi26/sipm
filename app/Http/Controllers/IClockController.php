@@ -6,7 +6,9 @@ use App\Jobs\AttendanceJob;
 use App\Jobs\AttendanceSyncJob;
 use App\Models\ConfigAttendance;
 use App\Models\Employee;
+use App\Models\Shift;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use function PHPUnit\Framework\isTrue;
 
@@ -79,6 +81,7 @@ class IClockController extends Controller
 
                 $name = '';
                 $phone = '';
+                $shift = null;
 
                 $is_active = false;
 
@@ -97,6 +100,22 @@ class IClockController extends Controller
                     $is_active = false;
                 }
 
+                // Cari shift berdasarkan tanggal atau hari
+                $dayOfWeek = Carbon::parse($data[1])->format('l'); // Mendapatkan nama hari
+
+                // Ambil shift yang berlaku untuk hari tersebut
+                $shift = Shift::where('day_of_week', strtolower($dayOfWeek))->first();
+
+                // Jika shift tidak ditemukan, bisa memilih shift default
+                if ($shift) {
+                    // Pastikan fingerprint masuk dalam waktu shift
+                    $isValidTime = $this->isValidFingerprintTime($data[1], $shift);
+
+                    if ($isValidTime) {
+                        $shift = $shift->id;
+                    }
+                }
+
                 $attendanceData = [
                     'sn' => $sn,
                     'uid' => $data[0] . date('dHi'),
@@ -108,6 +127,7 @@ class IClockController extends Controller
                     'group_id' => $employee->group_id,
                     'position_id' => $employee->position_id,
                     'is_active' => $is_active,
+                    'shift_id' => $shift
                 ];
 
                 AttendanceJob::dispatch($attendanceData);

@@ -111,38 +111,7 @@
         </div><!-- /.modal-dialog -->
     </div>
 
-    <div id="updateProgress" class="modal fade" tabindex="-1" aria-labelledby="updateProgressLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content ">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="updateProgressLabel">Validation Activity</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form class="needs-validation" novalidate wire:submit.prevent="submitProgress">
-                        <div class="range-wrap">
-                            <div class="range-value" id="rangeV"></div>
-                            <input id="range" type="range" min="0" max="100" value="50"
-                                step="1" class="@error('progress') is-invalid @enderror" wire:model="progress">
-
-                            @error('progress')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-
-                        <div class="d-flex gap-2 justify-content-end">
-                            <button type="button" class="btn  btn-secondary waves-effect"
-                                data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary waves-effect waves-light">Save</button>
-                        </div>
-                    </form>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div>
+    @livewire('activity.activity-update-progress')
 
     @push('styles')
         <style>
@@ -231,27 +200,6 @@
 
                 Livewire.on('hideFormValidation', () => {
                     $('#validationActivity').modal('hide');
-                });
-
-                Livewire.on('showFormProgress', () => {
-                    $('#updateProgress').modal('show');
-
-                    const
-                        range = document.getElementById('range'),
-                        rangeV = document.getElementById('rangeV'),
-                        setValue = () => {
-                            const
-                                newValue = Number((range.value - range.min) * 100 / (range.max - range.min)),
-                                newPosition = 10 - (newValue * 0.2);
-                            rangeV.innerHTML = `<span>${range.value}</span>`;
-                            rangeV.style.left = `calc(${newValue}% + (${newPosition}px))`;
-                        };
-                    document.addEventListener("DOMContentLoaded", setValue);
-                    range.addEventListener('input', setValue);
-                });
-
-                Livewire.on('hideFormProgress', () => {
-                    $('#updateProgress').modal('hide');
                 });
             })
         </script>

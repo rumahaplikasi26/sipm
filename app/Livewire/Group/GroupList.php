@@ -2,13 +2,14 @@
 
 namespace App\Livewire\Group;
 
+use App\Livewire\BaseComponent;
 use App\Models\Group;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class GroupList extends Component
+class GroupList extends BaseComponent
 {
     use LivewireAlert, WithPagination;
 
@@ -46,10 +47,15 @@ class GroupList extends Component
 
     public function render()
     {
-        $groups = Group::with('employees')->when($this->search, function ($query) {
+        $groups = Group::with('employees', 'supervisor')->when($this->search, function ($query) {
             $query->where('name', 'like', '%' . $this->search . '%');
-        })->paginate($this->perPage);
+        });
 
+        if($this->authUser->hasRole('Supervisor')) {
+            $groups->where('supervisor_id', $this->authUser->id);
+        }
+
+        $groups = $groups->paginate($this->perPage);
         return view('livewire.group.group-list', compact('groups'));
     }
 }

@@ -38,21 +38,28 @@
                     <span
                         class="badge {{ $activity->status->bg_color }} font-size-12">{{ $activity->status->name }}</span>
                 @endif
-                <span class="badge badge-soft-primary font-size-12">{{ $activity->progress }} %</span>
+                <span class="badge badge-soft-info font-size-12">{{ $activity->progress }} %</span>
             </div>
             <div>
                 <h5 class="font-size-15">
                     <a href="javascript: void(0);" class="text-dark" id="task-name">{{ $activity->title }}</a>
                 </h5>
-                <p class="text-muted">{{ $activity->date }}</p>
+                <p class="text-muted">
+                    {{ $activity->date }}
+                    <span class="badge badge-soft-primary font-size-12">Group: {{ $activity->group->name }}</span>
+                    <span class="badge badge-soft-info font-size-12">Position: {{ $activity->position->name }}</span>
+                </p>
             </div>
         </div>
 
         <!-- Content Section -->
         <div class="flex-grow-1">
             <ul class="ps-3 mb-3 text-muted" id="task-desc">
-                <li class="py-1">Group: {{ $activity->group->name }}</li>
-                <li class="py-1">Position: {{ $activity->position->name }}</li>
+                @forelse ($activity->details as $detail)
+                    <li class="py-1">Scope: {{ $detail->scope->name }} ({{ $detail->progress }}%)</li>
+                @empty
+                    <li class="py-1">Scope: -</li>
+                @endforelse
             </ul>
         </div>
 

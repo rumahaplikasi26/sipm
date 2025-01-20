@@ -11,10 +11,16 @@ class Group extends Model
     protected $fillable = [
         'name',
         'slug',
+        'supervisor_id',
     ];
 
     public function employees()
     {
         return $this->hasMany(Employee::class);
+    }
+
+    public function supervisor()
+    {
+        return $this->belongsTo(User::class, 'supervisor_id');
     }
 }

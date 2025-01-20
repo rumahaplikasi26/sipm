@@ -3,6 +3,7 @@
 namespace App\Livewire\Group;
 
 use App\Models\Group;
+use App\Models\User;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -13,13 +14,20 @@ class GroupForm extends Component
     use LivewireAlert;
 
     public $mode = 'create';
-    public $name, $slug, $group;
+    public $name, $slug, $group, $supervisor_id;
+    public $supervisors;
+
+    public function mount()
+    {
+        $this->supervisors = User::role('supervisor')->get();
+    }
 
     #[On('group-edit')]
     public function edit(Group $group)
     {
         $this->group = $group;
         $this->name = $group->name;
+        $this->supervisor_id = $group->supervisor_id;
 
         $this->mode = 'edit';
     }
@@ -28,6 +36,7 @@ class GroupForm extends Component
     {
         $this->validate([
             'name' => 'required',
+            'supervisor_id' => 'required',
         ]);
 
         $this->slug = Str::slug($this->name);
@@ -38,12 +47,14 @@ class GroupForm extends Component
                     Group::create([
                         'name' => $this->name,
                         'slug' => $this->slug,
+                        'supervisor_id' => $this->supervisor_id
                     ]);
                     break;
                 default:
                     $this->group->update([
                         'name' => $this->name,
                         'slug' => $this->slug,
+                        'supervisor_id' => $this->supervisor_id
                     ]);
                     break;
             }

@@ -1,6 +1,6 @@
 <div class="row">
     @foreach ($groups as $group)
-        <div class="col-xl-3 col-sm-4">
+        <div class="col-xl-4 col-sm-5">
             @livewire('group.group-item', ['group' => $group], key($group->id))
         </div>
     @endforeach

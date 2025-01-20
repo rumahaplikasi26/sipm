@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -16,6 +17,7 @@ class GroupSeeder extends Seeder
             \App\Models\Group::create([
                 'name' => "Group A$i",
                 'slug' => "group-a$i",
+                'supervisor_id' => User::inRandomOrder()->first()->id,
             ]);
         }
     }

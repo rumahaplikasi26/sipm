@@ -39,5 +39,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call(AttendanceConfigSeeder::class);
         $this->call(ActivityDetailSeeder::class);
+
+        $this->call(ShiftSeeder::class);
+        $this->call(ShiftScheduleSeeder::class);
     }
 }

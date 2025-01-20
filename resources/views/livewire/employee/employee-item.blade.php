@@ -9,30 +9,35 @@
         <p class="text-muted">{{ $employee->email }}</p>
 
         <div>
-            <a href="javascript: void(0);" class="badge bg-primary font-size-11 m-1">Group: {{ $employee->group?->name }}</a>
-            <a href="javascript: void(0);" class="badge bg-info font-size-11 m-1">Position: {{ $employee->position?->name }}</a>
+            <a href="javascript: void(0);" class="badge bg-primary font-size-11 m-1">Group:
+                {{ $employee->group?->name }}</a>
+            <a href="javascript: void(0);" class="badge bg-info font-size-11 m-1">Position:
+                {{ $employee->position?->name }}</a>
         </div>
     </div>
-    <div class="card-footer bg-transparent border-top">
-        <div class="contact-links d-flex font-size-20">
-            <div class="flex-fill">
-                    <a href="javascript: void(0);" class="text-success" wire:click="$dispatch('employee-edit', { employee: {{ $employee }} })">
-                    {{-- Edit --}}
-                    <i class="bx bx-edit-alt"></i>
-                </a>
-            </div>
-            <div class="flex-fill">
-                <a href="javascript: void(0);" class="text-danger" wire:click="confirmDelete">
-                    {{-- Delete --}}
-                    <i class="bx bx-trash-alt"></i>
-                </a>
-            </div>
-            <div class="flex-fill">
-                <a href="javascript: void(0);" class="text-info">
-                    {{-- Detail --}}
-                    <i class="bx bx-detail"></i>
-                </a>
+    @can('employee.edit')
+        <div class="card-footer bg-transparent border-top">
+            <div class="contact-links d-flex font-size-20">
+                <div class="flex-fill">
+                    <a href="javascript: void(0);" class="text-success"
+                        wire:click="$dispatch('employee-edit', { employee: {{ $employee }} })">
+                        {{-- Edit --}}
+                        <i class="bx bx-edit-alt"></i>
+                    </a>
+                </div>
+                <div class="flex-fill">
+                    <a href="javascript: void(0);" class="text-danger" wire:click="confirmDelete">
+                        {{-- Delete --}}
+                        <i class="bx bx-trash-alt"></i>
+                    </a>
+                </div>
+                <div class="flex-fill">
+                    <a href="javascript: void(0);" class="text-info">
+                        {{-- Detail --}}
+                        <i class="bx bx-detail"></i>
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
+    @endcan
 </div>

@@ -14,7 +14,8 @@ class Attendance extends Model
         'employee_id',
         'timestamp',
         'state',
-        'machine_sn'
+        'machine_sn',
+        'shift_id',
     ];
 
     public function getDateAttribute()
@@ -42,5 +43,10 @@ class Attendance extends Model
     public function employee()
     {
         return $this->belongsTo(Employee::class);
+    }
+
+    public function shift()
+    {
+        return $this->belongsTo(Shift::class);
     }
 }

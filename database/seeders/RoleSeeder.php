@@ -81,6 +81,7 @@ class RoleSeeder extends Seeder
             'group.index' => [
                 'Super Admin',
                 'Site Manager',
+                'Supervisor',
             ],
             'group.create' => [
                 'Super Admin',
@@ -117,6 +118,7 @@ class RoleSeeder extends Seeder
             'employee.index' => [
                 'Super Admin',
                 'Site Manager',
+                'Supervisor',
             ],
             'employee.create' => [
                 'Super Admin',
@@ -145,6 +147,26 @@ class RoleSeeder extends Seeder
                 'Project Manager',
             ],
             'scope.destroy' => [
+                'Super Admin',
+                'Project Manager',
+            ],
+
+            // Manage Shift
+            'shift.index' => [
+                'Super Admin',
+                'Project Manager',
+                'Site Manager',
+                'Supervisor',
+            ],
+            'shift.create' => [
+                'Super Admin',
+                'Project Manager',
+            ],
+            'shift.edit' => [
+                'Super Admin',
+                'Project Manager',
+            ],
+            'shift.destroy' => [
                 'Super Admin',
                 'Project Manager',
             ],

@@ -2,13 +2,14 @@
 
 namespace App\Livewire\Attendance;
 
+use App\Livewire\BaseComponent;
 use App\Models\Attendance;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class AttendanceList extends Component
+class AttendanceList extends BaseComponent
 {
     use LivewireAlert, WithPagination;
 
@@ -78,7 +79,15 @@ class AttendanceList extends Component
             $query->whereHas('employee', function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%');
             });
-        })->when($this->filterEmployee, function ($query) {
+        });
+
+        if($this->authUser->hasRole('Supervisor')) {
+            $attendances->whereHas('employee.group', function ($query) {
+                $query->where('supervisor_id', $this->authUser->id);
+            });
+        }
+
+        $attendances = $attendances->when($this->filterEmployee, function ($query) {
             $query->where('employee_id', $this->filterEmployee);
         })->when($this->filterGroup, function ($query) {
             $query->whereHas('employee', function ($query) {
