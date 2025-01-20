@@ -6,6 +6,7 @@ use App\Events\AttendanceUpdated;
 use App\Models\Activity;
 use App\Models\Attendance;
 use App\Models\Employee;
+use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -53,7 +54,7 @@ class AttendanceJob implements ShouldQueue
 
                     if ($data['phone'] != null && $activeActivity != null) {
                         $scopes = '';
-
+                        $date = Carbon::parse($activeActivity->date)->isoFormat('dddd, DD MMMM YYYY');
                         foreach ($activeActivity->details as $detail) {
                             $scopes .= $detail->scope->name . ', ';
                         }
