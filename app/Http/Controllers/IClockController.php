@@ -103,16 +103,16 @@ class IClockController extends Controller
                 // Cari shift berdasarkan tanggal atau hari
                 $dayOfWeek = Carbon::parse($data[1])->format('l'); // Mendapatkan nama hari
 
-                // Ambil shift yang berlaku untuk hari tersebut
-                $shift = Shift::where('day_of_week', strtolower($dayOfWeek))->first();
+                // Ambil semua shift yang berlaku untuk hari tersebut
+                $shifts = Shift::where('day_of_week', strtolower($dayOfWeek))->get();
 
-                // Jika shift tidak ditemukan, bisa memilih shift default
-                if ($shift) {
-                    // Pastikan fingerprint masuk dalam waktu shift
-                    $isValidTime = $this->isValidFingerprintTime($data[1], $shift);
-
-                    if ($isValidTime) {
-                        $shift = $shift->id;
+                if ($shifts->isNotEmpty()) {
+                    foreach ($shifts as $potentialShift) {
+                        // Validasi apakah fingerprint sesuai dengan waktu shift
+                        if ($this->isValidFingerprintTime($data[1], $potentialShift)) {
+                            $shift = $potentialShift->id; // Pilih shift yang sesuai
+                            break; // Berhenti pada shift pertama yang valid
+                        }
                     }
                 }
 
@@ -184,11 +184,9 @@ class IClockController extends Controller
     {
         $time = Carbon::parse($timestamp);
 
-        // Validasi waktu berdasarkan shift
-        if ($time->between($shift->start_time, $shift->break_start_time)) {
-            return true; // Jam masuk
-        } elseif ($time->between($shift->break_end_time, $shift->end_time)) {
-            return true; // Jam pulang
+        // Validasi waktu berdasarkan rentang shift
+        if ($time->between($shift->start_time, $shift->end_time)) {
+            return true; // Waktu valid untuk shift ini
         }
 
         return false; // Tidak valid
