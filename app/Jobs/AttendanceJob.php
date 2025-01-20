@@ -62,7 +62,7 @@ class AttendanceJob implements ShouldQueue
                         // Send Activity Notification di ambil dari variabel $activeActivity title, date, scope->name, group->name, forecast_date, plan_date, actual_date, description, supervisor->name buat kalimat pesannya
                         $message = "Dear {$data['name']}, Anda memiliki aktivitas berikut:\n" .
                             "Judul: {$activeActivity->title}\n" .
-                            "Tanggal: {$activeActivity->date}\n" .
+                            "Tanggal: {$date}\n" .
                             "Grup: {$activeActivity->group->name}\n" .
                             "Scope: {$scopes}\n";
 
