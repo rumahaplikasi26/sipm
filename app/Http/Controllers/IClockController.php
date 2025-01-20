@@ -184,11 +184,17 @@ class IClockController extends Controller
     {
         $time = Carbon::parse($timestamp);
 
-        // Validasi waktu berdasarkan rentang shift
-        if ($time->between($shift->start_time, $shift->end_time)) {
-            return true; // Waktu valid untuk shift ini
+        $startTime = Carbon::parse($shift->start_time);
+        $endTime = Carbon::parse($shift->end_time);
+
+        // Jika shift melewati tengah malam
+        if ($endTime->lt($startTime)) {
+            // Cek apakah waktu ada di dua rentang:
+            return $time->between($startTime, $startTime->copy()->endOfDay()) || // Rentang dari start_time ke akhir hari
+                $time->between($endTime->copy()->startOfDay(), $endTime);      // Rentang dari awal hari ke end_time
         }
 
-        return false; // Tidak valid
+        // Shift biasa (tidak melewati tengah malam)
+        return $time->between($startTime, $endTime);
     }
 }

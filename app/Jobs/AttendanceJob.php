@@ -80,6 +80,7 @@ class AttendanceJob implements ShouldQueue
                     'state' => $data['state'],
                     'timestamp' => $data['timestamp'],
                     'machine_sn' => $data['sn'],
+                    'scope_id' => $data['scope_id'],
                 ]
             );
 
