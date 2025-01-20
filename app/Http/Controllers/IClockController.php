@@ -178,4 +178,19 @@ class IClockController extends Controller
             return "ERROR";
         }
     }
+
+    // Fungsi untuk mengecek apakah waktu fingerprint sesuai dengan shift
+    protected function isValidFingerprintTime($timestamp, $shift)
+    {
+        $time = Carbon::parse($timestamp);
+
+        // Validasi waktu berdasarkan shift
+        if ($time->between($shift->start_time, $shift->break_start_time)) {
+            return true; // Jam masuk
+        } elseif ($time->between($shift->break_end_time, $shift->end_time)) {
+            return true; // Jam pulang
+        }
+
+        return false; // Tidak valid
+    }
 }
