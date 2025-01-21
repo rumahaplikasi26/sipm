@@ -111,6 +111,32 @@
         </div><!-- /.modal-dialog -->
     </div>
 
+    <div id="updateActualDate" class="modal fade" tabindex="-1" aria-labelledby="updateActualDateLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateActualDateLabel">Update Actual Date Activity</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" novalidate wire:submit.prevent="submitActualDate">
+                        <div class="mb-3">
+                            <label for="actual_date" class="form-label">Actual Date</label>
+                            <input type="date" class="form-control" wire:model="actual_date">
+                        </div>
+
+                        <div class="d-flex gap-2 justify-content-end">
+                            <button type="button" class="btn  btn-secondary waves-effect"
+                                data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary waves-effect waves-light">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
     @livewire('activity.activity-update-progress')
 
     @push('styles')
@@ -200,6 +226,14 @@
 
                 Livewire.on('hideFormValidation', () => {
                     $('#validationActivity').modal('hide');
+                });
+
+                Livewire.on('showFormActualDate', () => {
+                    $('#updateActualDate').modal('show');
+                });
+
+                Livewire.on('hideFormActualDate', () => {
+                    $('#updateActualDate').modal('hide');
                 });
             })
         </script>

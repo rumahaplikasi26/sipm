@@ -176,6 +176,7 @@ class RoleSeeder extends Seeder
                 'Super Admin',
                 'Site Manager',
                 'Supervisor',
+                'HSE'
             ],
 
             // Manage Activity

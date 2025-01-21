@@ -27,6 +27,10 @@ class Activity extends Model
         'status_id'
     ];
 
+    protected $casts = [
+        'date' => 'date',
+    ];
+
     public function group()
     {
         return $this->belongsTo(Group::class);

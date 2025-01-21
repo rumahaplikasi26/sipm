@@ -14,6 +14,13 @@
                             <i class="mdi mdi-check"></i> Validasi Activity</a>
                     @endcan
 
+                    @can('activity.edit')
+                        <a class="dropdown-item edittask-details"
+                            wire:click="$dispatch('show-modal-actual-date', {activity_id: {{ $activity->id }}})"
+                            href="javascript: void(0);">
+                            <i class="mdi mdi-calendar"></i> Update Actual Date Activity</a>
+                    @endcan
+
                     @can('activity.progress.update')
                         <a class="dropdown-item edittask-details"
                             wire:click="$dispatch('show-modal-progress', {activity_id: {{ $activity->id }}})"
@@ -44,8 +51,8 @@
                 <h5 class="font-size-15">
                     <a href="javascript: void(0);" class="text-dark" id="task-name">{{ $activity->title }}</a>
                 </h5>
-                <p class="text-muted">
-                    {{ $activity->date }}
+                <p class="text-muted d-flex flex-column gap-1">
+                    {{ $activity->date->format('d F Y') }}
                     <span class="badge badge-soft-primary font-size-12">Group: {{ $activity->group->name }}</span>
                     <span class="badge badge-soft-info font-size-12">Position: {{ $activity->position->name }}</span>
                 </p>

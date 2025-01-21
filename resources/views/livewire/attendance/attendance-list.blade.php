@@ -90,7 +90,7 @@
                                     <th scope="col">Time</th>
                                     <th scope="col">Group</th>
                                     <th scope="col">Position</th>
-                                    <th scope="col">Type</th>
+                                    <th scope="col">Shift</th>
                                     <th scope="col">Machine SN</th>
                                 </tr>
                             </thead>
@@ -105,10 +105,7 @@
                                         <td>{{ $attendance->employee?->group?->name }}</td>
                                         <td>{{ $attendance->employee?->position?->name }}</td>
                                         <td>
-                                            <span
-                                                class="badge font-size-12 rounded-pill bg-{{ $attendance->config ? $attendance->config->bgColor . ' ' . $attendance->config->textColor : 'danger' }}">
-                                                {{ $attendance->config ? $attendance->config->name : 'NULL' }}
-                                            </span>
+                                            {{ $attendance->shift->name }}
                                         </td>
                                         <td>{{ $attendance->machine_sn }}</td>
                                     </tr>

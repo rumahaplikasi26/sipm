@@ -28,38 +28,46 @@
                                 <th scope="col">Scope</th>
                                 <th scope="col">Estimate Time</th>
                                 <th scope="col">Date Work</th>
-                                <th scope="col">Progress</th>
+                                <th scope="col">Progress AVG</th>
                                 <th scope="col">Supervisor</th>
                                 <th scope="col">Dependency</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($activities as $activity)
-                                <tr>
-                                    <td>{{ $activity['id'] }}</td>
-                                    <td>{{ $activity['date'] }}</td>
-                                    <td>{{ $activity['title'] }}</td>
-                                    <td>{{ $activity['group']['name'] }}</td>
-                                    <td>{{ $activity['position']['name'] }}</td>
-                                    <td>{{ $activity['scope']['name'] }}</td>
-                                    <td>{{ $activity['total_estimate'] }} {{ $activity['type_estimate'] }}</td>
-                                    <td>
-                                        <p>Forecast: {{ $activity['forecast_date'] }}</p>
-                                        <p>Plan: {{ $activity['plan_date'] }}</p>
-                                        <p>Actual: {{ $activity['actual_date'] }}</p>
-                                    </td>
-                                    <td>{{ $activity['progress'] }}</td>
-                                    <td>{{ $activity['supervisor']['name'] }}</td>
-                                    <td>
-                                        @if (count($activity['issues']) > 0)
-                                            <ul>
-                                                @foreach ($activity['issues'] as $dependency)
-                                                    <li>{{ $dependency['category_dependency']['name'] }}: {{ $dependency['description'] }}</li>
-                                                @endforeach
-                                            </ul>
-                                        @endif
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td>{{ $activity['id'] }}</td>
+                                <td>{{ $activity['date'] }}</td>
+                                <td>{{ $activity['title'] }}</td>
+                                <td>{{ $activity['group']['name'] }}</td>
+                                <td>{{ $activity['position']['name'] }}</td>
+                                <td>
+                                    @if (count($activity['details']) > 0)
+                                    <ul>
+                                        @foreach ($activity['details'] as $detail)
+                                        <li>{{ $detail['scope']['name'] }}: {{ $detail['progress'] }}%</li>
+                                        @endforeach
+                                    </ul>
+                                    @endif
+                                </td>
+                                <td>{{ $activity['total_estimate'] }} {{ $activity['type_estimate'] }}</td>
+                                <td>
+                                    <p>Forecast: {{ $activity['forecast_date'] }}</p>
+                                    <p>Plan: {{ $activity['plan_date'] }}</p>
+                                    <p>Actual: {{ $activity['actual_date'] }}</p>
+                                </td>
+                                <td>{{ $activity['progress'] }}</td>
+                                <td>{{ $activity['supervisor']['name'] }}</td>
+                                <td>
+                                    @if (count($activity['issues']) > 0)
+                                    <ul>
+                                        @foreach ($activity['issues'] as $dependency)
+                                        <li>{{ $dependency['category_dependency']['name'] }}: {{ $dependency['description'] }}</li>
+                                        @endforeach
+                                    </ul>
+                                    @endif
+                                </td>
+                            </tr>
                             @endforeach
                         </tbody>
                     </table>

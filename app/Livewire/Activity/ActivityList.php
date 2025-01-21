@@ -43,6 +43,8 @@ class ActivityList extends Component
     public $status_id = '';
     public $progress = 0;
 
+    public $actual_date;
+
 
     protected $listeners = [
         'refreshIndex' => 'handleRefresh',
@@ -98,6 +100,13 @@ class ActivityList extends Component
         $this->dispatch('showFormValidation');
     }
 
+    #[On('show-modal-actual-date')]
+    public function updateActualDate($activity_id)
+    {
+        $this->activity_id = $activity_id;
+        $this->dispatch('showFormActualDate');
+    }
+
     public function submitValidation()
     {
         $this->validate([
@@ -119,7 +128,25 @@ class ActivityList extends Component
         }
     }
 
+    public function submitActualDate()
+    {
+        $this->validate([
+            'activity_id' => 'required',
+            'actual_date' => 'required'
+        ]);
 
+        try {
+            $activity = Activity::find($this->activity_id);
+            $activity->actual_date = $this->actual_date;
+            $activity->save();
+
+            $this->alert('success', 'Actual Date updated successfully');
+            $this->dispatch('hideFormValidation');
+            return redirect()->route('activity');
+        } catch (\Exception $e) {
+            $this->alert('error', 'Status could not be updated');
+        }
+    }
 
     public function render()
     {
@@ -131,7 +158,7 @@ class ActivityList extends Component
                 return $query->where('group_id', $this->filterGroup);
             })
             ->when($this->filterScope, function ($query) {
-                return $query->whereHas('details', function($dt) {
+                return $query->whereHas('details', function ($dt) {
                     $dt->where('scope_id', $this->filterScope);
                 });
             })

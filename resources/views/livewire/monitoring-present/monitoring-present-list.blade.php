@@ -18,7 +18,7 @@
                                 <select class="form-select" id="selectGroup" wire:model="filterGroup">
                                     <option selected value="">-- Select Group --</option>
                                     @foreach ($groups as $group)
-                                        <option value="{{ $group->id }}">{{ $group->name }}</option>
+                                    <option value="{{ $group->id }}">{{ $group->name }}</option>
                                     @endforeach
                                 </select>
                                 <label for="selectGroup">Filter Select Group</label>
@@ -27,7 +27,7 @@
                                 <select class="form-select" id="filterShift" wire:model="filterShift">
                                     <option selected value="">-- Select Shift --</option>
                                     @foreach ($shifts as $shift)
-                                        <option value="{{ $shift->id }}">{{ $shift->name }}</option>
+                                    <option value="{{ $shift->id }}">{{ $shift->name }} {{ $shift->day_of_week }}</option>
                                     @endforeach
                                 </select>
                                 <label for="filterShift">Filter Select Shift</label>
@@ -39,7 +39,7 @@
                                     <option value="in_break">In Break</option>
                                     <option value="out">Out</option>
                                 </select>
-                                <label for="filterType">Filter Select Shift</label>
+                                <label for="filterType">Filter Select Type</label>
                             </div>
                             <div class="col-xxl-2 col-lg-4 form-floating">
                                 <input type="date" class="form-control" id="filterStartDate"
@@ -68,9 +68,9 @@
 
     <div class="row">
         @foreach ($monitoring_presents as $monitoring_present)
-            <div class="col-md-3 mb-3">
-                @livewire('monitoring-present.monitoring-present-item', ['monitoring_present' => $monitoring_present], key($monitoring_present->id))
-            </div>
+        <div class="col-md-3 mb-3">
+            @livewire('monitoring-present.monitoring-present-item', ['monitoring_present' => $monitoring_present], key($monitoring_present->id))
+        </div>
         @endforeach
 
         <div class="col-lg-12">
@@ -78,6 +78,6 @@
         </div>
     </div>
 
-    @livewire('monitoring-present.monitoring-present-form', key('monitoring-present-form'))
+    @livewire('monitoring-present.monitoring-present-form', ['groups' => $groups], key('monitoring-present-form'))
     @livewire('monitoring-present.monitoring-present-detail', key('monitoring-present-detail'))
 </div>

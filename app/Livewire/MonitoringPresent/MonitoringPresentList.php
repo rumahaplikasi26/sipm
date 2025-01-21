@@ -3,7 +3,9 @@
 namespace App\Livewire\MonitoringPresent;
 
 use App\Livewire\BaseComponent;
+use App\Models\Group;
 use App\Models\MonitoringPresent;
+use App\Models\Shift;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
 
@@ -19,10 +21,26 @@ class MonitoringPresentList extends BaseComponent
     public $perPage = 20;
 
     public $groups, $shifts;
+
+    protected $listeners = [
+        'refreshIndex' => 'handleRefresh',
+    ];
+
+    public function handleRefresh()
+    {
+        $this->alert('success', 'Refreshed successfully');
+        $this->dispatch('$refresh');
+    }
+
     public function mount()
     {
-        $this->groups = \App\Models\Group::all();
-        $this->shifts = \App\Models\Shift::all();
+        if ($this->authUser->hasRole('Supervisor')) {
+            $this->groups = Group::where('supervisor_id', $this->authUser->id)->get();
+        } else {
+            $this->groups = Group::all();
+        }
+
+        $this->shifts = Shift::all();
     }
     public function resetFilter()
     {
@@ -37,8 +55,10 @@ class MonitoringPresentList extends BaseComponent
     {
         $monitoring_presents = MonitoringPresent::with('shift', 'user', 'group', 'details');
 
-        if($this->authUser->hasRole('Supervisor')) {
-            $monitoring_presents->where('user_id', $this->authUser->id);
+        if ($this->authUser->hasRole('Supervisor')) {
+            $monitoring_presents->where('user_id', $this->authUser->id)->where('role', 'supervisor');
+        } else {
+            $monitoring_presents->where('role', 'hse');
         }
 
         $monitoring_presents->when($this->filterStartDate, function ($query) {

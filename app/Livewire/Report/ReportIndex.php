@@ -59,15 +59,12 @@ class ReportIndex extends Component
 
     public function filter()
     {
-        $this->activities = Activity::with('group','scope', 'issues.categoryDependency','supervisor', 'position', 'historyProgress')
+        $this->activities = Activity::with('group', 'details.scope', 'issues.categoryDependency','supervisor', 'position')
         ->when($this->search, function ($query) {
             return $query->where('title', 'like', '%' . $this->search . '%');
         })
         ->when($this->filterGroup, function ($query) {
             return $query->where('group_id', $this->filterGroup);
-        })
-        ->when($this->filterScope, function ($query) {
-            return $query->where('scope_id', $this->filterScope);
         })
         ->when($this->filterPosition, function ($query) {
             return $query->where('position_id', $this->filterPosition);

@@ -11,25 +11,54 @@
                     <form action="javascript:void(0);" wire:submit.prevent="submitMonitoringPresent">
 
                         <div class="form-floating mb-3">
-                            <select class="form-select" id="group_id" wire:model="group_id">
+                            <select class="form-select @error('group_id') is-invalid @enderror" id="group_id" wire:model.live="group_id">
                                 <option selected value="">-- Select Group --</option>
                                 @foreach ($groups as $group)
-                                    <option value="{{ $group->id }}">{{ $group->name }}</option>
+                                <option value="{{ $group->id }}">{{ $group->name }}</option>
                                 @endforeach
                             </select>
 
                             <label for="search">Select Group</label>
+
+                            @error('group_id')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
 
                         <div class="form-floating mb-3">
-                            <select class="form-select" id="shift_id" wire:model="shift_id">
+                            <select class="form-select @error('shift_id') is-invalid @enderror" id="shift_id" wire:model="shift_id">
                                 <option selected value="">-- Select Shift --</option>
-                                @foreach ($shifts as $shift)
-                                    <option value="{{ $shift->id }}">{{ $shift->name }}</option>
+                                @foreach ($shiftForms as $shift)
+                                <option value="{{ $shift->id }}">{{ $shift->name }} {{ $shift->day_of_week }}</option>
                                 @endforeach
                             </select>
 
                             <label for="shift_id">Select Shift</label>
+
+                            @error('shift_id')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <select class="form-select @error('type') is-invalid @enderror" id="type" wire:model="type">
+                                <option selected value="">-- Select Type --</option>
+                                <option value="in">In</option>
+                                <option value="in_break">In Break</option>
+                                <option value="out">Out</option>
+                            </select>
+                            <label for="type">Select Type</label>
+
+                            
+                            @error('type')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
 
                         <div class="form-floating mb-3">
@@ -45,18 +74,18 @@
                                 </thead>
                                 <tbody>
                                     @empty(!$employees)
-                                        @foreach ($employees as $employee)
-                                            <tr class="align-middle">
-                                                <td>{{ $employee->id }} | {{ $employee->name }}</td>
-                                                <td class="square-switch">
-                                                    <input type="checkbox" id="is_presents_{{ $employee->id }}"
-                                                        switch="none" wire:model="is_presents.{{ $employee->id }}"
-                                                        value="1">
-                                                    <label for="is_presents_{{ $employee->id }}" data-on-label="Yes"
-                                                        data-off-label="No"></label>
-                                                </td>
-                                            </tr>
-                                        @endforeach
+                                    @foreach ($employees as $employee)
+                                    <tr class="align-middle">
+                                        <td>{{ $employee->id }} | {{ $employee->name }} | {{ $employee->group?->name }}</td>
+                                        <td class="square-switch">
+                                            <input type="checkbox" id="is_presents_{{ $employee->id }}"
+                                                switch="none" wire:model="is_presents.{{ $employee->id }}"
+                                                value="1">
+                                            <label for="is_presents_{{ $employee->id }}" data-on-label="Yes"
+                                                data-off-label="No"></label>
+                                        </td>
+                                    </tr>
+                                    @endforeach
                                     @endempty
                                 </tbody>
                             </table>
@@ -74,17 +103,17 @@
     </div>
 
     @push('js')
-        <script>
-            document.addEventListener('livewire:init', function() {
+    <script>
+        document.addEventListener('livewire:init', function() {
 
-                Livewire.on('showModalAddMonitoring', () => {
-                    $('#addMonitoringPresent').modal('show');
-                });
+            Livewire.on('showModalAddMonitoring', () => {
+                $('#addMonitoringPresent').modal('show');
+            });
 
-                Livewire.on('hideModalAddMonitoring', () => {
-                    $('#addMonitoringPresent').modal('hide');
-                });
-            })
-        </script>
+            Livewire.on('hideModalAddMonitoring', () => {
+                $('#addMonitoringPresent').modal('hide');
+            });
+        })
+    </script>
     @endpush
 </div>
