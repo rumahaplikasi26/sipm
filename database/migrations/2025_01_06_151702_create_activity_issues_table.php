@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('activity_id')->constrained('activities')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('category_dependency_id')->constrained('category_dependencies')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->integer('percentage_dependency')->default(0);
             $table->text('description')->nullable();
+            $table->integer('percentage_solution')->default(0);
             $table->timestamps();
         });
     }

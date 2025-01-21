@@ -18,6 +18,8 @@ class ActivityDependencyForm extends Component
     protected $rules = [
         'dependencies.*.id' => 'nullable|exists:activity_issues,id',
         'dependencies.*.category_dependency_id' => 'required|exists:category_dependencies,id',
+        'dependencies.*.percentage_dependency' => 'required|numeric|min:0|max:100',
+        'dependencies.*.percentage_solution' => 'required|numeric|min:0|max:100',
         'dependencies.*.description' => 'required|string|max:255',
     ];
 
@@ -59,6 +61,8 @@ class ActivityDependencyForm extends Component
                     'id' => $issue->id,
                     'category_dependency_id' => $issue->category_dependency_id ?? null, // default jika null
                     'description' => $issue->description ?? null, // default jika null
+                    'percentage_dependency' => $issue->percentage_dependency ?? null, // default jika null
+                    'percentage_solution' => $issue->percentage_solution ?? null, // default jika null
                 ];
             })
             ->toArray();
@@ -69,7 +73,7 @@ class ActivityDependencyForm extends Component
     public function resetForm()
     {
         $this->dependencies = [
-            ['id' => '', 'category_dependency_id' => '', 'description' => '']
+            ['id' => '', 'category_dependency_id' => '', 'description' => '', 'percentage_dependency' => '', 'percentage_solution' => '']
         ];
         $this->deletedIds = [];
 
@@ -98,6 +102,8 @@ class ActivityDependencyForm extends Component
                     ActivityIssue::find($dependency['id'])->update([
                         'category_dependency_id' => $dependency['category_dependency_id'],
                         'description' => $dependency['description'],
+                        'percentage_dependency' => $dependency['percentage_dependency'],
+                        'percentage_solution' => $dependency['percentage_solution'],
                     ]);
                 } else {
                     // Create new dependency
@@ -105,13 +111,15 @@ class ActivityDependencyForm extends Component
                         'activity_id' => $this->activity_id,
                         'category_dependency_id' => $dependency['category_dependency_id'],
                         'description' => $dependency['description'],
+                        'percentage_dependency' => $dependency['percentage_dependency'],
+                        'percentage_solution' => $dependency['percentage_solution'],
                     ]);
                 }
             }
 
             $this->alert('success', 'Dependency saved successfully');
             $this->resetForm();
-            $this->dispatch('refreshIndex');
+            return redirect(route('activity'));
         } catch (\Exception $e) {
             $this->alert('error', $e->getMessage());
         }

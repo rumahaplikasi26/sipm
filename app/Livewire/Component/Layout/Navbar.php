@@ -92,6 +92,13 @@ class Navbar extends BaseComponent
                 'route' => 'activity'
             ],
             [
+                'name' => 'Monitoring Present',
+                'icon' => 'fas fa-check-square',
+                'permissions' => ['monitoring.present.index'],
+                'url' => route('monitoring.present'),
+                'route' => 'monitoring.present'
+            ],
+            [
                 'name' => 'Report Activity',
                 'icon' => 'fas fa-chart-line',
                 'permissions' => ['activity.report.index'],

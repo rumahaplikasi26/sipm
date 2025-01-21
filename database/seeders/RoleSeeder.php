@@ -199,6 +199,29 @@ class RoleSeeder extends Seeder
                 'Site Manager',
             ],
 
+            // Manage Activity
+            'monitoring.present.index' => [
+                'Super Admin',
+                'Site Manager',
+                'Supervisor',
+                'HSE'
+            ],
+            'monitoring.present.create' => [
+                'Super Admin',
+                'Supervisor',
+                'HSE'
+            ],
+            'monitoring.present.edit' => [
+                'Super Admin',
+                'Site Manager',
+                'HSE',
+                'Supervisor',
+            ],
+            'monitoring.present.destroy' => [
+                'Super Admin',
+                'Site Manager',
+            ],
+
             // Update Progress Activity
             'activity.progress.update' => [
                 'Super Admin',

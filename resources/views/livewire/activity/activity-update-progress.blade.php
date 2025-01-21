@@ -26,33 +26,33 @@
                                             </td>
                                         </tr>
                                     @endforeach
-                                    @endif
-                                </tbody>
-                            </table>
+                                @endempty
+                            </tbody>
+                        </table>
 
-                            <div class="d-flex gap-2 justify-content-end">
-                                <button type="button" class="btn  btn-secondary waves-effect"
-                                    data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary waves-effect waves-light">Save</button>
-                            </div>
-                        </form>
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div>
-
-        @push('js')
-            <script>
-                document.addEventListener('livewire:init', function() {
-
-                    Livewire.on('showFormProgress', () => {
-                        $('#updateProgress').modal('show');
-                    });
-
-                    Livewire.on('hideFormProgress', () => {
-                        $('#updateProgress').modal('hide');
-                    });
-                })
-            </script>
-        @endpush
+                        <div class="d-flex gap-2 justify-content-end">
+                            <button type="button" class="btn  btn-secondary waves-effect"
+                                data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary waves-effect waves-light">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
     </div>
+
+    @push('js')
+        <script>
+            document.addEventListener('livewire:init', function() {
+
+                Livewire.on('showFormProgress', () => {
+                    $('#updateProgress').modal('show');
+                });
+
+                Livewire.on('hideFormProgress', () => {
+                    $('#updateProgress').modal('hide');
+                });
+            })
+        </script>
+    @endpush
+</div>

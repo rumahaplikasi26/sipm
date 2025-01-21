@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ActivityIssue extends Model
 {
-    protected $fillable = ['activity_id', 'category_dependency_id', 'description'];
+    protected $fillable = ['activity_id', 'category_dependency_id', 'description', 'percentage_dependency', 'percentage_solution'];
 
     public function categoryDependency()
     {

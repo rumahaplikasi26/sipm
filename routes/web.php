@@ -8,6 +8,7 @@ use App\Livewire\CategoryDependency\CategoryDependencyIndex;
 use App\Livewire\Dashboard\DashboardIndex;
 use App\Livewire\Employee\EmployeeIndex;
 use App\Livewire\Group\GroupIndex;
+use App\Livewire\MonitoringPresent\MonitoringPresentIndex;
 use App\Livewire\Position\PositionIndex;
 use App\Livewire\Report\ReportIndex;
 use App\Livewire\Scope\ScopeIndex;
@@ -37,5 +38,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/attendances', AttendanceIndex::class)->name('attendance');
     Route::get('/activities', ActivityIndex::class)->name('activity');
+    Route::get('/monitoring-present', MonitoringPresentIndex::class)->name('monitoring.present');
+
     Route::get('/report', ReportIndex::class)->name('activity.report');
 });
