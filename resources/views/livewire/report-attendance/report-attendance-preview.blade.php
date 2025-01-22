@@ -22,26 +22,29 @@
                     <table class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
-                                <th>Employee ID</th>
-                                <th>Name</th>
+                                <th rowspan="2">Employee ID</th>
+                                <th rowspan="2">Name</th>
+                                <th>Tanggan/Bulan</th>
+                            </tr>
+                            <tr>
                                 @empty(!$employees)
-                                    @foreach ($dateArray as $date)
-                                        <th>{{ \Carbon\Carbon::parse($date)->format('d/m') }}</th>
-                                    @endforeach
+                                @foreach ($dateArray as $date)
+                                <th>{{ \Carbon\Carbon::parse($date)->format('d/m') }}</th>
+                                @endforeach
                                 @endempty
                             </tr>
                         </thead>
                         <tbody>
                             @empty(!$employees)
-                                @foreach ($employees as $employee)
-                                    <tr>
-                                        <td>{{ $employee['employee_id'] }}</td>
-                                        <td>{{ $employee['name'] }}</td>
-                                        @foreach ($employee['attendance'] as $date => $timeRange)
-                                            <td>{{ $timeRange }}</td>
-                                        @endforeach
-                                    </tr>
+                            @foreach ($employees as $employee)
+                            <tr>
+                                <td>{{ $employee['employee_id'] }}</td>
+                                <td>{{ $employee['name'] }}</td>
+                                @foreach ($employee['attendance'] as $date => $timeRange)
+                                <td>{{ $timeRange }}</td>
                                 @endforeach
+                            </tr>
+                            @endforeach
                             @endempty
                         </tbody>
                     </table>
