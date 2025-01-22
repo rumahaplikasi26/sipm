@@ -58,6 +58,7 @@ class ActivityForm extends Component
                 'actual_date' => $this->actual_date,
                 'supervisor_id' => $this->supervisor_id,
                 'description' => $this->description,
+                'status_id' => 3
             ]);
 
             foreach ($this->selectedScopes as $id) {   

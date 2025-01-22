@@ -4,6 +4,7 @@ namespace App\Livewire\ReportAttendance;
 
 use App\Models\Attendance;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Livewire\Component;
 
 class ReportAttendanceIndex extends Component
@@ -17,6 +18,8 @@ class ReportAttendanceIndex extends Component
     public $groups = [];
     public $positions = [];
     public $employees = [];
+
+    public $dateArray = [];
 
     public $attendances;
 
@@ -81,8 +84,17 @@ class ReportAttendanceIndex extends Component
             ->whereBetween('timestamp', [$startDate, $endDate]) // Filter rentang tanggal
             ->get();
 
+        // Menghasilkan rentang tanggal
+        $rangeDates = CarbonPeriod::create($startDate, $endDate);
+
+        // Convert hasil ke array jika diperlukan
+        $dateArray = [];
+        foreach ($rangeDates as $date) {
+            $dateArray[] = $date->toDateString(); // Format menjadi 'YYYY-MM-DD'
+        }
+
         // Proses data menjadi format yang diinginkan
-        $employees = $attendances->groupBy('employee_id')->map(function ($employeeAttendances) use ($startDate, $endDate) {
+        $employees = $attendances->groupBy('employee_id')->map(function ($employeeAttendances) use ($startDate, $endDate, $dateArray) {
             $employee = $employeeAttendances->first()->employee; // Ambil data karyawan
             $dates = [];
 
@@ -111,6 +123,7 @@ class ReportAttendanceIndex extends Component
                 'employee_id' => $employee->id,
                 'name' => $employee->name,
                 'attendance' => $dates,
+                'dateArray' => $dateArray
             ];
         });
 
