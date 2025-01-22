@@ -25,7 +25,7 @@
                                 <th>Employee ID</th>
                                 <th>Name</th>
                                 @empty(!$employees)
-                                    @foreach ($employees['attendance'] ?? [] as $date => $status)
+                                    @foreach ($dateArray as $data)
                                         <th>{{ \Carbon\Carbon::parse($date)->format('d/m') }}</th>
                                     @endforeach
                                 @endempty
