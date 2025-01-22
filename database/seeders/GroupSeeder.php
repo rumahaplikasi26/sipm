@@ -13,7 +13,7 @@ class GroupSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 1; $i <= 100; $i++) {
+        for ($i = 1; $i <= 8; $i++) {
             \App\Models\Group::create([
                 'name' => "Group A$i",
                 'slug' => "group-a$i",
