@@ -19,12 +19,12 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title mb-5">Preview Attendance</h4>
-                    <table class="table table-bordered table-striped table-hover">
+                    <table class="table table-bordered table-striped table-hover align-middle table-sm">
                         <thead>
                             <tr>
                                 <th rowspan="2">Employee ID</th>
                                 <th rowspan="2">Name</th>
-                                <th>Tanggan/Bulan</th>
+                                <th class="text-center">Tanggan/Bulan</th>
                             </tr>
                             <tr>
                                 @empty(!$employees)
