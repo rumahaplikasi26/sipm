@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Activity;
 
+use App\Livewire\BaseComponent;
 use App\Models\StatusActivity;
 use App\Models\User;
 use App\Models\Group;
@@ -15,7 +16,7 @@ use Livewire\WithPagination;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Illuminate\Support\Facades\DB;
 
-class ActivityList extends Component
+class ActivityList extends BaseComponent
 {
     use LivewireAlert, WithPagination;
 
@@ -150,10 +151,15 @@ class ActivityList extends Component
 
     public function render()
     {
-        $activities = Activity::with('group', 'details.scope', 'issues', 'supervisor', 'position', 'status')
-            ->when($this->search, function ($query) {
-                return $query->where('title', 'like', '%' . $this->search . '%');
-            })
+        $activities = Activity::with('group', 'details.scope', 'issues', 'supervisor', 'position', 'status');
+
+        if ($this->authUser->hasRole('Supervisor')) {
+            $activities->where('supervisor_id', $this->authUser->id);
+        }
+
+        $activities = $activities->when($this->search, function ($query) {
+            return $query->where('title', 'like', '%' . $this->search . '%');
+        })
             ->when($this->filterGroup, function ($query) {
                 return $query->where('group_id', $this->filterGroup);
             })

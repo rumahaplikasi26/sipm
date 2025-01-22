@@ -2,6 +2,7 @@
 
 namespace App\Livewire\ShiftEmployee;
 
+use App\Livewire\BaseComponent;
 use App\Models\Employee;
 use App\Models\Shift;
 use Carbon\Carbon;
@@ -10,7 +11,7 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class ShiftEmployeeList extends Component
+class ShiftEmployeeList extends BaseComponent
 {
     use LivewireAlert, WithPagination;
 
@@ -102,12 +103,14 @@ class ShiftEmployeeList extends Component
         }
 
         // Ambil data karyawan dengan jadwal dan shift dalam range tanggal
-        $this->schedules = Employee::with([
-            'schedules' => function ($query) {
-                $query->whereBetween('date', [$this->filterStartDate, $this->filterEndDate])
-                    ->with('shift');
-            }
-        ])
+        $this->schedules = Employee::whereHas('group', function ($query) {
+            $query->where('supervisor_id', $this->authUser->id);
+        })->with([
+                    'schedules' => function ($query) {
+                        $query->whereBetween('date', [$this->filterStartDate, $this->filterEndDate])
+                            ->with('shift');
+                    }
+                ])
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%');
             })
