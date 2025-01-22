@@ -20,7 +20,7 @@
                 </div>
 
                 <div>
-                    <button type="submit" class="btn btn-primary w-md">Submit</button>
+                    <button type="submit" class="btn btn-primary w-md" wire:loading.attr="disabled" wire:target="file">Submit</button>
                     <button type="reset" class="btn btn-secondary w-md" wire:click="resetForm"> Reset</button>
                 </div>
             </form>
