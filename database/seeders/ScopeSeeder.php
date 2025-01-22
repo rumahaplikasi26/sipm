@@ -14,23 +14,19 @@ class ScopeSeeder extends Seeder
     public function run(): void
     {
         Scope::create([
-            'name' => 'Memasang Instalasi Kabel',
+            'name' => 'Installation of Cable Containment',
         ]);
 
         Scope::create([
-            'name' => 'Pemeliharaan Kabel',
+            'name' => 'Pulling & Termination LV & Earthing Cable',
         ]);
 
         Scope::create([
-            'name' => 'Pemeliharaan Jaringan',
+            'name' => 'Installation Lighting & Power Receptacle',
         ]);
 
         Scope::create([
-            'name' => 'Pemeliharaan Kabel dan Jaringan',
-        ]);
-
-        Scope::create([
-            'name' => 'Pemeliharaan Jaringan dan Instalasi Kabel',
+            'name' => 'Wall Opening to Corridor',
         ]);
     }
 }

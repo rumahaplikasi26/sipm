@@ -14,33 +14,13 @@ class CategoryDependencySeeder extends Seeder
     public function run(): void
     {
         CategoryDependency::create([
-            'name' => 'Waiting Material',
-            'slug' => 'waiting-material',
+            'name' => 'Perubahan Gambar',
+            'slug' => 'perubahan-gambar',
         ]);
 
         CategoryDependency::create([
-            'name' => 'Waiting Equipment',
-            'slug' => 'waiting-equipment',
-        ]);
-
-        CategoryDependency::create([
-            'name' => 'Waiting Labor',
-            'slug' => 'waiting-labor',
-        ]);
-
-        CategoryDependency::create([
-            'name' => 'Waiting Other',
-            'slug' => 'waiting-other',
-        ]);
-
-        CategoryDependency::create([
-            'name' => 'Drawing Revision',
-            'slug' => 'drawing-revision',
-        ]);
-
-        CategoryDependency::create([
-            'name' => 'Waiting Approval',
-            'slug' => 'waiting-approval',
+            'name' => 'Clash With Busduct',
+            'slug' => 'clash-with-busduct',
         ]);
     }
 }

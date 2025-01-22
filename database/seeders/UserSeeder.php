@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
     {
         $superadmin = User::create([
             'name' => 'Super Admin',
-            'email' => 'superadmin@localhost',
+            'email' => 'superadmin@kms',
             'password' => bcrypt('password'),
         ]);
 
@@ -23,7 +23,7 @@ class UserSeeder extends Seeder
 
         $site_manager = User::create([
             'name' => 'Site Manager',
-            'email' => 'site_manager@localhost',
+            'email' => 'site_manager@kms',
             'password' => bcrypt('password'),
         ]);
 
@@ -31,7 +31,7 @@ class UserSeeder extends Seeder
 
         $project_manager = User::create([
             'name' => 'Project Director',
-            'email' => 'project_director@localhost',
+            'email' => 'project_director@kms',
             'password' => bcrypt('password'),
         ]);
 
@@ -39,7 +39,7 @@ class UserSeeder extends Seeder
 
         $project_manager = User::create([
             'name' => 'Project Manager',
-            'email' => 'project_manager@localhost',
+            'email' => 'project_manager@kms',
             'password' => bcrypt('password'),
         ]);
 
@@ -47,7 +47,7 @@ class UserSeeder extends Seeder
 
         $quality_control = User::create([
             'name' => 'Quality Control',
-            'email' => 'quality_control@localhost',
+            'email' => 'quality_control@kms',
             'password' => bcrypt('password'),
         ]);
 
@@ -55,16 +55,16 @@ class UserSeeder extends Seeder
 
         $quality_control = User::create([
             'name' => 'HSE',
-            'email' => 'hse@localhost',
+            'email' => 'hse@kms',
             'password' => bcrypt('password'),
         ]);
 
         $quality_control->assignRole('HSE');
 
-        for ($i = 1; $i < 9; $i++) {
+        for ($i = 1; $i < 11; $i++) {
             $supervisor = User::create([
                 'name' => 'Supervisor '.$i,
-                'email' => "supervisor{$i}@localhost",
+                'email' => "supervisor{$i}@kms",
                 'password' => bcrypt('password'),
             ]);
 

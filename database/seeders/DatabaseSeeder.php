@@ -28,17 +28,16 @@ class DatabaseSeeder extends Seeder
 
         $this->call(PositionSeeder::class);
 
-        // $this->call(ScopeSeeder::class);
+        $this->call(ScopeSeeder::class);
 
-        // $this->call(CategoryDependencySeeder::class);
+        $this->call(CategoryDependencySeeder::class);
 
         $this->call(StatusActivitySeeder::class);
-        // $this->call(ActivitySeeder::class);
+        $this->call(ActivitySeeder::class);
+        $this->call(ActivityDetailSeeder::class);
 
         $this->call(EmployeeSeeder::class);
-
         // $this->call(AttendanceConfigSeeder::class);
-        // $this->call(ActivityDetailSeeder::class);
 
         $this->call(ShiftSeeder::class);
         // $this->call(ShiftScheduleSeeder::class);

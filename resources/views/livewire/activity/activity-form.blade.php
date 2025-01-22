@@ -4,7 +4,7 @@
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
-        <form wire:submit.prevent="submit" class="needs-validation" novalidate>
+        <form wire:submit.prevent="submit" class="needs-validation" novalidate wire:ignore>
             <div class="mb-3">
                 <label for="formrow-date-input" class="form-label">Date</label>
                 <input type="date" class="form-control @error('date') is-invalid @enderror" wire:model="date"
@@ -34,7 +34,7 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="formrow-groups" class="form-label">Group</label>
-                        <select class="form-control @error('group_id') is-invalid @enderror" wire:model.live="group_id"
+                        <select class="form-control @error('group_id') is-invalid @enderror" wire:model="group_id"
                             data-placeholder="Choose ...">
                             <option value="">-- Select Group --</option>
                             @foreach ($groups as $group)
@@ -54,7 +54,7 @@
                     <div class="mb-3">
                         <label for="formrow-positions" class="form-label">Position</label>
                         <select class="form-control @error('position_id') is-invalid @enderror"
-                            wire:model.live="position_id" data-placeholder="Choose ...">
+                            wire:model="position_id" data-placeholder="Choose ...">
                             <option value="">-- Select Position --</option>
                             @foreach ($positions as $position)
                                 <option value="{{ $position->id }}">{{ $position->name }}</option>
@@ -72,8 +72,8 @@
 
             <div class="mb-3">
                 <label for="formrow-scopes" class="form-label">Scope</label>
-                <select class="form-control @error('selectedScopes') is-invalid @enderror" wire:model.live="selectedScopes"
-                    data-placeholder="Choose ..." multiple>
+                <select class="form-control select2-multiple @error('selectedScopes') is-invalid @enderror"
+                    wire:model="selectedScopes" data-placeholder="Choose ..." multiple>
                     <option value="">-- Select Scope --</option>
                     @foreach ($scopes as $scope)
                         <option value="{{ $scope->id }}">{{ $scope->name }}</option>
@@ -207,11 +207,17 @@
                 overflow-y: auto;
             }
         </style>
+
+        <link href="{{ asset('libs/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css" />
     @endpush
 
     @push('js')
+        <script src="{{ asset('libs/select2/js/select2.min.js') }}"></script>
+
         <script>
             document.addEventListener('livewire:init', function() {
+                let selectElement = $('.select2-multiple');
+
                 Livewire.on('showForm', () => {
                     const offcanvasElement = document.getElementById('addActivityCanvas');
 
@@ -223,6 +229,13 @@
 
                     // Tampilkan offcanvas
                     bsOffcanvas.show();
+
+                    selectElement.select2({
+                        width: '100%',
+                    }).on('change', function() {
+                        let selectedValues = $(this).val();
+                        Livewire.dispatch('change-input-form', ['selectedScopes', selectedValues]);
+                    });
                 });
 
                 Livewire.on('hideForm', () => {

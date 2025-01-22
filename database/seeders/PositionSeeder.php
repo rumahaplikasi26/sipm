@@ -18,7 +18,15 @@ class PositionSeeder extends Seeder
         ]);
 
         Position::create([
-            'name' => 'Electrical',
+            'name' => 'ESW',
+        ]);
+
+        Position::create([
+            'name' => 'Scaffolder',
+        ]);
+
+        Position::create([
+            'name' => 'Operator',
         ]);
     }
 }

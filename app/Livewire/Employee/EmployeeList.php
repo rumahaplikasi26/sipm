@@ -18,7 +18,7 @@ class EmployeeList extends BaseComponent
     #[Url(except: '')]
 
     public $search = '';
-    public $perPage = 10;
+    public $perPage = 12;
 
     protected $listeners = [
         'refreshIndex' => 'handleRefresh',

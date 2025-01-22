@@ -47,7 +47,7 @@
                         @enderror
                     </div>
 
-                    <div class="mb-3">
+                    {{-- <div class="mb-3">
                         <label class="form-label">Percentage Solution</label>
                         <p class="text-muted mb-2 font-size-10">
                             Berapa persentase solusi masalah terpecahkan
@@ -60,7 +60,7 @@
                                 <strong>{{ $message }}</strong>
                             </span>
                         @enderror
-                    </div>
+                    </div> --}}
 
                     <div class="mb-3">
                         <label class="form-label">Description</label>

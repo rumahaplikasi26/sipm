@@ -9,6 +9,7 @@ use App\Models\Scope;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class ActivityForm extends Component
@@ -26,6 +27,12 @@ class ActivityForm extends Component
         $this->positions = Position::all();
         $this->scopes = Scope::all();
         $this->supervisors = User::role('Supervisor')->get();
+    }
+
+    #[On('change-input-form')]
+    public function changeInputForm($param, $value)
+    {
+        $this->$param = $value;
     }
 
     public function submit()
@@ -61,7 +68,7 @@ class ActivityForm extends Component
                 'status_id' => 3
             ]);
 
-            foreach ($this->selectedScopes as $id) {   
+            foreach ($this->selectedScopes as $id) {
                 $activity->details()->create([
                     'scope_id' => $id,
                 ]);
