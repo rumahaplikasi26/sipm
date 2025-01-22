@@ -40,7 +40,6 @@ class ActivityForm extends Component
             'type_estimate' => 'required',
             'forecast_date' => 'required|date',
             'plan_date' => 'required|date',
-            'actual_date' => 'required|date',
             'supervisor_id' => 'required',
             'description' => 'nullable',
         ]);
