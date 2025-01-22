@@ -25,7 +25,7 @@
                                 <th>Employee ID</th>
                                 <th>Name</th>
                                 @empty(!$employees)
-                                    @foreach ($dateArray as $data)
+                                    @foreach ($dateArray as $date)
                                         <th>{{ \Carbon\Carbon::parse($date)->format('d/m') }}</th>
                                     @endforeach
                                 @endempty
