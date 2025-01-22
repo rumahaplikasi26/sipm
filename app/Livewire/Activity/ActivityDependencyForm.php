@@ -91,7 +91,10 @@ class ActivityDependencyForm extends Component
         try {
             // Delete removed dependencies
             if (!empty($this->deletedIds)) {
-                ActivityIssue::whereIn('id', $this->deletedIds)->delete();
+                $deletedDependencies = ActivityIssue::whereIn('id', $this->deletedIds)->get();
+                if($deletedDependencies) {
+                    $deletedDependencies->each->delete();
+                }
             }
 
             foreach ($this->dependencies as $dependency) {
