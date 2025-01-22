@@ -137,10 +137,12 @@ class RoleSeeder extends Seeder
             'scope.index' => [
                 'Super Admin',
                 'Project Manager',
+                'Site Manager',
             ],
             'scope.create' => [
                 'Super Admin',
                 'Project Manager',
+                'Site Manager',
             ],
             'scope.edit' => [
                 'Super Admin',
