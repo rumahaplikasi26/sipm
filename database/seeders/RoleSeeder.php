@@ -271,6 +271,12 @@ class RoleSeeder extends Seeder
                 'Project Director',
             ],
 
+            // View Report Attendance
+            'attendance.report.index' => [
+                'Super Admin',
+                'Project Director',
+            ],
+
             // View Dashboard Summary
             'dashboard.summary.index' => [
                 'Super Admin',

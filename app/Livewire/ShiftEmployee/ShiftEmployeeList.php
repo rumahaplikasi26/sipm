@@ -74,7 +74,7 @@ class ShiftEmployeeList extends Component
         $month = Carbon::now()->month;
         $year = Carbon::now()->year;
 
-        $this->filterStartDate = "{$year}-{$month}-01";
+        $this->filterStartDate = Carbon::createFromDate($year, $month, 1)->format('Y-m-d');
         $this->filterEndDate = Carbon::parse($this->filterStartDate)->endOfMonth()->format('Y-m-d');
 
         $this->loadSchedules(); // Load data saat komponen pertama kali dimuat
