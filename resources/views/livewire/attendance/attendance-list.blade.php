@@ -43,12 +43,12 @@
                                 <label for="filterEndDate">Filter End Date</label>
                             </div>
                             <div class="col-xxl-2 col-lg-4">
-                                <div class="d-flex flex-wrap gap-2">
-                                    <button type="button" class="btn btn-soft-secondary waves-effect waves-light"
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="btn btn-soft-secondary waves-effect waves-light flex-grow-1"
                                         wire:click="filter">
                                         <i class="mdi mdi-filter-outline d-block font-size-16"></i> Filter
                                     </button>
-                                    <button type="button" class="btn btn-soft-danger waves-effect waves-light"
+                                    <button type="button" class="btn btn-soft-danger waves-effect waves-light flex-grow-1"
                                         wire:click="resetFilter">
                                         <i class="mdi mdi-refresh d-block font-size-16"></i> Reset
                                     </button>

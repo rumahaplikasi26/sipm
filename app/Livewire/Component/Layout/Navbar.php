@@ -105,13 +105,13 @@ class Navbar extends BaseComponent
                 'url' => route('activity.report'),
                 'route' => 'activity.report.index'
             ],
-            // [
-            //     'name' => 'Report Attendance',
-            //     'icon' => 'fas fa-chart-line',
-            //     'permissions' => ['attendance.report.index'],
-            //     'url' => route('attendance.report'),
-            //     'route' => 'attendance.report.index'
-            // ]
+            [
+                'name' => 'Report Attendance',
+                'icon' => 'fas fa-chart-line',
+                'permissions' => ['attendance.report.index'],
+                'url' => route('attendance.report'),
+                'route' => 'attendance.report.index'
+            ]
         ];
 
         $this->menus = array_filter($menus, function ($menu) {
