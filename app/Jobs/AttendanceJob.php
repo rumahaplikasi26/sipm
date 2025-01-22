@@ -49,6 +49,7 @@ class AttendanceJob implements ShouldQueue
                     $activeActivity = Activity::with('details.scope', 'group', 'supervisor')
                         ->where('group_id', $data['group_id'])
                         ->where('position_id', $data['position_id'])
+                        ->where('status_id', 1)
                         ->whereDate('date', date('Y-m-d', strtotime($data['timestamp'])))
                         ->first();
 
