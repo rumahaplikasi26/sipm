@@ -13,12 +13,16 @@ class GroupSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 1; $i <= 8; $i++) {
+        $supervisors = User::role('Supervisor')->get();
+        $i = 1;
+        foreach ($supervisors as $supervisor) {
             \App\Models\Group::create([
                 'name' => "Group A$i",
                 'slug' => "group-a$i",
-                'supervisor_id' => User::inRandomOrder()->first()->id,
+                'supervisor_id' => $supervisor->id,
             ]);
+
+            $i++;
         }
     }
 }

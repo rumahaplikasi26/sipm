@@ -29,14 +29,6 @@ class UserSeeder extends Seeder
 
         $site_manager->assignRole('Site Manager');
 
-        $supervisor = User::create([
-            'name' => 'Supervisor',
-            'email' => 'supervisor@localhost',
-            'password' => bcrypt('password'),
-        ]);
-
-        $supervisor->assignRole('Supervisor');
-
         $project_manager = User::create([
             'name' => 'Project Director',
             'email' => 'project_director@localhost',
@@ -68,5 +60,15 @@ class UserSeeder extends Seeder
         ]);
 
         $quality_control->assignRole('HSE');
+
+        for ($i = 1; $i < 9; $i++) {
+            $supervisor = User::create([
+                'name' => 'Supervisor '.$i,
+                'email' => "supervisor{$i}@localhost",
+                'password' => bcrypt('password'),
+            ]);
+
+            $supervisor->assignRole('Supervisor');
+        }
     }
 }
