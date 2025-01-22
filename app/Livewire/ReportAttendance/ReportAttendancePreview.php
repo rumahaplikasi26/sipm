@@ -16,12 +16,14 @@ class ReportAttendancePreview extends Component
 {
     use LivewireAlert;
     public $employees;
+    public $dateArray;
 
     #[On('refreshAttendances')]
-    public function preview($employees)
+    public function preview($employees, $dateArray)
     {
         $this->reset('employees');
         $this->employees = $employees;
+        $this->dateArray = $dateArray;
     }
 
     public function render()

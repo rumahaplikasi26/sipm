@@ -93,8 +93,10 @@ class ReportAttendanceIndex extends Component
             $dateArray[] = $date->toDateString(); // Format menjadi 'YYYY-MM-DD'
         }
 
+        $this->dateArray = $dateArray;
+
         // Proses data menjadi format yang diinginkan
-        $employees = $attendances->groupBy('employee_id')->map(function ($employeeAttendances) use ($startDate, $endDate, $dateArray) {
+        $employees = $attendances->groupBy('employee_id')->map(function ($employeeAttendances) use ($startDate, $endDate) {
             $employee = $employeeAttendances->first()->employee; // Ambil data karyawan
             $dates = [];
 
@@ -123,13 +125,12 @@ class ReportAttendanceIndex extends Component
                 'employee_id' => $employee->id,
                 'name' => $employee->name,
                 'attendance' => $dates,
-                'dateArray' => $dateArray
             ];
         });
 
         // dd($employees);
         // Kirim data ke frontend
-        $this->dispatch('refreshAttendances', $employees);
+        $this->dispatch('refreshAttendances', employees: $employees, dateArray:$this->dateArray);
     }
 
     public function render()
