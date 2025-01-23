@@ -2,7 +2,7 @@
 
     @livewire('component.layout.breadcrumb', ['breadcrumbs' => [['name' => 'Dashboard'] ]], key('breadcrumb-component'))
 
-    <div class="row">
+    {{-- <div class="row">
         <div class="col-xl-4">
             <div class="card overflow-hidden">
                 <div class="bg-primary bg-soft">
@@ -593,7 +593,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     <!-- end row -->
 
 </div>
