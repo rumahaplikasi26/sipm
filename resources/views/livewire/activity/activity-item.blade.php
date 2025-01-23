@@ -28,8 +28,8 @@
 
         <div class="d-flex flex-wrap justify-content-between gap-2">
             <!-- Button Section - Fixed at Bottom -->
-            <div class="btn-group btn-group-sm flex-grow-1">
-                <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"
+            <div class="btn-group btn-group-sm flex-shrink-0">
+                <button type="button" class="btn btn-light dropdown-toggle w-100" data-bs-toggle="dropdown"
                     aria-haspopup="false" aria-expanded="false">
                     Other Information <i class="mdi mdi-chevron-down"></i>
                 </button>
@@ -92,44 +92,44 @@
                 </div>
             </div>
 
-            <div class="flex-grow-0">
+            <div class="flex-grow-1">
                 @can('activity.validation.update')
-                    <a class="btn btn-success btn-sm"
+                    <a class="btn btn-success btn-sm w-100"
                         wire:click="$dispatch('show-modal-validation', {activity_id: {{ $activity->id }}})"
                         href="javascript: void(0);">
                         <i class="mdi mdi-check"></i> Validasi Activity</a>
                 @endcan
             </div>
 
-            <div class="flex-grow-0">
-                @can('activity.edit')
-                    <a class="btn btn-info btn-sm"
-                        wire:click="$dispatch('show-modal-actual-date', {activity_id: {{ $activity->id }}})"
-                        href="javascript: void(0);">
-                        <i class="mdi mdi-calendar"></i> Update Actual Date Activity</a>
-                @endcan
-            </div>
-
-            <div class="flex-grow-0">
+            <div class="flex-grow-1">
                 @can('activity.progress.update')
-                    <a class="btn btn-warning btn-sm"
+                    <a class="btn btn-warning btn-sm w-100"
                         wire:click="$dispatch('show-modal-progress', {activity_id: {{ $activity->id }}})"
                         href="javascript: void(0);">
                         <i class="mdi mdi-progress-clock"></i> Update Progress</a>
                 @endcan
             </div>
 
-            <div class="flex-grow-0">
+            <div class="flex-grow-1">
+                @can('activity.edit')
+                    <a class="btn btn-info btn-sm w-100"
+                        wire:click="$dispatch('show-modal-actual-date', {activity_id: {{ $activity->id }}})"
+                        href="javascript: void(0);">
+                        <i class="mdi mdi-calendar"></i> Update Actual Date Activity</a>
+                @endcan
+            </div>
+
+            <div class="flex-grow-1">
                 @can('activity.issue.update')
-                    <a href="javascript:void(0);" class="btn btn-primary btn-sm"
+                    <a href="javascript:void(0);" class="btn btn-primary btn-sm w-100"
                         wire:click="$dispatch('show-canvas-dependency',{activity_id: {{ $activity->id }}})">
                         <i class="mdi mdi-bug"></i> Manage Dependency</a>
                 @endcan
             </div>
 
-            <div class="flex-grow-0">
+            <div class="flex-grow-1">
                 @can('activity.destroy')
-                    <a class="btn btn-danger btn-sm" wire:click="confirmDelete" href="javascript: void(0);">
+                    <a class="btn btn-danger btn-sm w-100" wire:click="confirmDelete" href="javascript: void(0);">
                         <i class="mdi mdi-delete"></i> Delete Activity</a>
                 @endcan
             </div>
