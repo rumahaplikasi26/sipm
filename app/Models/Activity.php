@@ -12,13 +12,10 @@ class Activity extends Model
     protected $table = 'activities';
 
     protected $fillable = [
-        'date',
-        'title',
-        'slug',
+        'scope_id',
         'group_id',
         'position_id',
         'total_estimate',
-        'type_estimate',
         'forecast_date',
         'plan_date',
         'actual_date',
@@ -27,9 +24,21 @@ class Activity extends Model
         'status_id'
     ];
 
-    protected $casts = [
-        'date' => 'date',
-    ];
+    public function getProgressColorAttribute()
+    {
+        if($this->progress  == 0) {
+            return 'danger';
+        } else if ($this->progress < 50) {
+            return 'warning';
+        } else {
+            return 'success';
+        }
+    }
+
+    public function scope()
+    {
+        return $this->belongsTo(Scope::class);
+    }
 
     public function group()
     {
@@ -56,8 +65,8 @@ class Activity extends Model
         return $this->belongsTo(StatusActivity::class, 'status_id');
     }
 
-    public function details()
+    public function historyProgress()
     {
-        return $this->hasMany(ActivityDetail::class);
+        return $this->hasMany(ActivityProgress::class);
     }
 }

@@ -13,15 +13,12 @@ return new class extends Migration
     {
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
-            $table->string('title');
-            $table->string('slug');
+            $table->foreignId('scope_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
 
             $table->foreignId('group_id')->constrained('groups')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('position_id')->constrained('positions')->cascadeOnDelete()->cascadeOnUpdate();
-            
+
             $table->integer('total_estimate');
-            $table->enum('type_estimate', ['hour', 'day', 'week', 'month', 'year'])->nullable();
             $table->date('forecast_date')->nullable();
             $table->date('plan_date')->nullable();
             $table->date('actual_date')->nullable();

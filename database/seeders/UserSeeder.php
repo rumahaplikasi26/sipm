@@ -61,7 +61,7 @@ class UserSeeder extends Seeder
 
         $quality_control->assignRole('HSE');
 
-        for ($i = 1; $i < 11; $i++) {
+        for ($i = 1; $i < 15; $i++) {
             $supervisor = User::create([
                 'name' => 'Supervisor '.$i,
                 'email' => "supervisor{$i}@kms",

@@ -1,6 +1,6 @@
 <div>
-    <div id="insertEmployeePosition" class="modal fade" tabindex="-1" aria-labelledby="insertEmployeePositionLabel" aria-hidden="true"
-        wire:ignore.self>
+    <div id="insertEmployeePosition" class="modal fade" tabindex="-1" aria-labelledby="insertEmployeePositionLabel"
+        aria-hidden="true" wire:ignore.self>
         <div class="modal-dialog modal-lg">
             <div class="modal-content ">
                 <div class="modal-header">
@@ -49,11 +49,15 @@
                                     </table>
                                 </div>
 
-                                <div class="d-flex justify-content-center mt-3">
-                                    <button type="button" class="btn btn-soft-primary waves-effect waves-light btn-sm"
-                                        wire:click="loadMore"><i class="bx bx-hourglass bx-spin me-2"></i> Load
-                                        More</button>
-                                </div>
+                                @if ($loadMore)
+                                    <div class="d-flex justify-content-center mt-3">
+                                        <button type="button"
+                                            class="btn btn-soft-primary waves-effect waves-light btn-sm"
+                                            wire:click="loadMore"><i class="bx bx-hourglass bx-spin me-2"></i> Load
+                                            More</button>
+                                    </div>
+                                @endif
+
                             </div>
 
                             <div class="col-md-6">
@@ -68,7 +72,7 @@
                                                             {{ $selected['id'] }} - {{ $selected['name'] ?? '' }}
                                                         </td>
 
-                                                        <td >
+                                                        <td>
                                                             <button class="btn btn-danger btn-sm"
                                                                 wire:click="removeEmployee({{ $selected['id'] }})"
                                                                 type="button" wire:loading.attr="disabled"><i

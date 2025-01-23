@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('activity_progress', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('activity_detail_id')->constrained()->cascadeOnDelete();
+            $table->date('date');
+            $table->foreignId('activity_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->integer('percentage');
             $table->timestamps();

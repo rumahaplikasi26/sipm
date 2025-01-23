@@ -46,7 +46,7 @@ class ScopeList extends Component
 
     public function render()
     {
-        $scopes = Scope::with('activityDetails')->when($this->search, function ($query) {
+        $scopes = Scope::with('activity')->when($this->search, function ($query) {
             $query->where('name', 'like', '%' . $this->search . '%');
         })->paginate($this->perPage);
 

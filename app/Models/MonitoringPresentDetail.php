@@ -11,7 +11,7 @@ class MonitoringPresentDetail extends Model
 
     protected $fillable = ['monitoring_present_id', 'employee_id', 'is_present'];
 
-       public function monitoringPresent()
+    public function monitoringPresent()
     {
         return $this->belongsTo(MonitoringPresent::class);
     }

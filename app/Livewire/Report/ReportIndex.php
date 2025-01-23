@@ -59,9 +59,14 @@ class ReportIndex extends Component
 
     public function filter()
     {
-        $this->activities = Activity::with('group', 'details.scope', 'issues.categoryDependency','supervisor', 'position')
+        $this->activities = Activity::with('group', 'scope', 'historyProgress','status', 'issues.categoryDependency','supervisor', 'position')
+        ->with(['historyProgress' => function ($query) {
+            $query->orderBy('date', 'asc');
+        }])
         ->when($this->search, function ($query) {
-            return $query->where('title', 'like', '%' . $this->search . '%');
+            return $query->whereHas('scope', function ($query) {
+                $query->where('name', 'like', '%' . $this->search . '%');
+            });
         })
         ->when($this->filterGroup, function ($query) {
             return $query->where('group_id', $this->filterGroup);
@@ -70,7 +75,11 @@ class ReportIndex extends Component
             return $query->where('position_id', $this->filterPosition);
         })
         ->when($this->filterDate, function ($query) {
-            return $query->where('date', $this->filterDate);
+            return $query->whereHas('issues', function ($query) {
+                $query->where('date', $this->filterDate);
+            })->orWhereHas('historyProgress', function ($query) {
+                $query->where('date', $this->filterDate);
+            });
         })
         ->when($this->filterSupervisor, function ($query) {
             return $query->where('supervisor_id', $this->filterSupervisor);

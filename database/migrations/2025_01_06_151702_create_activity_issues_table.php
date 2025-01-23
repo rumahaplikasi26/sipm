@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('activity_issues', function (Blueprint $table) {
             $table->id();
+            $table->date('date');
             $table->foreignId('activity_id')->constrained('activities')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('category_dependency_id')->constrained('category_dependencies')->cascadeOnDelete()->cascadeOnUpdate();
             $table->integer('percentage_dependency')->default(0);

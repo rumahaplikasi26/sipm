@@ -18,16 +18,32 @@ class EmployeeAddedPosition extends Component
     public $number = 0;
     public $limit = 20;
     public $offset = 0;
+    public $loadMore = false;
 
     public function mount()
     {
         $this->employees = Employee::where('position_id', null)->limit($this->limit)->offset($this->offset)->get();
+        if (count($this->employees) < $this->limit) {
+            $this->loadMore = false;
+        } else {
+            $this->loadMore = true;
+        }
     }
 
     #[On('show-form-add-position')]
     public function showModalAddGroup($position_id)
     {
+        $this->selectedEmployees = [];
+
         $this->position_id = $position_id;
+        $employees = Employee::select('id', 'name')->where('position_id', $this->position_id)->get();
+
+        foreach ($employees as $employee) {
+            $this->selectedEmployees[$this->number]['id'] = $employee['id'];
+            $this->selectedEmployees[$this->number]['name'] = $employee['name'];
+            $this->number++;
+        }
+
         $this->dispatch('open-modal-add-position');
     }
 

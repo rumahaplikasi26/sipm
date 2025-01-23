@@ -4,7 +4,8 @@
             <div class="d-flex justify-content-end">
                 <div class="flex-shrink-0">
                     <a href="#!" class="btn btn-primary" wire:click="$dispatch('showForm')">Add New Activity</a>
-                    <a href="#!" class="btn btn-light" wire:click="$dispatch('refreshIndex')"><i class="mdi mdi-refresh"></i></a>
+                    <a href="#!" class="btn btn-light" wire:click="$dispatch('refreshIndex')"><i
+                            class="mdi mdi-refresh"></i></a>
                 </div>
             </div>
         </div>
@@ -86,17 +87,14 @@
                         <div class="mb-3">
                             <label for="status_id" class="form-label">Status</label>
                             <div class="d-flex gap-3">
+                                <div class="btn-group w-100" role="group" aria-label="Basic radio toggle button group">
+                                    @foreach ($statuses as $status)
+                                        <input type="radio" class="btn-check" name="status_id" id="status_id{{ $status->id }}"
+                                            autocomplete="off" wire:model="status_id" value="{{ $status->id }}">
+                                        <label class="btn btn-outline-{{ str_replace('bg-', '', $status->bg_color) }}" for="status_id{{ $status->id }}">{{ $status->name }}</label>
+                                    @endforeach
+                                </div>
 
-                                @foreach ($statuses as $status)
-                                    <div class="form-check form-radio-primary mb-3">
-                                        <input class="form-check-input" type="radio" name="status_id"
-                                            id="status{{ $status->id }}" wire:model="status_id"
-                                            value="{{ $status->id }}">
-                                        <label class="form-check-label" for="status{{ $status->id }}">
-                                            {{ $status->name }}
-                                        </label>
-                                    </div>
-                                @endforeach
                             </div>
                         </div>
 

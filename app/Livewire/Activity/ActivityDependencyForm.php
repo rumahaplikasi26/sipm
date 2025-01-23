@@ -17,6 +17,7 @@ class ActivityDependencyForm extends Component
 
     protected $rules = [
         'dependencies.*.id' => 'nullable|exists:activity_issues,id',
+        'dependencies.*.date' => 'required|date',
         'dependencies.*.category_dependency_id' => 'required|exists:category_dependencies,id',
         'dependencies.*.percentage_dependency' => 'required|numeric|min:0|max:100',
         'dependencies.*.description' => 'required|string|max:255',
@@ -32,6 +33,7 @@ class ActivityDependencyForm extends Component
     {
         $this->dependencies[] = [
             'id' => '',
+            'date' => '',
             'category_dependency_id' => '',
             'description' => ''
         ];
@@ -58,6 +60,7 @@ class ActivityDependencyForm extends Component
             ->map(function ($issue) {
                 return [
                     'id' => $issue->id,
+                    'date' => $issue->date ?? null, // default jika null
                     'category_dependency_id' => $issue->category_dependency_id ?? null, // default jika null
                     'description' => $issue->description ?? null, // default jika null
                     'percentage_dependency' => $issue->percentage_dependency ?? null, // default jika null
@@ -71,7 +74,7 @@ class ActivityDependencyForm extends Component
     public function resetForm()
     {
         $this->dependencies = [
-            ['id' => '', 'category_dependency_id' => '', 'description' => '', 'percentage_dependency' => '']
+            ['id' => '', 'date' => '', 'category_dependency_id' => '', 'description' => '', 'percentage_dependency' => '']
         ];
         $this->deletedIds = [];
 
@@ -101,6 +104,7 @@ class ActivityDependencyForm extends Component
                 if (!empty($dependency['id'])) {
                     // Update existing dependency
                     ActivityIssue::find($dependency['id'])->update([
+                        'date' => $dependency['date'],
                         'category_dependency_id' => $dependency['category_dependency_id'],
                         'description' => $dependency['description'],
                         'percentage_dependency' => $dependency['percentage_dependency'],
@@ -110,6 +114,7 @@ class ActivityDependencyForm extends Component
                     // Create new dependency
                     ActivityIssue::create([
                         'activity_id' => $this->activity_id,
+                        'date' => $dependency['date'],
                         'category_dependency_id' => $dependency['category_dependency_id'],
                         'description' => $dependency['description'],
                         'percentage_dependency' => $dependency['percentage_dependency'],

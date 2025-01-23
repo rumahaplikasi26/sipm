@@ -52,11 +52,9 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Date</th>
-                <th>Title</th>
+                <th>Scope</th>
                 <th>Group</th>
                 <th>Position</th>
-                <th>Scope</th>
                 <th>Est. Time</th>
                 <th>Forecast</th>
                 <th>Plan</th>
@@ -64,32 +62,39 @@
                 <th>Progress</th>
                 <th>Supervisor</th>
                 <th>Dependencies</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
             @foreach($activities as $activity)
                 <tr>
                     <td>{{ $activity['id'] }}</td>
-                    <td>{{ $activity['date'] }}</td>
-                    <td>{{ $activity['title'] }}</td>
+                    <td>{{ $activity['scope']['name'] ?? '-' }}</td>
                     <td>{{ $activity['group']['name'] ?? '-' }}</td>
                     <td>{{ $activity['position']['name'] ?? '-' }}</td>
-                    <td>{{ $activity['scope']['name'] ?? '-' }}</td>
-                    <td>{{ $activity['total_estimate'] }} {{ $activity['type_estimate'] }}</td>
+                    <td>{{ $activity['total_estimate'] }} Day</td>
                     <td>{{ $activity['forecast_date'] }}</td>
                     <td>{{ $activity['plan_date'] }}</td>
-                    <td>{{ $activity['actual_date'] }}</td>
-                    <td>{{ $activity['progress'] }}%</td>
+                    <td>{{ $activity['actual_date'] ?? '-' }}</td>
+                    <td>
+                        @if(!empty($activity['history_progress']))
+                            @foreach($activity['history_progress'] as $history)
+                               {{ $history['date'] }}: {{ $history['percentage'] }} % <br>
+                            @endforeach
+                        @endif
+                        Total: {{ $activity['progress'] }} %
+                    </td>
                     <td>{{ $activity['supervisor']['name'] ?? '-' }}</td>
                     <td>
                         @if(!empty($activity['issues']))
                             @foreach($activity['issues'] as $issue)
-                                {{ $issue['category_dependency']['name'].': '.$issue['description'] ?? '-' }}@if(!$loop->last),@endif
+                                {{ $issue['category_dependency']['name'].': '.$issue['description'] ?? '-' }}@if(!$loop->last),@endif<br>
                             @endforeach
                         @else
                             -
                         @endif
                     </td>
+                    <td>{{ $activity['status']['name'] ?? '-' }}</td>
                 </tr>
             @endforeach
         </tbody>

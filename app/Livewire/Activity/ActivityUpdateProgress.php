@@ -2,61 +2,60 @@
 
 namespace App\Livewire\Activity;
 
+use App\Livewire\BaseComponent;
 use App\Models\Activity;
 use App\Models\ActivityDetail;
+use App\Models\ActivityProgress;
 use Illuminate\Support\Facades\DB;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-class ActivityUpdateProgress extends Component
+class ActivityUpdateProgress extends BaseComponent
 {
     use LivewireAlert;
 
     public $activity_id;
     public $scopes = [];
-    public $details;
+    public $progress;
 
-    public $updateProgress = [];
+    public $percentage, $date, $lastProgress;
 
     #[On('show-modal-progress')]
     public function updateProgress($activity_id)
     {
         $this->activity_id = $activity_id;
-        $activity = Activity::with('details.scope')->find($activity_id);
-        $this->details = $activity->details->toArray();
+        $activity = Activity::with('historyProgress')->find($activity_id);
+        $this->progress = $activity->historyProgress->toArray();
 
-        // Initialize progress values for each detail
-        foreach ($this->details as $detail) {
-            $this->updateProgress[$detail['id']] = $detail['progress'];
-        }
+        $this->lastProgress = $activity->progress;
 
         $this->dispatch('showFormProgress');
     }
 
     public function submitProgress()
     {
-        // dd($this->updateProgress);
-
         $this->validate([
+            'date' => 'required',
             'activity_id' => 'required',
-            'updateProgress.*' => 'required',
+            'percentage' => 'required',
         ]);
 
         try {
             DB::beginTransaction();
 
-            foreach ($this->updateProgress as $detail_id => $progress) {
-                ActivityDetail::where('id', $detail_id)->update(['progress' => $progress]);
-            }
+            ActivityProgress::create([
+                'activity_id' => $this->activity_id,
+                'date' => $this->date,
+                'user_id' => $this->authUser->id,
+                'percentage' => $this->percentage,
+            ]);
 
-            $activity = ActivityDetail::where('activity_id', $this->activity_id)->get();
-            $totalProgress = $activity->sum('progress');
-            $countDetails = $activity->count();
-            $averageProgress = $countDetails > 0 ? $totalProgress / $countDetails : 0;
+            $activity = ActivityProgress::where('activity_id', $this->activity_id)->get();
+            $totalProgress = $activity->sum('percentage');
 
             Activity::where('id', $this->activity_id)->update([
-                'progress' => $averageProgress
+                'progress' => $totalProgress
             ]);
 
             DB::commit();

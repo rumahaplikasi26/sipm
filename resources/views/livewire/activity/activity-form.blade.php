@@ -6,23 +6,16 @@
     <div class="offcanvas-body">
         <form wire:submit.prevent="submit" class="needs-validation" novalidate wire:ignore>
             <div class="mb-3">
-                <label for="formrow-date-input" class="form-label">Date</label>
-                <input type="date" class="form-control @error('date') is-invalid @enderror" wire:model="date"
-                    id="formrow-date-input" placeholder="Enter Activity Date" autocomplete="off">
+                <label for="formrow-scopes" class="form-label">Scope</label>
+                <select class="form-control @error('scope_id') is-invalid @enderror"
+                    wire:model="scope_id" data-placeholder="Choose ...">
+                    <option value="">-- Select Scope --</option>
+                    @foreach ($scopes as $scope)
+                        <option value="{{ $scope->id }}">{{ $scope->name }}</option>
+                    @endforeach
+                </select>
 
-                @error('date')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                @enderror
-            </div>
-
-            <div class="mb-3">
-                <label for="formrow-title-input" class="form-label">Title</label>
-                <input type="text" class="form-control @error('title') is-invalid @enderror" wire:model="title"
-                    id="formrow-title-input" placeholder="Enter Activity Title" autocomplete="off">
-
-                @error('title')
+                @error('scope_id')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>
@@ -70,23 +63,6 @@
                 </div>
             </div>
 
-            <div class="mb-3">
-                <label for="formrow-scopes" class="form-label">Scope</label>
-                <select class="form-control select2-multiple @error('selectedScopes') is-invalid @enderror"
-                    wire:model="selectedScopes" data-placeholder="Choose ..." multiple>
-                    <option value="">-- Select Scope --</option>
-                    @foreach ($scopes as $scope)
-                        <option value="{{ $scope->id }}">{{ $scope->name }}</option>
-                    @endforeach
-                </select>
-
-                @error('selectedScopes')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                @enderror
-            </div>
-
             <div class="row">
                 <div class="col-md">
                     <div class="mb-3">
@@ -95,27 +71,6 @@
                             wire:model="total_estimate" id="formrow-inputState" min="1">
 
                         @error('total_estimate')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="col-md">
-                    <div class="mb-3">
-                        <label for="formrow-inputState" class="form-label">Type Estimation</label>
-                        <select name="type_estimate" wire:model="type_estimate"
-                            class="form-control @error('type') is-invalid @enderror" id="">
-                            <option value="">-- Select Type --</option>
-                            <option value="hour">Hour</option>
-                            <option value="day">Day</option>
-                            <option value="week">Week</option>
-                            <option value="month">Month</option>
-                            <option value="year">Year</option>
-                        </select>
-
-                        @error('type_estimate')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
@@ -207,17 +162,11 @@
                 overflow-y: auto;
             }
         </style>
-
-        <link href="{{ asset('libs/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css" />
     @endpush
 
     @push('js')
-        <script src="{{ asset('libs/select2/js/select2.min.js') }}"></script>
-
         <script>
             document.addEventListener('livewire:init', function() {
-                let selectElement = $('.select2-multiple');
-
                 Livewire.on('showForm', () => {
                     const offcanvasElement = document.getElementById('addActivityCanvas');
 
@@ -229,13 +178,6 @@
 
                     // Tampilkan offcanvas
                     bsOffcanvas.show();
-
-                    selectElement.select2({
-                        width: '100%',
-                    }).on('change', function() {
-                        let selectedValues = $(this).val();
-                        Livewire.dispatch('change-input-form', ['selectedScopes', selectedValues]);
-                    });
                 });
 
                 Livewire.on('hideForm', () => {

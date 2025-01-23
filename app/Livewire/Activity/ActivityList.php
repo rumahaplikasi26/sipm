@@ -96,7 +96,7 @@ class ActivityList extends BaseComponent
     public function validationActivity($activity_id)
     {
         $this->activity_id = $activity_id;
-
+        $this->status_id = Activity::find($activity_id)->status_id;
         $this->statuses = StatusActivity::all();
         $this->dispatch('showFormValidation');
     }
@@ -151,22 +151,22 @@ class ActivityList extends BaseComponent
 
     public function render()
     {
-        $activities = Activity::with('group', 'details.scope', 'issues', 'supervisor', 'position', 'status');
+        $activities = Activity::with('group', 'scope', 'issues', 'supervisor', 'position', 'status');
 
         if ($this->authUser->hasRole('Supervisor')) {
             $activities->where('supervisor_id', $this->authUser->id);
         }
 
         $activities = $activities->when($this->search, function ($query) {
-            return $query->where('title', 'like', '%' . $this->search . '%');
+            return $query->whereHas('scope', function ($query) {
+                $query->where('name', 'like', '%' . $this->search . '%');
+            });
         })
             ->when($this->filterGroup, function ($query) {
                 return $query->where('group_id', $this->filterGroup);
             })
             ->when($this->filterScope, function ($query) {
-                return $query->whereHas('details', function ($dt) {
-                    $dt->where('scope_id', $this->filterScope);
-                });
+                return $query->where('scope_id', $this->filterScope);
             })
             ->when($this->filterPosition, function ($query) {
                 return $query->where('position_id', $this->filterPosition);

@@ -16,6 +16,18 @@
                     </div>
 
                     <div class="mb-3">
+                        <label class="form-label">Date</label>
+                        <input type="date" class="form-control @error('dependencies.' . $index . '.date') is-invalid @enderror"
+                               wire:model="dependencies.{{ $index }}.date">
+
+                        @error('dependencies.' . $index . '.date')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
                         <label class="form-label">Category Dependency</label>
                         <select class="form-control @error('dependencies.' . $index . '.category_dependency_id') is-invalid @enderror"
                                 wire:model.live="dependencies.{{ $index }}.category_dependency_id">
@@ -46,21 +58,6 @@
                             </span>
                         @enderror
                     </div>
-
-                    {{-- <div class="mb-3">
-                        <label class="form-label">Percentage Solution</label>
-                        <p class="text-muted mb-2 font-size-10">
-                            Berapa persentase solusi masalah terpecahkan
-                        </p>
-                        <input type="number" class="form-control @error('dependencies.' . $index . '.percentage_solution') is-invalid @enderror"
-                               wire:model="dependencies.{{ $index }}.percentage_solution">
-
-                        @error('dependencies.' . $index . '.percentage_solution')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div> --}}
 
                     <div class="mb-3">
                         <label class="form-label">Description</label>

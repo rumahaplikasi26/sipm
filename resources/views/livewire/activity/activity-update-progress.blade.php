@@ -1,6 +1,6 @@
 <div>
-    <div id="updateProgress" class="modal fade" tabindex="-1" aria-labelledby="updateProgressLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+    <div id="updateProgress" class="modal fade" tabindex="-1" aria-labelledby="updateProgressLabel" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog modal-md">
             <div class="modal-content ">
                 <div class="modal-header">
                     <h5 class="modal-title" id="updateProgressLabel">Update Progress</h5>
@@ -11,22 +11,39 @@
 
                         <table class="table table-borderless table-striped align-middle">
                             <thead>
-                                <th width="80%">Scope</th>
-                                <th>Progress</th>
+                                <th width="80%">Date</th>
+                                <th>Percentage</th>
                             </thead>
                             <tbody>
-                                @empty(!$details)
-                                    @foreach ($details as $detail)
+                                @empty(!$progress)
+                                    @foreach ($progress as $prg)
                                         <tr>
-                                            <td>{{ $detail['scope']['name'] }}</td>
-                                            <td>
-                                                <input type="number" class="form-control"
-                                                    wire:model="updateProgress.{{ $detail['id'] }}"
-                                                    value="{{ $detail['progress'] }}">
-                                            </td>
+                                            <td>{{ $prg['date'] }}</td>
+                                            <td>{{ $prg['percentage'] }}</td>
                                         </tr>
                                     @endforeach
                                 @endempty
+
+                                <tr>
+                                    <td>
+                                        <input type="date" class="form-control @error('date') is-invalid @enderror" wire:model="date" min="{{$lastProgress}}">
+
+                                        @error('date')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </td>
+                                    <td>
+                                        <input type="number" class="form-control @error('percentage') is-invalid @enderror" wire:model="percentage">
+
+                                        @error('percentage')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
 

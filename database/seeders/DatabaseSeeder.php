@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call(StatusActivitySeeder::class);
         $this->call(ActivitySeeder::class);
-        $this->call(ActivityDetailSeeder::class);
+        // $this->call(ActivityDetailSeeder::class);
 
         $this->call(EmployeeSeeder::class);
         // $this->call(AttendanceConfigSeeder::class);
