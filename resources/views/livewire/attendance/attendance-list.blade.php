@@ -116,6 +116,10 @@
                                 @endforelse
                             </tbody>
                         </table>
+
+                        <div class="col-lg-12">
+                            {{ $attendances->links() }}
+                        </div>
                     </div>
                 </div>
             </div>

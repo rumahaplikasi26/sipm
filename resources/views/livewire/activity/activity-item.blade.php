@@ -26,9 +26,9 @@
             {{ $activity->description }}
         </div>
 
-        <div class="d-flex flex-wrap justify-content-between gap-2">
+        <div class="d-flex flex-wrap justify-content-center gap-2">
             <!-- Button Section - Fixed at Bottom -->
-            <div class="btn-group btn-group-sm flex-shrink-0">
+            <div class="btn-group btn-group-sm flex-shrink-0 w-100">
                 <button type="button" class="btn btn-light dropdown-toggle w-100" data-bs-toggle="dropdown"
                     aria-haspopup="false" aria-expanded="false">
                     Other Information <i class="mdi mdi-chevron-down"></i>
@@ -92,7 +92,7 @@
                 </div>
             </div>
 
-            <div class="flex-grow-1">
+            <div class="">
                 @can('activity.validation.update')
                     <a class="btn btn-success btn-sm w-100"
                         wire:click="$dispatch('show-modal-validation', {activity_id: {{ $activity->id }}})"
@@ -101,7 +101,7 @@
                 @endcan
             </div>
 
-            <div class="flex-grow-1">
+            <div class="">
                 @can('activity.progress.update')
                     <a class="btn btn-warning btn-sm w-100"
                         wire:click="$dispatch('show-modal-progress', {activity_id: {{ $activity->id }}})"
@@ -110,7 +110,7 @@
                 @endcan
             </div>
 
-            <div class="flex-grow-1">
+            <div class="">
                 @can('activity.edit')
                     <a class="btn btn-info btn-sm w-100"
                         wire:click="$dispatch('show-modal-actual-date', {activity_id: {{ $activity->id }}})"
@@ -119,7 +119,7 @@
                 @endcan
             </div>
 
-            <div class="flex-grow-1">
+            <div class="">
                 @can('activity.issue.update')
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm w-100"
                         wire:click="$dispatch('show-canvas-dependency',{activity_id: {{ $activity->id }}})">
@@ -127,7 +127,7 @@
                 @endcan
             </div>
 
-            <div class="flex-grow-1">
+            <div class="">
                 @can('activity.destroy')
                     <a class="btn btn-danger btn-sm w-100" wire:click="confirmDelete" href="javascript: void(0);">
                         <i class="mdi mdi-delete"></i> Delete Activity</a>

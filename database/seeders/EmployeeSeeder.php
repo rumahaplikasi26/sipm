@@ -370,7 +370,7 @@ class EmployeeSeeder extends Seeder
                 ('482', 'SUTARYO', '6285878449767', '2'),
                 ('494', 'PIRMAN HADIANSYAH', '', '2'),
                 ('514', 'TONI HIDAYAT', '6285811777406', '2'),
-                ('0001', 'APIP HAMBALI', '6285695344920', '2'),
+                ('100001', 'APIP HAMBALI', '6285695344920', '2'),
                 ('11', 'BPK M SAIDIN', '', '1'),
                 ('12', 'SONJAYA', '', '1'),
                 ('14', 'INDRA SUCI SURYA TRI', '', '1'),

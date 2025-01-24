@@ -2,6 +2,8 @@
 
     @livewire('component.layout.breadcrumb', ['breadcrumbs' => [['name' => 'Dashboard'] ]], key('breadcrumb-component'))
 
+    @livewire('dashboard.attendance-stats', key('attendance-stats'))
+
     {{-- <div class="row">
         <div class="col-xl-4">
             <div class="card overflow-hidden">

@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('break_end_time');
             $table->string('end_time');
             $table->enum('day_of_week', ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'])->default('monday');
+            $table->string('start_adjustment')->nullable();
+            $table->string('end_adjustment')->nullable();
             $table->timestamps();
         });
     }

@@ -3,7 +3,9 @@
         <div class="col-lg-12 mb-4">
             <div class="d-flex justify-content-end">
                 <div class="flex-shrink-0">
-                    <a href="#!" class="btn btn-primary" wire:click="$dispatch('showForm')">Add New Activity</a>
+                    @can('activity.create')
+                        <a href="#!" class="btn btn-primary" wire:click="$dispatch('showForm')">Add New Activity</a>
+                    @endcan
                     <a href="#!" class="btn btn-light" wire:click="$dispatch('refreshIndex')"><i
                             class="mdi mdi-refresh"></i></a>
                 </div>
@@ -87,11 +89,14 @@
                         <div class="mb-3">
                             <label for="status_id" class="form-label">Status</label>
                             <div class="d-flex gap-3">
-                                <div class="btn-group w-100" role="group" aria-label="Basic radio toggle button group">
+                                <div class="btn-group w-100" role="group"
+                                    aria-label="Basic radio toggle button group">
                                     @foreach ($statuses as $status)
-                                        <input type="radio" class="btn-check" name="status_id" id="status_id{{ $status->id }}"
-                                            autocomplete="off" wire:model="status_id" value="{{ $status->id }}">
-                                        <label class="btn btn-outline-{{ str_replace('bg-', '', $status->bg_color) }}" for="status_id{{ $status->id }}">{{ $status->name }}</label>
+                                        <input type="radio" class="btn-check" name="status_id"
+                                            id="status_id{{ $status->id }}" autocomplete="off" wire:model="status_id"
+                                            value="{{ $status->id }}">
+                                        <label class="btn btn-outline-{{ str_replace('bg-', '', $status->bg_color) }}"
+                                            for="status_id{{ $status->id }}">{{ $status->name }}</label>
                                     @endforeach
                                 </div>
 

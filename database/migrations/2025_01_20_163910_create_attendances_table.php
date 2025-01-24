@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('uid')->nullable();
             $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete()->cascadeOnUpdate();
             $table->integer('state')->nullable();
-            $table->timestamp('timestamp');
+            $table->dateTime('timestamp');
             $table->string('machine_sn')->nullable();
             $table->foreignId('shift_id')->nullable()->constrained('shifts')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();

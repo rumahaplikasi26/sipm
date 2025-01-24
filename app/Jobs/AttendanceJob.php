@@ -44,35 +44,35 @@ class AttendanceJob implements ShouldQueue
             $isFirstAttendance = Attendance::whereDate('timestamp', date('Y-m-d', strtotime($data['timestamp'])))
                 ->where('employee_id', $data['employee_id'])->first();
 
-            if (empty($isFirstAttendance)) {
-                if ($data['is_active'] == true) {
-                    $activeActivity = Activity::with('details.scope', 'group', 'supervisor')
-                        ->where('group_id', $data['group_id'])
-                        ->where('position_id', $data['position_id'])
-                        ->where('status_id', 1)
-                        ->whereDate('date', date('Y-m-d', strtotime($data['timestamp'])))
-                        ->first();
+            // if (empty($isFirstAttendance)) {
+            //     if ($data['is_active'] == true) {
+            //         $activeActivity = Activity::with('details.scope', 'group', 'supervisor')
+            //             ->where('group_id', $data['group_id'])
+            //             ->where('position_id', $data['position_id'])
+            //             ->where('status_id', 1)
+            //             ->whereDate('date', date('Y-m-d', strtotime($data['timestamp'])))
+            //             ->first();
 
-                    if ($data['phone'] != null && $activeActivity != null) {
-                        $scopes = '';
-                        $date = Carbon::parse($activeActivity->date)->isoFormat('dddd, DD MMMM YYYY');
-                        foreach ($activeActivity->details as $detail) {
-                            $scopes .= $detail->scope->name . ', ';
-                        }
+            //         if ($data['phone'] != null && $activeActivity != null) {
+            //             $scopes = '';
+            //             $date = Carbon::parse($activeActivity->date)->isoFormat('dddd, DD MMMM YYYY');
+            //             foreach ($activeActivity->details as $detail) {
+            //                 $scopes .= $detail->scope->name . ', ';
+            //             }
 
-                        // Send Activity Notification di ambil dari variabel $activeActivity title, date, scope->name, group->name, forecast_date, plan_date, actual_date, description, supervisor->name buat kalimat pesannya
-                        $message = "Dear {$data['name']}, Anda memiliki aktivitas berikut:\n" .
-                            "Judul: {$activeActivity->title}\n" .
-                            "Tanggal: {$date}\n" .
-                            "Grup: {$activeActivity->group->name}\n" .
-                            "Scope: {$scopes}\n";
+            //             // Send Activity Notification di ambil dari variabel $activeActivity title, date, scope->name, group->name, forecast_date, plan_date, actual_date, description, supervisor->name buat kalimat pesannya
+            //             $message = "Dear {$data['name']}, Anda memiliki aktivitas berikut:\n" .
+            //                 "Judul: {$activeActivity->title}\n" .
+            //                 "Tanggal: {$date}\n" .
+            //                 "Grup: {$activeActivity->group->name}\n" .
+            //                 "Scope: {$scopes}\n";
 
-                        $this->sendWhatsAppNotification($data['phone'], $message);
-                        \Log::info(date('Y-m-d H:i:s') . ' ' . 'Sent Whatsapp ' . $data['phone'] . ' Successfully');
-                        \Log::info(date('Y-m-d H:i:s') . ' ' . 'Attendance Sync Job Completed With Send Activity Successfully');
-                    }
-                }
-            }
+            //             $this->sendWhatsAppNotification($data['phone'], $message);
+            //             \Log::info(date('Y-m-d H:i:s') . ' ' . 'Sent Whatsapp ' . $data['phone'] . ' Successfully');
+            //             \Log::info(date('Y-m-d H:i:s') . ' ' . 'Attendance Sync Job Completed With Send Activity Successfully');
+            //         }
+            //     }
+            // }
 
             $attendance = Attendance::updateOrCreate(
                 ['uid' => $data['uid']],

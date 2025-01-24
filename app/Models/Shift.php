@@ -8,7 +8,7 @@ class Shift extends Model
 {
     protected $table = 'shifts';
 
-    protected $fillable = ['name', 'start_time', 'break_start_time', 'break_end_time', 'end_time', 'day_of_week'];
+    protected $fillable = ['name', 'start_time', 'break_start_time', 'break_end_time', 'end_time', 'day_of_week', 'start_adjustment', 'end_adjustment'];
 
     public function employees()
     {

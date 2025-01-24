@@ -158,16 +158,36 @@ class IClockController extends Controller
     public function testAttendance(Request $request)
     {
         try {
+            $shift = null;
+
+            // Cari shift berdasarkan tanggal atau hari
+            $dayOfWeek = Carbon::parse($request->datetime)->format('l'); // Mendapatkan nama hari
+
+            // Ambil semua shift yang berlaku untuk hari tersebut
+            $shifts = Shift::where('day_of_week', strtolower($dayOfWeek))->get();
+
+            if ($shifts->isNotEmpty()) {
+                foreach ($shifts as $potentialShift) {
+                    // Validasi apakah fingerprint sesuai dengan waktu shift
+                    if ($this->isValidFingerprintTime($request->datetime, $potentialShift)) {
+                        $shift = $potentialShift->id; // Pilih shift yang sesuai
+                        break; // Berhenti pada shift pertama yang valid
+                    }
+                }
+            }
+
             $attendanceData = [
-                'uid' => 'test',
-                'employee_id' => 20221224,
+                'sn' => 'TESTSN',
+                'uid' => 'test' . date('dHi'),
+                'employee_id' => 1,
                 'state' => 1,
-                'timestamp' => date('Y-m-d H:i:s'),
-                'name' => 'Nurul',
+                'timestamp' => $request->datetime,
+                'name' => 'Achmad Fatoni',
                 'phone' => '6289676490971',
                 'group_id' => 1,
                 'position_id' => 1,
                 'is_active' => 1,
+                'shift_id' => $shift
             ];
 
             AttendanceJob::dispatch($attendanceData);
@@ -184,17 +204,35 @@ class IClockController extends Controller
     {
         $time = Carbon::parse($timestamp);
 
-        $startTime = Carbon::parse($shift->start_time);
-        $endTime = Carbon::parse($shift->end_time);
+        // Parse start and end adjustments as Carbon instances with dynamic dates based on the timestamp's date
+        $startAdjustment = Carbon::parse($time->toDateString() . ' ' . $shift->start_adjustment);
+        $endAdjustment = Carbon::parse($time->toDateString() . ' ' . $shift->end_adjustment);
 
-        // Jika shift melewati tengah malam
-        if ($endTime->lt($startTime)) {
-            // Cek apakah waktu ada di dua rentang:
-            return $time->between($startTime, $startTime->copy()->endOfDay()) || // Rentang dari start_time ke akhir hari
-                $time->between($endTime->copy()->startOfDay(), $endTime);      // Rentang dari awal hari ke end_time
+        // Handle cases where end time is earlier than start time (crosses midnight)
+        if ($endAdjustment->lt($startAdjustment)) {
+            $endAdjustment = $endAdjustment->addDay(); // Add one day if it crosses midnight
         }
 
-        // Shift biasa (tidak melewati tengah malam)
-        return $time->between($startTime, $endTime);
+        // Adjust to previous day for timestamps in early morning (00:00 - 05:59)
+        if ($time->hour < 6) {
+            // If timestamp is between midnight and 5 AM, adjust the start and end for the previous day
+            $startAdjustment = $startAdjustment->subDay();
+            $endAdjustment = $endAdjustment->subDay();
+        }
+
+        // Debugging logs
+        \Log::info('Checking Shift ID: ' . $shift->id);
+        \Log::info('Timestamp: ' . $time);
+        \Log::info('Start Adjustment: ' . $startAdjustment);
+        \Log::info('End Adjustment: ' . $endAdjustment);
+
+        // Check if the timestamp falls within the range
+        if ($time->between($startAdjustment, $endAdjustment)) {
+            \Log::info('Valid Shift Found: ' . $shift->id);
+            return true;
+        }
+
+        return false;
     }
+
 }
