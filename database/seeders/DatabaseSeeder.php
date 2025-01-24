@@ -42,6 +42,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ShiftSeeder::class);
         // $this->call(ShiftScheduleSeeder::class);
 
-        $this->call(AttendanceSeeder::class);
+        // $this->call(AttendanceSeeder::class);
     }
 }
