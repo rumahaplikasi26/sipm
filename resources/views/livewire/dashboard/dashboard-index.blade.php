@@ -2,6 +2,13 @@
 
     @livewire('component.layout.breadcrumb', ['breadcrumbs' => [['name' => 'Dashboard'] ]], key('breadcrumb-component'))
 
+    <div class="d-flex justify-content-end">
+        <div class="mb-3">
+            <label for="date">Filter Date</label>
+            <input type="date" class="form-control" wire:model.live="date">
+        </div>
+    </div>
+    
     @livewire('dashboard.attendance-stats', key('attendance-stats'))
 
     {{-- <div class="row">

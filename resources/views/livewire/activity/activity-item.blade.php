@@ -40,6 +40,7 @@
                             [
                                 'chart_id' => 'chart-' . $activity->id,
                                 'series' => [$activity->progress],
+                                'color' => $color
                             ],
                             key('chart-' . $activity->id)
                         )
@@ -81,7 +82,7 @@
                                         <li>
                                             <a href="javascript: void(0);" class="d-block">
                                                 <i class="mdi mdi-chevron-right me-1"></i>
-                                                {{ $issue->categoryDependency->name }}</a>
+                                                {{ $issue->categoryDependency->name }} ({{ $issue->description ? '100' : $issue->percentage_dependency }}%)</a>
                                             <p class="ms-4 text-muted font-size-8">{{ $issue->description }}</p>
                                         </li>
                                     @endforeach

@@ -64,7 +64,7 @@
                         <p class="text-muted mb-2 font-size-10">
                             Deskripsi dapat di isi dengan penjelasan terkait permasalahan dan dapat juga untuk solusi yang sudah/akan di jalankan
                         </p>
-                        <textarea class="form-control @error('dependencies.' . $index . '.description') is-invalid @enderror"
+                        <textarea @if(!$isEditDescription) disabled @endif class="form-control @error('dependencies.' . $index . '.description') is-invalid @enderror"
                                 wire:model="dependencies.{{ $index }}.description"
                                 rows="3"></textarea>
 

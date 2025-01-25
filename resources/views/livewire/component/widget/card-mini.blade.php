@@ -3,7 +3,8 @@
         <div class="d-flex">
             <div class="flex-grow-1">
                 <p class="text-muted fw-medium">{{ $title }}</p>
-                <h4 class="mb-0">{{ $value }}</h4>
+                <h4 class="mb-0" wire:loading.remove>{{ $value }}</h4>
+                <h6 class="mb-0" wire:loading wire:loading.class="text-muted">Loading...</h6>
             </div>
 
             <div class="flex-shrink-0 align-self-center">

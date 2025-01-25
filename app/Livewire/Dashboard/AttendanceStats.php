@@ -6,6 +6,7 @@ use Livewire\Component;
 use Carbon\Carbon;
 use App\Models\Attendance;
 use App\Models\Shift;
+use Livewire\Attributes\On;
 
 class AttendanceStats extends Component
 {
@@ -15,15 +16,23 @@ class AttendanceStats extends Component
     public $totalOUT = 0;
     public $date;
 
-    public function mount($date = null)
+    public function mount()
     {
         // Default to today's date if no date is provided
-        $this->date = $date ?? Carbon::today();
+        $this->date =Carbon::today()->format('Y-m-d');
+        $this->calculateAttendance();
+    }
+
+    #[On('updatedData')]
+    public function updatedDate($date)
+    {
+        $this->date = $date;
         $this->calculateAttendance();
     }
 
     public function calculateAttendance()
     {
+        // dd($this->date);
         // Ambil data attendance berdasarkan tanggal
         $attendances = Attendance::with('shift')
             ->whereDate('timestamp', $this->date)

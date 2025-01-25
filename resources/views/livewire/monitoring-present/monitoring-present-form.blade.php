@@ -53,7 +53,7 @@
                             </select>
                             <label for="type">Select Type</label>
 
-                            
+
                             @error('type')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -67,18 +67,27 @@
                         </div>
 
                         <div style="height: 600px; overflow-y: scroll">
-                            <table class="table table-borderless table-striped align-middle table-sm">
+                            <table class="table table-borderless align-middle table-sm">
                                 <thead>
                                     <th width="80%">Employee Name</th>
                                     <th>Is Present</th>
                                 </thead>
-                                <tbody>
+                                <tbody class="justify-content-center align-middle">
+                                    <tr class="table-warning">
+                                        <td>Select All</td>
+                                        <td class="square-switch">
+                                            <input type="checkbox" id="select_all"
+                                                switch="none" wire:model="select_all">
+                                            <label for="select_all" data-on-label="All"
+                                                data-off-label="All"></label>
+                                        </td>
+                                    </tr>
                                     @empty(!$employees)
                                     @foreach ($employees as $employee)
                                     <tr class="align-middle">
                                         <td>{{ $employee->id }} | {{ $employee->name }} | {{ $employee->group?->name }}</td>
                                         <td class="square-switch">
-                                            <input type="checkbox" id="is_presents_{{ $employee->id }}"
+                                            <input type="checkbox" class="is_presents" id="is_presents_{{ $employee->id }}"
                                                 switch="none" wire:model="is_presents.{{ $employee->id }}"
                                                 value="1">
                                             <label for="is_presents_{{ $employee->id }}" data-on-label="Yes"
@@ -113,6 +122,15 @@
             Livewire.on('hideModalAddMonitoring', () => {
                 $('#addMonitoringPresent').modal('hide');
             });
+
+            $('#select_all').click(function() {
+                // window.alert(this.checked);
+                if (this.checked) {
+                    $('.is_presents').prop('checked', true).trigger('change');
+                } else {
+                    $('.is_presents').prop('checked', false).trigger('change');
+                }
+            })
         })
     </script>
     @endpush

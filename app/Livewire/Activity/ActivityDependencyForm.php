@@ -2,29 +2,34 @@
 
 namespace App\Livewire\Activity;
 
+use App\Livewire\BaseComponent;
 use App\Models\ActivityIssue;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-class ActivityDependencyForm extends Component
+class ActivityDependencyForm extends BaseComponent
 {
     use LivewireAlert;
     public $activity_id;
     public $dependencies = []; // Array untuk menyimpan input
     public $category_dependencies = []; // Data category dependencies
     public $deletedIds = []; // Track IDs of deleted dependencies
+    public $isEditDescription = true;
 
     protected $rules = [
         'dependencies.*.id' => 'nullable|exists:activity_issues,id',
         'dependencies.*.date' => 'required|date',
         'dependencies.*.category_dependency_id' => 'required|exists:category_dependencies,id',
         'dependencies.*.percentage_dependency' => 'required|numeric|min:0|max:100',
-        'dependencies.*.description' => 'required|string|max:255',
+        'dependencies.*.description' => 'nullable|string|max:255',
     ];
 
     public function mount()
     {
+        if($this->authUser->hasRole('Supervisor')){
+            $this->isEditDescription = false;
+        }
         // Ambil data category dependencies (contoh)
         $this->category_dependencies = \App\Models\CategoryDependency::all();
     }
@@ -95,7 +100,7 @@ class ActivityDependencyForm extends Component
             // Delete removed dependencies
             if (!empty($this->deletedIds)) {
                 $deletedDependencies = ActivityIssue::whereIn('id', $this->deletedIds)->get();
-                if($deletedDependencies) {
+                if ($deletedDependencies) {
                     $deletedDependencies->each->delete();
                 }
             }

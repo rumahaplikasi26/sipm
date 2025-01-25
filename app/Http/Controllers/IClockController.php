@@ -179,7 +179,7 @@ class IClockController extends Controller
             $attendanceData = [
                 'sn' => 'TESTSN',
                 'uid' => 'test' . date('dHi'),
-                'employee_id' => 1,
+                'employee_id' => $request->employee_id,
                 'state' => 1,
                 'timestamp' => $request->datetime,
                 'name' => 'Achmad Fatoni',

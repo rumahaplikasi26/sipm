@@ -16,10 +16,18 @@ class ActivityItem extends Component
     public $activity;
     public $number;
     public $activity_id;
+    public $color;
+
     public function mount($activity, $number)
     {
         $this->activity = $activity;
         $this->number = $number;
+
+        if ($this->activity->progress < 50) {
+            $this->color = 'rgb(179, 44, 20)';
+        } else {
+            $this->color = 'rgb(15, 134, 10)';
+        }
     }
 
     public function confirmDelete()

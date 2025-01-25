@@ -65,6 +65,13 @@ class MonitoringPresentForm extends BaseComponent
         try {
             $this->datetime = Carbon::now();
 
+            $existMonitoring = MonitoringPresent::where('shift_id', $this->shift_id)->where('group_id', $this->group_id)->where('role', $this->role)->exists();
+
+            if($existMonitoring){
+                $this->alert('error', 'Monitoring untuk shift dan tipe ini sudah ada');
+                return;
+            }
+
             $monitoring = MonitoringPresent::create([
                 'user_id' => $this->user_id,
                 'shift_id' => $this->shift_id,

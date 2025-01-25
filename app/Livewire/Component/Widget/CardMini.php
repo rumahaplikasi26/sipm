@@ -2,11 +2,15 @@
 
 namespace App\Livewire\Component\Widget;
 
+use Livewire\Attributes\Reactive;
 use Livewire\Component;
 
 class CardMini extends Component
 {
+    #[Reactive]
     public $title;
+
+    #[Reactive]
     public $value;
 
     public function mount($title, $value)

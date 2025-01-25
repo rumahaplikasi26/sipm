@@ -38,7 +38,7 @@
                                 },
                             },
                         },
-                        colors: ['rgba(255, 99, 71, 1)'],
+                        colors: ['{{$color}}'],
                         fill: {
                             type: "gradient",
                             gradient: {
