@@ -28,7 +28,7 @@ class MonitoringPresentDay extends Component
     public function render()
     {
         // Ambil data tanpa grouping
-        $monitoring_presents = MonitoringPresent::with('shift', 'user', 'group', 'details')
+        $monitoring_presents = MonitoringPresent::with('shift', 'user', 'group.supervisor', 'details')
             ->whereDate('datetime', $this->date)
             ->where('shift_id', $this->shift_id)
             ->where('type', $this->type)

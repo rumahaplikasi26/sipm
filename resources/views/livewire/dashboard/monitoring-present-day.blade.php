@@ -4,6 +4,7 @@
             <div class="row">
                 <div class="col-6">
                     <h4 class="card-title">Monitoring Present Day Date {{ $dateString }} {{ $shift->name }}</h4>
+                    <p class="card-title-desc">09:00 - 11:00 | 14:00 - 16:00</p>
                 </div>
 
                 <div class="col-6 d-flex justify-content-end gap-2 mb-2">
@@ -15,8 +16,8 @@
                         <label for="time">Time</label>
                         <select class="form-select" wire:model.live="type" id="time">
                             <option selected value="">-- Select Time --</option>
-                            <option value="in">09:00 - 11:00 | 21:00 - 23:00</option>
-                            <option value="in_break">14:00 - 16:00 | 02:00 - 04:00</option>
+                            <option value="in">09:00 - 11:00</option>
+                            <option value="in_break">14:00 - 16:00</option>
                         </select>
                     </div>
                 </div>
@@ -31,7 +32,6 @@
                                 <th rowspan="2">Group</th>
                                 <th colspan="2">Monitor Supervisor</th>
                                 <th colspan="2">Monitor HSE</th>
-                                <th rowspan="2">Type</th>
                             </tr>
                             <tr class="text-center align-middle">
                                 <th>Present</th>
@@ -44,7 +44,10 @@
                             @forelse ($monitoring_presents as $groupId => $data)
                                 <tr class="text-center align-middle">
                                     <td>{{ $loop->iteration }}</td>
-                                    <td class="text-start">{{ $data->first()->group->name ?? 'Group not found' }}</td>
+                                    <td class="text-start">
+                                    {{ $data->first()->group->name ?? 'Group not found' }} 
+                                    {{ $data->first()->group->supervisor->name ?? '' }}
+                                    </td>
                                     <td>
                                         {{ $data->where('role', 'supervisor')->sum(fn($item) => $item->details->where('is_present', 1)->count()) }}
                                     </td>
@@ -57,11 +60,10 @@
                                     <td>
                                         {{ $data->where('role', 'hse')->sum(fn($item) => $item->details->where('is_present', 0)->count()) }}
                                     </td>
-                                    <td>{{ $type == 'in' ? '09:00 - 11:00 | 21:00 - 23:00' : '14:00 - 16:00 | 02:00 - 04:00' }}</td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center">No data available</td>
+                                    <td colspan="6" class="text-center">No data available</td>
                                 </tr>
                             @endforelse
                         </tbody>
