@@ -13,6 +13,17 @@ class CardMini extends Component
     #[Reactive]
     public $value;
 
+    #[Reactive]
+    public $icon;
+
+    #[Reactive]
+    public $color;
+
+    #[Reactive]
+    public $link;
+
+    protected $listeners = ['refreshCard' => 'refreshCard'];
+
     public function mount($title, $value)
     {
         $this->title = $title;

@@ -14,7 +14,7 @@ class DashboardIndex extends Component
 
     public function mount()
     {
-        $this->date =Carbon::today()->format('Y-m-d');
+        $this->date =Carbon::parse('2025-01-25')->format('Y-m-d');
         $this->shifts = Shift::where('day_of_week', strtolower(Carbon::parse($this->date)->format('l')))->get();
         $this->shift_id = $this->shifts->first()->id;
     }

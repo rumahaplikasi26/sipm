@@ -37,16 +37,12 @@ class AttendanceStats extends Component
 
         $this->dateString = Carbon::parse($date)->format('d F Y');
         $this->shift = Shift::find($shift_id);
+
         $this->calculateAttendance();
     }
 
     public function calculateAttendance()
     {
-        $this->totalIN = 0;
-        $this->totalBreakIn = 0;
-        $this->totalBreakOut = 0;
-        $this->totalOUT = 0;
-
         // dd($this->date);
         // Ambil data attendance berdasarkan tanggal
         $attendances = Attendance::with('shift')
@@ -54,7 +50,7 @@ class AttendanceStats extends Component
             ->where('shift_id', $this->shift_id)
             ->get();
 
-            // dd($attendances, $this->date, $this->shift_id);
+        // dd($attendances, $this->date, $this->shift_id);
         // Hitung Total Start (IN)
         $this->totalIN = $attendances->groupBy('employee_id')->filter(function ($group) {
             return $group->first(function ($attendance) {
@@ -66,9 +62,20 @@ class AttendanceStats extends Component
                 $break_start = Carbon::parse($shift->break_start_time)
                     ->setDateFrom(Carbon::parse($attendance->shift_date));
 
+                \Log::info('IN Start Adjustment Hour: ' . $start_adjustment->hour);
+                \Log::info('IN Break Start Hour: ' . $break_start->hour);
+
+                // Handle pergantian hari untuk break_start
+                if ($break_start->hour < $start_adjustment->hour) {
+                    $break_start->addDay();
+                }
+
+                \Log::info('IN Start Adjustment: ' . $start_adjustment);
+                \Log::info('IN Break Start: ' . $break_start);
+
                 return $time->between(
                     $start_adjustment,
-                    $break_start->subMinute(1)
+                    $break_start
                 );
             });
         })->count();
@@ -84,9 +91,20 @@ class AttendanceStats extends Component
                 $break_end = Carbon::parse($shift->break_end_time)
                     ->setDateFrom(Carbon::parse($attendance->shift_date));
 
+                \Log::info('IN Break Start Hour: ' . $break_start->hour);
+                \Log::info('IN Break End Hour: ' . $break_end->hour);
+
+                // Handle pergantian hari untuk break_end
+                if ($break_end->hour > $break_start->hour) {
+                    $break_end->addDay();
+                }
+
+                \Log::info('IN Break Start: ' . $break_start);
+                \Log::info('IN Break End: ' . $break_end);
+
                 return $time->between(
                     $break_start,
-                    $break_end->subMinute(1)
+                    $break_end
                 );
             });
         })->count();
@@ -102,9 +120,21 @@ class AttendanceStats extends Component
                 $end_time = Carbon::parse($shift->end_time)
                     ->setDateFrom(Carbon::parse($attendance->shift_date));
 
+                \Log::info('OUT Break End Hour: ' . $break_end->hour);
+                \Log::info('OUT End Time Hour: ' . $end_time->hour);
+
+                // Handle pergantian hari untuk break_end dan end_time
+                if ($time > $break_end && $time > $end_time) {
+                    $break_end->addDay();
+                    $end_time->addDay();
+                }
+
+                \Log::info('OUT Break End: ' . $break_end);
+                \Log::info('OUT End Time: ' . $end_time);
+
                 return $time->between(
                     $break_end,
-                    $end_time->subMinute(1)
+                    $end_time
                 );
             });
         })->count();
@@ -120,21 +150,30 @@ class AttendanceStats extends Component
                 $end_adjustment = Carbon::parse($shift->end_adjustment)
                     ->setDateFrom(Carbon::parse($attendance->shift_date));
 
+                \Log::info('OUT End Time Hour: ' . $end_time);
+                \Log::info('OUT End Adjustment Hour: ' . $end_adjustment);
+
+                // Handle pergantian hari untuk end_adjustment
+                if($end_adjustment->hour < 6){
+                    $end_time->addDay();
+                    $end_adjustment->addDay();
+                }
+
+                \Log::info('OUT End Time: ' . $end_time);
+                \Log::info('OUT End Adjustment: ' . $end_adjustment);
+
                 return $time->between(
                     $end_time,
-                    $end_adjustment->addMinute(60)
+                    $end_adjustment
                 );
             });
         })->count();
+
+        $this->dispatch('refreshCard');
     }
 
     public function render()
     {
-        return view('livewire.dashboard.attendance-stats', [
-            'totalIN' => $this->totalIN,
-            'totalBreakIn' => $this->totalBreakIn,
-            'totalBreakOut' => $this->totalBreakOut,
-            'totalOUT' => $this->totalOUT,
-        ]);
+        return view('livewire.dashboard.attendance-stats');
     }
 }

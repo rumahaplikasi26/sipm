@@ -11,7 +11,7 @@
 
         <div class="col-md-3">
             @livewire('component.widget.card-mini', [
-            'title' => 'OUT ('.$shift->break_end_time.' - '.$shift->end_adjustment.')',
+            'title' => 'OUT ('.$shift->end_time.' - '.$shift->end_adjustment.')',
             'value' => $totalOUT],
             key('total-out')
             )
