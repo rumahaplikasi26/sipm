@@ -18,7 +18,7 @@ class MonitoringPresentDay extends Component
     public function mount()
     {
         $this->date = Carbon::now()->format('Y-m-d');
-        $this->shift = Shift::where('day_of_week', Carbon::now()->dayOfWeek)->first();
+        $this->shift = Shift::where('day_of_week', strtolower(Carbon::parse($this->date)->format('l')))->first();
         $this->shift_id = $this->shift->id;
         $this->type = 'in';
 

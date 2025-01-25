@@ -15,13 +15,13 @@ class DashboardIndex extends Component
     public function mount()
     {
         $this->date =Carbon::today()->format('Y-m-d');
-        $this->shifts = Shift::where('day_of_week', Carbon::today()->dayOfWeek)->get();
+        $this->shifts = Shift::where('day_of_week', strtolower(Carbon::parse($this->date)->format('l')))->get();
         $this->shift_id = $this->shifts->first()->id;
     }
     
     public function updatedDate($value)
     {
-        $this->shifts = Shift::where('day_of_week', Carbon::parse($this->date)->dayOfWeek)->get();
+        $this->shifts = Shift::where('day_of_week', strtolower(Carbon::parse($this->date)->format('l')))->get();
         $this->dispatch('updatedData', $this->date, $this->shifts->first()->id);
     }
 

@@ -18,7 +18,7 @@ class MonitoringPresentNight extends Component
     public function mount()
     {
         $this->date = Carbon::now()->format('Y-m-d');
-        $this->shift = Shift::where('day_of_week', Carbon::now()->dayOfWeek)->skip(1)->first();
+        $this->shift = Shift::where('day_of_week', strtolower(Carbon::parse($this->date)->format('l')))->skip(1)->first();
         $this->shift_id = $this->shift->id;
         $this->type = 'in_break';
 
