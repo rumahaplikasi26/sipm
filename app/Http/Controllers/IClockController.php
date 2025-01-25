@@ -14,9 +14,7 @@ use function PHPUnit\Framework\isTrue;
 
 class IClockController extends Controller
 {
-    public function __invoke(Request $request)
-    {
-    }
+    public function __invoke(Request $request) {}
 
     public function handshake(Request $request)
     {
@@ -110,30 +108,56 @@ class IClockController extends Controller
                     foreach ($shifts as $potentialShift) {
                         // Validasi apakah fingerprint sesuai dengan waktu shift
                         if ($this->isValidFingerprintTime($data[1], $potentialShift)) {
-                            $shift = $potentialShift->id; // Pilih shift yang sesuai
+                            $shift = $potentialShift; // Pilih shift yang sesuai
                             break; // Berhenti pada shift pertama yang valid
                         }
                     }
                 }
 
-                $attendanceData = [
-                    'sn' => $sn,
-                    'uid' => $data[0] . date('dHi'),
-                    'employee_id' => $data[0],
-                    'state' => $data[2],
-                    'timestamp' => $data[1],
-                    'name' => $name,
-                    'phone' => $phone,
-                    'group_id' => $employee->group_id,
-                    'position_id' => $employee->position_id,
-                    'is_active' => $is_active,
-                    'shift_id' => $shift
-                ];
 
-                AttendanceJob::dispatch($attendanceData);
-                $tot++;
+                if (isset($shift)) {
 
-                \Log::info('Attendance Data', $attendanceData);
+                    // Tetapkan shift_date berdasarkan waktu fingerprint
+                    $timestamp = Carbon::parse($request->datetime);
+
+                    // Tetapkan waktu awal dan akhir shift dengan tanggal yang sesuai
+                    $shiftStartAdjustment = Carbon::parse($timestamp->toDateString() . ' ' . $shift->start_adjustment);
+                    $shiftEndAdjustment = Carbon::parse($timestamp->toDateString() . ' ' . $shift->end_adjustment);
+
+                    // Jika shift berakhir keesokan harinya (melewati tengah malam)
+                    if ($shiftEndAdjustment->lt($shiftStartAdjustment)) {
+                        $shiftEndAdjustment = $shiftEndAdjustment->addDay(); // Tambahkan 1 hari pada waktu akhir shift
+                    }
+
+                    // Tetapkan shift_date berdasarkan waktu fingerprint
+                    if ($timestamp->hour < 6) {
+                        // Jika fingerprint setelah waktu akhir shift, gunakan tanggal shift sebelumnya
+                        $shiftDate = $shiftStartAdjustment->subDay()->toDateString();
+                    } else {
+                        // Jika fingerprint masih dalam rentang shift, gunakan tanggal saat shift mulai
+                        $shiftDate = $shiftStartAdjustment->toDateString();
+                    }
+
+                    $attendanceData = [
+                        'sn' => $sn,
+                        'uid' => $data[0] . date('dHi'),
+                        'employee_id' => $data[0],
+                        'state' => $data[2],
+                        'timestamp' => $data[1],
+                        'name' => $name,
+                        'phone' => $phone,
+                        'group_id' => $employee->group_id,
+                        'position_id' => $employee->position_id,
+                        'is_active' => $is_active,
+                        'shift_id' => $shift->id,
+                        'shift_date' => $shiftDate
+                    ];
+
+                    AttendanceJob::dispatch($attendanceData);
+                    $tot++;
+
+                    \Log::info('Attendance Data', $attendanceData);
+                }
             }
 
             \Log::info('Receive Records', $request->all());
@@ -170,29 +194,54 @@ class IClockController extends Controller
                 foreach ($shifts as $potentialShift) {
                     // Validasi apakah fingerprint sesuai dengan waktu shift
                     if ($this->isValidFingerprintTime($request->datetime, $potentialShift)) {
-                        $shift = $potentialShift->id; // Pilih shift yang sesuai
+                        $shift = $potentialShift; // Pilih shift yang sesuai
                         break; // Berhenti pada shift pertama yang valid
                     }
                 }
             }
 
-            $attendanceData = [
-                'sn' => 'TESTSN',
-                'uid' => 'test' . date('dHi'),
-                'employee_id' => $request->employee_id,
-                'state' => 1,
-                'timestamp' => $request->datetime,
-                'name' => 'Achmad Fatoni',
-                'phone' => '6289676490971',
-                'group_id' => 1,
-                'position_id' => 1,
-                'is_active' => 1,
-                'shift_id' => $shift
-            ];
+            if (isset($shift)) {
 
-            AttendanceJob::dispatch($attendanceData);
+                // Tetapkan shift_date berdasarkan waktu fingerprint
+                $timestamp = Carbon::parse($request->datetime);
 
-            return "OK";
+                // Tetapkan waktu awal dan akhir shift dengan tanggal yang sesuai
+                $shiftStartAdjustment = Carbon::parse($timestamp->toDateString() . ' ' . $shift->start_adjustment);
+                $shiftEndAdjustment = Carbon::parse($timestamp->toDateString() . ' ' . $shift->end_adjustment);
+
+                // Jika shift berakhir keesokan harinya (melewati tengah malam)
+                if ($shiftEndAdjustment->lt($shiftStartAdjustment)) {
+                    $shiftEndAdjustment = $shiftEndAdjustment->addDay(); // Tambahkan 1 hari pada waktu akhir shift
+                }
+
+                // Tetapkan shift_date berdasarkan waktu fingerprint
+                if ($timestamp->hour < 6) {
+                    // Jika fingerprint setelah waktu akhir shift, gunakan tanggal shift sebelumnya
+                    $shiftDate = $shiftStartAdjustment->subDay()->toDateString();
+                } else {
+                    // Jika fingerprint masih dalam rentang shift, gunakan tanggal saat shift mulai
+                    $shiftDate = $shiftStartAdjustment->toDateString();
+                }
+
+                $attendanceData = [
+                    'sn' => 'TESTSN',
+                    'uid' => 'test' . date('dHi'),
+                    'employee_id' => $request->employee_id,
+                    'state' => 1,
+                    'timestamp' => $request->datetime,
+                    'name' => 'Achmad Fatoni',
+                    'phone' => '6289676490971',
+                    'group_id' => 1,
+                    'position_id' => 1,
+                    'is_active' => 1,
+                    'shift_id' => $shift->id,
+                    'shift_date' => $shiftDate
+                ];
+
+                AttendanceJob::dispatch($attendanceData);
+
+                return "OK";
+            }
         } catch (Exception $e) {
             \Log::error('Error', $e->getMessage());
             return "ERROR";
@@ -234,5 +283,4 @@ class IClockController extends Controller
 
         return false;
     }
-
 }

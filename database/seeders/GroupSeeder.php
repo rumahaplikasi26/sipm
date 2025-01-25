@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Group;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,64 +16,93 @@ class GroupSeeder extends Seeder
     {
         $groups = [
             [
-                'name' => 'IT A3',
-                'slug' => 'it-a3',
+                'name' => 'RMU & Support Sasuso',
+                'slug' => 'rmu-support-sasuso',
+                'supervisor_id' => 7,
+                'shift_id' => 1
             ],
             [
-                'name' => 'IT B3',
-                'slug' => 'it-b3',
-            ],
-            [
-                'name' => 'IT A4',
-                'slug' => 'it-a4',
-            ],
-            [
-                'name' => 'IT C4',
-                'slug' => 'it-c4',
-            ],
-            [
-                'name' => 'DH Corridor',
-                'slug' => 'dh-corridor',
-            ],
-            [
-                'name' => 'DH 5',
-                'slug' => 'dh-5',
-            ],
-            [
-                'name' => 'DH 6',
-                'slug' => 'dh-6',
-            ],
-            [
-                'name' => 'DH 7',
-                'slug' => 'dh-7',
-            ],
-            [
-                'name' => 'DH 8',
-                'slug' => 'dh-8',
-            ],
-            [
-                'name' => 'Mechanical Gantry',
+                'name' => 'Mecanical Gantry',
                 'slug' => 'mechanical-gantry',
+                'supervisor_id' => 8,
+                'shift_id' => 1
+            ],
+            [
+                'name' => 'IT Room',
+                'slug' => 'it-room',
+                'supervisor_id' => 9,
+                'shift_id' => 1
+            ],
+            [
+                'name'=> 'Coridor',
+                'slug' => 'coridor',
+                'supervisor_id' => 10,
+                'shift_id' => 1
+            ],
+            [
+                'name'=> 'Data Hall',
+                'slug' => 'data-hall',
+                'supervisor_id' => 11,
+                'shift_id' => 1
+            ],
+            [
+                'name'=> 'IT Room',
+                'slug' => 'it-room',
+                'supervisor_id' => 12,
+                'shift_id' => 1
+            ],
+            [
+                'name' => 'Workhsop & Langsir',
+                'slug' => 'workshop-langsir',
+                'supervisor_id' => 13,
+                'shift_id' => 1
+            ],
+            [
+                'name'=> 'Coridor',
+                'slug' => 'coridor',
+                'supervisor_id' => 14,
+                'shift_id' => 2
+            ],
+            [
+                'name'=> 'Data Hall',
+                'slug' => 'data-hall',
+                'supervisor_id' => 15,
+                'shift_id' => 2
+            ],
+            [
+                'name'=> 'Data Hall',
+                'slug' => 'data-hall',
+                'supervisor_id' => 16,
+                'shift_id' => 2
+            ],
+            [
+                'name'=> 'IT Room',
+                'slug' => 'it-room',
+                'supervisor_id' => 17,
+                'shift_id' => 2
+            ],
+            [
+                'name' => 'Mecanical Gantry',
+                'slug' => 'mechanical-gantry',
+                'supervisor_id' => 18,
+                'shift_id' => 2
+            ],
+            [
+                'name'=> 'IT Room',
+                'slug' => 'it-room',
+                'supervisor_id' => 19,
+                'shift_id' => 2
+            ],
+            [
+                'name' => 'Workhsop',
+                'slug' => 'workshop',
+                'supervisor_id' => 20,
+                'shift_id' => 2
             ],
         ];
 
-        $supervisors = User::role('Supervisor')->get();
-        foreach ($groups as $key =>  $group) {
-            \App\Models\Group::create([
-                'name' => $group['name'],
-                'slug' => $group['slug'],
-                'supervisor_id' => $supervisors[$key]->id,
-            ]);
+        foreach ($groups as $group) {
+            Group::create($group);
         }
-        // $i = 1;
-        // foreach ($supervisors as $supervisor) {
-        //     \App\Models\Group::create([
-        //         'name' => "Group A$i",
-        //         'slug' => "group-a$i",
-        //         'supervisor_id' => $supervisor->id,
-        //     ]);
-
-        //     $i++;
-        // }
     }
 }

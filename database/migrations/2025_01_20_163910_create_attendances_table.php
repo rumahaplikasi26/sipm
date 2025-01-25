@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->dateTime('timestamp');
             $table->string('machine_sn')->nullable();
             $table->foreignId('shift_id')->nullable()->constrained('shifts')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->date('shift_date')->nullable();
             $table->timestamps();
         });
     }

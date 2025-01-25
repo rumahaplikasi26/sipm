@@ -29,4 +29,9 @@ class Shift extends Model
     {
         return $this->hasMany(Attendance::class);
     }
+
+    public function groups()
+    {
+        return $this->belongsTo(Group::class);
+    }
 }

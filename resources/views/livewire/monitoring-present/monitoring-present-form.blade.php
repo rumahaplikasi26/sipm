@@ -14,7 +14,7 @@
                             <select class="form-select @error('group_id') is-invalid @enderror" id="group_id" wire:model.live="group_id">
                                 <option selected value="">-- Select Group --</option>
                                 @foreach ($groups as $group)
-                                <option value="{{ $group->id }}">{{ $group->name }}</option>
+                                <option value="{{ $group->id }}">{{ $group->name }} | {{ $group->supervisor->name }}</option>
                                 @endforeach
                             </select>
 
@@ -31,7 +31,7 @@
                             <select class="form-select @error('shift_id') is-invalid @enderror" id="shift_id" wire:model="shift_id">
                                 <option selected value="">-- Select Shift --</option>
                                 @foreach ($shiftForms as $shift)
-                                <option value="{{ $shift->id }}">{{ $shift->name }} {{ $shift->day_of_week }}</option>
+                                <option value="{{ $shift->id }}">{{ $shift->name }} {{ \Carbon\Carbon::parse($shift->day_of_week)->translatedFormat('l') }}</option>
                                 @endforeach
                             </select>
 
@@ -46,10 +46,10 @@
 
                         <div class="form-floating mb-3">
                             <select class="form-select @error('type') is-invalid @enderror" id="type" wire:model="type">
-                                <option selected value="">-- Select Type --</option>
-                                <option value="in">In</option>
-                                <option value="in_break">In Break</option>
-                                <option value="out">Out</option>
+                                <option selected value="">-- Select Time --</option>
+                                <option value="in">09:00 - 11:00 | 21:00 - 23:00</option>
+                                <option value="in_break">14:00 - 16:00 | 02:00 - 04:00</option>
+                                <!-- <option value="out">Out</option> -->
                             </select>
                             <label for="type">Select Type</label>
 
@@ -69,17 +69,18 @@
                         <div style="height: 600px; overflow-y: scroll">
                             <table class="table table-borderless align-middle table-sm">
                                 <thead>
-                                    <th width="80%">Employee Name</th>
+                                    <th width="50%">Employee Name</th>
                                     <th>Is Present</th>
+                                    <th>Notes</th>
                                 </thead>
                                 <tbody class="justify-content-center align-middle">
                                     <tr class="table-warning">
                                         <td>Select All</td>
-                                        <td class="square-switch">
-                                            <input type="checkbox" id="select_all"
-                                                switch="none" wire:model="select_all">
-                                            <label for="select_all" data-on-label="All"
-                                                data-off-label="All"></label>
+                                        <td colspan="2">
+                                            <button class="btn btn-primary btn-sm btn-rounded waves-effect waves-light"
+                                                wire:click="selectAll" type="button">
+                                                @if(!$select_all) Select All @else Unselect All @endif
+                                            </button>
                                         </td>
                                     </tr>
                                     @empty(!$employees)
@@ -88,10 +89,13 @@
                                         <td>{{ $employee->id }} | {{ $employee->name }} | {{ $employee->group?->name }}</td>
                                         <td class="square-switch">
                                             <input type="checkbox" class="is_presents" id="is_presents_{{ $employee->id }}"
-                                                switch="none" wire:model="is_presents.{{ $employee->id }}"
+                                                switch="none" wire:model.live="is_presents.{{ $employee->id }}"
                                                 value="1">
                                             <label for="is_presents_{{ $employee->id }}" data-on-label="Yes"
                                                 data-off-label="No"></label>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" {{ isset($is_presents[$employee->id]) && $is_presents[$employee->id] ? 'disabled' : '' }} wire:model.live="notes.{{ $employee->id }}">
                                         </td>
                                     </tr>
                                     @endforeach
@@ -123,14 +127,6 @@
                 $('#addMonitoringPresent').modal('hide');
             });
 
-            $('#select_all').click(function() {
-                // window.alert(this.checked);
-                if (this.checked) {
-                    $('.is_presents').prop('checked', true).trigger('change');
-                } else {
-                    $('.is_presents').prop('checked', false).trigger('change');
-                }
-            })
         })
     </script>
     @endpush

@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug');
             $table->foreignId('supervisor_id')->constrained('users')->cascadeOnDelete();
-
+            $table->foreignId('shift_id')->constrained('shifts')->cascadeOnDelete();
+        
             $table->timestamps();
         });
     }

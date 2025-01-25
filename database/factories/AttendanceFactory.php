@@ -23,10 +23,25 @@ class AttendanceFactory extends Factory
         if ($shifts->isNotEmpty()) {
             foreach ($shifts as $potentialShift) {
                 if ($this->isValidFingerprintTime($timestamp, $potentialShift)) {
-                    $shift = $potentialShift->id;
+                    $shift = $potentialShift;
                     break;
                 }
             }
+        }
+
+        if (isset($shift)) {
+
+            // Tetapkan shift_date berdasarkan waktu fingerprint
+            $timestamp = Carbon::parse($timestamp);
+            $shiftStartAdjustment = Carbon::parse($timestamp->toDateString() . ' ' . $shift->start_adjustment);
+
+            // Jika shift dimulai sebelum tengah malam dan berakhir melewati tengah malam
+            if (Carbon::parse($shift->end_adjustment)->lt($shift->start_adjustment)) {
+                $shiftStartAdjustment = $shiftStartAdjustment->subDay(); // Pastikan shift_date mengacu ke hari sebelumnya
+            }
+
+            // Tetapkan shift_date ke tanggal awal shift
+            $shiftDate = $shiftStartAdjustment->toDateString();
         }
 
         return [
@@ -35,7 +50,8 @@ class AttendanceFactory extends Factory
             'state' => fake('id_ID')->numberBetween(1, 4),
             'timestamp' => $timestamp,
             'machine_sn' => fake('id_ID')->randomNumber(8, true),
-            'shift_id' => $shift,
+            'shift_id' => $shift->id,
+            'shift_date' => $shiftDate
         ];
     }
 

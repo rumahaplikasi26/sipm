@@ -12,6 +12,7 @@ class Group extends Model
         'name',
         'slug',
         'supervisor_id',
+        'shift_id'
     ];
 
     public function employees()
@@ -22,5 +23,10 @@ class Group extends Model
     public function supervisor()
     {
         return $this->belongsTo(User::class, 'supervisor_id');
+    }
+
+    public function shift()
+    {
+        return $this->belongsTo(Shift::class);
     }
 }

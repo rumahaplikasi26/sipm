@@ -82,6 +82,7 @@ class AttendanceJob implements ShouldQueue
                     'timestamp' => $data['timestamp'],
                     'machine_sn' => $data['sn'],
                     'shift_id' => $data['shift_id'],
+                    'shift_date' => $data['shift_date'],
                 ]
             );
 

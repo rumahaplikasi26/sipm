@@ -98,9 +98,9 @@ class AttendanceList extends BaseComponent
                 $query->where('position_id', $this->filterPosition);
             });
         })->when($this->filterStartDate, function ($query) {
-            $query->where('date', '>=', $this->filterStartDate);
+            $query->whereDate('timestamp', '>=', $this->filterStartDate);
         })->when($this->filterEndDate, function ($query) {
-            $query->where('date', '<=', $this->filterEndDate);
+            $query->whereDate('timestamp', '<=', $this->filterEndDate);
         })->latest()->paginate($this->perPage);
 
         return view('livewire.attendance.attendance-list', compact('attendances'));

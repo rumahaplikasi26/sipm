@@ -18,6 +18,7 @@ class Attendance extends Model
         'state',
         'machine_sn',
         'shift_id',
+        'shift_date'
     ];
 
     public function getDateAttribute()

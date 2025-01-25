@@ -1,6 +1,6 @@
 <div>
     <div id="detailPresent" class="modal fade" tabindex="-1" aria-labelledby="detailPresentLabel" aria-hidden="true">
-        <div class="modal-dialog modal-md">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content ">
                 <div class="modal-header">
                     <h5 class="modal-title" id="detailPresentLabel">Detail Present</h5>
@@ -9,24 +9,26 @@
                 <div class="modal-body">
                     <table class="table table-borderless table-striped align-middle">
                         <thead>
-                            <th width="80%">Employee Name</th>
+                            <th width="50%">Employee Name</th>
                             <th>Is Present</th>
+                            <th>Note</th>
                         </thead>
                         <tbody>
                             @empty(!$details)
-                                @foreach ($details as $detail)
-                                    <tr class="align-middle">
-                                        <td>{{ $detail->employee->id }} | {{ $detail->employee->name }}</td>
-                                        <td class="square-switch">
+                            @foreach ($details as $detail)
+                            <tr class="align-middle">
+                                <td>{{ $detail->employee->id }} | {{ $detail->employee->name }}</td>
+                                <td class="square-switch">
 
-                                            <input type="checkbox" id="is_present_{{ $detail->id }}" switch="none"
-                                                wire:model="is_present.{{ $detail->id }}" value="1"
-                                                {{ $detail->is_present == 1 ? 'checked' : '' }} disabled readonly>
-                                            <label for="is_present_{{ $detail->id }}" data-on-label="Yes"
-                                                data-off-label="No"></label>
-                                        </td>
-                                    </tr>
-                                @endforeach
+                                    <input type="checkbox" id="is_present_{{ $detail->id }}" switch="none"
+                                        wire:model="is_present.{{ $detail->id }}" value="1"
+                                        {{ $detail->is_present == 1 ? 'checked' : '' }} disabled readonly>
+                                    <label for="is_present_{{ $detail->id }}" data-on-label="Yes"
+                                        data-off-label="No"></label>
+                                </td>
+                                <td>{{$detail->note }}</td>
+                            </tr>
+                            @endforeach
                             @endempty
                         </tbody>
                     </table>
@@ -41,17 +43,17 @@
     </div>
 
     @push('js')
-        <script>
-            document.addEventListener('livewire:init', function() {
+    <script>
+        document.addEventListener('livewire:init', function() {
 
-                Livewire.on('showModalDetails', () => {
-                    $('#detailPresent').modal('show');
-                });
+            Livewire.on('showModalDetails', () => {
+                $('#detailPresent').modal('show');
+            });
 
-                Livewire.on('hideModalDetails', () => {
-                    $('#detailPresent').modal('hide');
-                });
-            })
-        </script>
+            Livewire.on('hideModalDetails', () => {
+                $('#detailPresent').modal('hide');
+            });
+        })
+    </script>
     @endpush
 </div>

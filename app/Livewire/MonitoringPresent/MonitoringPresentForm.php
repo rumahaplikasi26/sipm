@@ -19,8 +19,10 @@ class MonitoringPresentForm extends BaseComponent
     public $employees, $shifts, $shiftForms;
     public $user_id, $shift_id, $datetime, $type, $group_id, $role;
     public $is_presents = [];
+    public $notes = [];
     public $search = '';
     public $groups;
+    public $select_all = false;
 
     protected $queryString = ['search' => ['except' => '']];
 
@@ -41,14 +43,33 @@ class MonitoringPresentForm extends BaseComponent
         }
     }
 
+    public function selectAll()
+    {
+        if (!$this->select_all) {
+            foreach ($this->employees as $employee) {
+                $this->is_presents[$employee->id] = true;
+            }
+
+            $this->select_all = true;
+        } else {
+            foreach ($this->employees as $employee) {
+                $this->is_presents[$employee->id] = false;
+            }
+
+            $this->select_all = false;
+        }
+
+        // dd($this->select_all); 
+    }
+
     public function resetForm()
     {
         $this->is_presents = [];
+        $this->notes = [];
         $this->shift_id = '';
         $this->datetime = '';
         $this->type = '';
         $this->group_id = '';
-        $this->role = '';
     }
 
     public function submitMonitoringPresent()
@@ -59,15 +80,21 @@ class MonitoringPresentForm extends BaseComponent
             'type' => 'required',
             'group_id' => 'required',
             'is_presents.*' => 'required',
-            'role' => 'required'
+            'role' => 'required',
+            'notes.*' => 'nullable'
         ]);
 
+        // dd($this->is_presents);
         try {
             $this->datetime = Carbon::now();
 
-            $existMonitoring = MonitoringPresent::where('shift_id', $this->shift_id)->where('group_id', $this->group_id)->where('role', $this->role)->exists();
+            $existMonitoring = MonitoringPresent::where('shift_id', $this->shift_id)
+                ->where('group_id', $this->group_id)
+                ->where('role', $this->role)
+                ->where('type', $this->type)
+                ->exists();
 
-            if($existMonitoring){
+            if ($existMonitoring) {
                 $this->alert('error', 'Monitoring untuk shift dan tipe ini sudah ada');
                 return;
             }
@@ -84,17 +111,18 @@ class MonitoringPresentForm extends BaseComponent
             foreach ($this->is_presents as $id => $is_present) {
                 $monitoring->details()->create([
                     'employee_id' => $id,
-                    'is_present' => $is_present
+                    'is_present' => $is_present,
+                    'note' => $this->notes[$id]
                 ]);
 
-                if(!$is_present){
+                if (!$is_present) {
                     $data = [
                         'employee_id' => $id,
                         'date' => $this->datetime,
                         'shift' => $monitoring->shift->name
                     ];
-    
-                    AbsentNotification::dispatch($data);
+
+                    // AbsentNotification::dispatch($data);
                 }
             }
 
@@ -103,7 +131,7 @@ class MonitoringPresentForm extends BaseComponent
             $this->dispatch('hideModalAddMonitoring');
             $this->resetForm();
         } catch (\Exception $e) {
-            $this->alert('error', 'Data monitoring gagal disimpan');
+            $this->alert('error', $e->getMessage());
         }
     }
 
@@ -119,8 +147,11 @@ class MonitoringPresentForm extends BaseComponent
         }
 
         $this->is_presents = [];
+        $this->notes = [];
+        $this->select_all = false;
         foreach ($employees as $employee) {
             $this->is_presents[$employee->id] = false; // Inisialisasi semua dengan false
+            $this->notes[$employee->id] = '';
         }
 
         $this->employees = $employees;
@@ -141,6 +172,7 @@ class MonitoringPresentForm extends BaseComponent
 
         foreach ($this->employees as $employee) {
             $this->is_presents[$employee->id] = false; // Inisialisasi semua dengan false
+            $this->notes[$employee->id] = '';
         }
 
         $this->user_id = $this->authUser->id;

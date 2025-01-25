@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
 
         $this->call(UserSeeder::class);
+        $this->call(ShiftSeeder::class);
 
         $this->call(GroupSeeder::class);
 
@@ -39,7 +40,6 @@ class DatabaseSeeder extends Seeder
         $this->call(EmployeeSeeder::class);
         // $this->call(AttendanceConfigSeeder::class);
 
-        $this->call(ShiftSeeder::class);
         // $this->call(ShiftScheduleSeeder::class);
 
         // $this->call(AttendanceSeeder::class);

@@ -9,11 +9,11 @@ class MonitoringPresentDetail extends Model
 {
     protected $table = 'monitoring_present_details';
 
-    protected $fillable = ['monitoring_present_id', 'employee_id', 'is_present'];
+    protected $fillable = ['monitoring_present_id', 'employee_id', 'is_present', 'note'];
 
     public function monitoringPresent()
     {
-        return $this->belongsTo(MonitoringPresent::class);
+        return $this->belongsTo(MonitoringPresent::class, 'monitoring_present_id');
     }
 
     public function employee()

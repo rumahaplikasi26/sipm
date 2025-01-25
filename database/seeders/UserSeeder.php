@@ -61,14 +61,30 @@ class UserSeeder extends Seeder
 
         $quality_control->assignRole('HSE');
 
-        for ($i = 1; $i < 15; $i++) {
-            $supervisor = User::create([
-                'name' => 'Supervisor '.$i,
-                'email' => "supervisor{$i}@kms",
+        $supervisor = [
+            'Ahmad Yani',
+            'Ari Hartonko',
+            'Madroni',
+            'Muhammad Ammar Fadhlurrohman',
+            'Ade Muhammad',
+            'Novetus Fabiola K',
+            'Johani',
+            'Jaya Zaelani',
+            'Nanang Setiawan',
+            'Farhan Abdurrahmat',
+            'Hikmatuallah','Septiandri',
+            'Dede Andri Irawan',
+            'Kardita',
+        ];
+        
+        foreach ($supervisor as $supervisor) {
+            $user = User::create([
+                'name' => strtoupper($supervisor),
+                'email' => str_replace(' ', '', strtolower($supervisor)) . '@kms',
                 'password' => bcrypt('password'),
             ]);
 
-            $supervisor->assignRole('Supervisor');
+            $user->assignRole('Supervisor');
         }
     }
 }

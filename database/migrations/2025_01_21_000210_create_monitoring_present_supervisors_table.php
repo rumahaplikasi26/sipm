@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('monitoring_present_id')->constrained('monitoring_presents')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete()->cascadeOnUpdate();
             $table->boolean('is_present')->default(false);
+            $table->text('note')->nullable();
 
             $table->timestamps();
         });

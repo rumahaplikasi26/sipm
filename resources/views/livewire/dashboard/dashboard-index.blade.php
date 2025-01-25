@@ -2,14 +2,35 @@
 
     @livewire('component.layout.breadcrumb', ['breadcrumbs' => [['name' => 'Dashboard'] ]], key('breadcrumb-component'))
 
-    <div class="d-flex justify-content-end">
+    @can('dashboard.index')
+    <div class="d-flex justify-content-end gap-2">
         <div class="mb-3">
             <label for="date">Filter Date</label>
             <input type="date" class="form-control" wire:model.live="date">
         </div>
+
+        <div class="mb-3">
+            <label for="shift">Filter Shift</label>
+            <select class="form-select" wire:model.live="shift_id">
+                <option selected value="">-- Select Shift --</option>
+                @foreach ($shifts as $shift)
+                    <option value="{{ $shift->id }}">{{ $shift->name }}</option>
+                @endforeach
+            </select>
+        </div>
     </div>
+    @endcan
     
-    @livewire('dashboard.attendance-stats', key('attendance-stats'))
+    @livewire('dashboard.attendance-stats', ['date' => $date, 'shift_id' => $shift_id], key('attendance-stats'))
+
+    <div class="row">
+        <div class="col-md">
+            @livewire('dashboard.monitoring-present-day', key('monitoring-present-day'))
+        </div>
+         <div class="col-md">
+            @livewire('dashboard.monitoring-present-night', key('monitoring-present-night'))
+        </div>
+    </div>
 
     {{-- <div class="row">
         <div class="col-xl-4">

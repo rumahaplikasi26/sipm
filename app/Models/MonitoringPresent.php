@@ -60,6 +60,6 @@ class MonitoringPresent extends Model
 
     public function details()
     {
-        return $this->hasMany(MonitoringPresentDetail::class);
+        return $this->hasMany(MonitoringPresentDetail::class, 'monitoring_present_id', 'id');
     }
 }

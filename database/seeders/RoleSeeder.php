@@ -27,7 +27,7 @@ class RoleSeeder extends Seeder
             'dashboard.index' => [
                 'Super Admin',
                 'Site Manager',
-                'Supervisor',
+                // 'Supervisor',
                 'Project Manager',
                 'Quality Control',
                 'Project Director',
