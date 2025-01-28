@@ -8,7 +8,7 @@ use App\Models\Attendance;
 use App\Models\Shift;
 use Livewire\Attributes\On;
 
-class AttendanceStats extends Component
+class AttendanceStatsNight extends Component
 {
     public $totalIN = 0;
     public $totalBreakIn = 0;
@@ -23,7 +23,7 @@ class AttendanceStats extends Component
     {
         $this->date = $date;
         $this->dateString = Carbon::parse($date)->format('d F Y');
-        $this->shift = Shift::where('day_of_week', strtolower(Carbon::parse($this->date)->format('l')))->first();
+        $this->shift = Shift::where('day_of_week', strtolower(Carbon::parse($this->date)->format('l')))->skip(1)->first();
         $this->shift_id = $this->shift->id;
 
         $this->calculateAttendance();
@@ -36,7 +36,7 @@ class AttendanceStats extends Component
 
         $this->dateString = Carbon::parse($date)->format('d F Y');
         
-        $this->shift = Shift::where('day_of_week', strtolower(Carbon::parse($this->date)->format('l')))->first();
+        $this->shift = Shift::where('day_of_week', strtolower(Carbon::parse($this->date)->format('l')))->skip(1)->first();
         $this->shift_id = $this->shift->id;
 
         $this->calculateAttendance();
@@ -92,16 +92,17 @@ class AttendanceStats extends Component
                 $break_end = Carbon::parse($shift->break_end_time)
                     ->setDateFrom(Carbon::parse($attendance->shift_date));
 
-                // \Log::info('IN Break Start Hour: ' . $break_start->hour);
-                // \Log::info('IN Break End Hour: ' . $break_end->hour);
+                \Log::info('Shift 2 IN Break Start Hour: ' . $break_start->hour);
+                \Log::info('Shift 2 IN Break End Hour: ' . $break_end->hour);
 
-                // Handle pergantian hari untuk break_end
-                if ($break_end->hour > $break_start->hour) {
+                // Handle istirahat jam 00:00 - 01:00 dengan pergantian hari
+                if ($time > $break_start && $time > $break_end) {
+                    $break_start->addDay();
                     $break_end->addDay();
                 }
 
-                // \Log::info('IN Break Start: ' . $break_start);
-                // \Log::info('IN Break End: ' . $break_end);
+                \Log::info('Shift 2 IN Break Start: ' . $break_start);
+                \Log::info('Shift 2 IN Break End: ' . $break_end);
 
                 return $time->between(
                     $break_start,
@@ -175,6 +176,6 @@ class AttendanceStats extends Component
 
     public function render()
     {
-        return view('livewire.dashboard.attendance-stats');
+        return view('livewire.dashboard.attendance-stats-night');
     }
 }

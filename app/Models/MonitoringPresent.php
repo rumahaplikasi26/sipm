@@ -16,6 +16,7 @@ class MonitoringPresent extends Model
         'type',
         'group_id',
         'role',
+        'shift_date',
     ];
 
     protected $casts = [

@@ -3,7 +3,7 @@
 
     <div class="row">
         <div class="col-lg">
-            @livewire('employee.employee-list')
+            @livewire('employee.employee-list', key('employee-list'))
         </div>
 
         @can('employee.create')

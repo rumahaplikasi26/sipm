@@ -8,10 +8,13 @@ use App\Models\MonitoringPresent;
 use App\Models\Shift;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class MonitoringPresentList extends BaseComponent
 {
-    use LivewireAlert;
+    use LivewireAlert, WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
 
     public $filterStartDate;
     public $filterEndDate;
@@ -57,7 +60,7 @@ class MonitoringPresentList extends BaseComponent
 
         if ($this->authUser->hasRole('Supervisor')) {
             $monitoring_presents->where('user_id', $this->authUser->id)->where('role', 'supervisor');
-        } else {
+        } elseif ($this->authUser->hasRole('HSE')) { 
             $monitoring_presents->where('role', 'hse');
         }
 

@@ -15,8 +15,6 @@ class EmployeeList extends BaseComponent
 
     protected $paginationTheme = 'bootstrap';
 
-    #[Url(except: '')]
-
     public $search = '';
     public $perPage = 12;
 
@@ -27,11 +25,6 @@ class EmployeeList extends BaseComponent
     protected $queryString = [
         'search' => ['except' => ''],
     ];
-
-    public function updatingSearch()
-    {
-        $this->resetPage();
-    }
 
     public function handleRefresh()
     {

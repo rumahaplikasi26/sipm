@@ -34,10 +34,10 @@ class UserForm extends Component
     {
         $this->validate([
             'name' => 'required',
-            'email' => 'required|email',
+            'email' => 'nullable|email',
             'password' => 'nullable',
             'selectedRoles' => 'required',
-            'selectedPermissions' => 'required',
+            'selectedPermissions' => 'nullable',
         ]);
 
         try {

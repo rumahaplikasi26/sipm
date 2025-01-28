@@ -38,8 +38,7 @@ class EmployeeForm extends Component
         $this->validate([
             'employee_id' => 'required',
             'name' => 'required',
-            'email' => 'required|email',
-            'phone' => 'required',
+            'email' => 'nullable|email',
             'position' => 'nullable',
             'group' => 'nullable',
         ]);

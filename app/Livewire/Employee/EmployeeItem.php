@@ -4,12 +4,14 @@ namespace App\Livewire\Employee;
 
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Reactive;
 use Livewire\Component;
 
 class EmployeeItem extends Component
 {
     use LivewireAlert;
 
+    #[Reactive]
     public $employee;
 
     public function mount($employee)

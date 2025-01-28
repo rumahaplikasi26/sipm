@@ -3,8 +3,10 @@
         <div class="col-lg-12 mb-4">
             <div class="d-flex justify-content-end">
                 <div class="flex-shrink-0">
-                    <a href="#!" class="btn btn-primary" wire:click="$dispatch('showModalAddMonitoring')">Add New Monitoring</a>
-                    <a href="#!" class="btn btn-light" wire:click="$dispatch('refreshIndex')"><i class="mdi mdi-refresh"></i></a>
+                    <a href="#!" class="btn btn-primary" wire:click="$dispatch('showModalAddMonitoring')">Add New
+                        Monitoring</a>
+                    <a href="#!" class="btn btn-light" wire:click="$dispatch('refreshIndex')"><i
+                            class="mdi mdi-refresh"></i></a>
                 </div>
             </div>
         </div>
@@ -18,7 +20,7 @@
                                 <select class="form-select" id="selectGroup" wire:model="filterGroup">
                                     <option selected value="">-- Select Group --</option>
                                     @foreach ($groups as $group)
-                                    <option value="{{ $group->id }}">{{ $group->name }}</option>
+                                        <option value="{{ $group->id }}">{{ $group->name }}</option>
                                     @endforeach
                                 </select>
                                 <label for="selectGroup">Filter Select Group</label>
@@ -27,7 +29,8 @@
                                 <select class="form-select" id="filterShift" wire:model="filterShift">
                                     <option selected value="">-- Select Shift --</option>
                                     @foreach ($shifts as $shift)
-                                    <option value="{{ $shift->id }}">{{ $shift->name }} {{ $shift->day_of_week }}</option>
+                                        <option value="{{ $shift->id }}">{{ $shift->name }}
+                                            {{ $shift->day_of_week }}</option>
                                     @endforeach
                                 </select>
                                 <label for="filterShift">Filter Select Shift</label>
@@ -68,16 +71,20 @@
 
     <div class="row">
         @foreach ($monitoring_presents as $monitoring_present)
-        <div class="col-md-3 mb-3">
-            @livewire('monitoring-present.monitoring-present-item', ['monitoring_present' => $monitoring_present], key($monitoring_present->id))
-        </div>
+            <div class="col-md-3 mb-3">
+                @livewire('monitoring-present.monitoring-present-item', ['monitoring_present' => $monitoring_present], key($monitoring_present->id))
+            </div>
         @endforeach
+
+    </div>
+
+    <div class="row">
 
         <div class="col-lg-12">
             {{ $monitoring_presents->links() }}
         </div>
-    </div>
 
+    </div>
     @livewire('monitoring-present.monitoring-present-form', ['groups' => $groups], key('monitoring-present-form'))
     @livewire('monitoring-present.monitoring-present-detail', key('monitoring-present-detail'))
 </div>

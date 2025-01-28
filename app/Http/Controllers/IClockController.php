@@ -73,6 +73,7 @@ class IClockController extends Controller
 
                 $data = explode("\t", $rey);
 
+                
                 $time = date('H:i:s', strtotime($data[1]));
 
                 $employee = $this->getEmployee($data[0]);

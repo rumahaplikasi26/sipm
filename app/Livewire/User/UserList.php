@@ -18,7 +18,7 @@ class UserList extends BaseComponent
     #[URL(except: '')]
 
     public $search = '';
-    public $perPage = 10;
+    public $perPage = 21;
 
     protected $listeners = [
         'refreshIndex' => 'handleRefresh',
