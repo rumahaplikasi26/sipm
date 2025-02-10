@@ -2,69 +2,87 @@
     <div id="{{ $chart_id }}" data-colors='["--bs-primary"]' class="apex-charts"></div>
 
     @push('js')
-    <script src="{{ asset('libs/apexcharts/apexcharts.min.js') }}"></script>
-
         <script>
-            document.addEventListener("livewire:init", function(e) {
+            document.addEventListener("livewire:init", function() {
+                initChart(
+                    @json($chart_id),
+                    @json($series),
+                    @json($labels),
+                    @json($colors),
+                    @json($height));
 
-                var chart;
+                Livewire.on('reloadChart', () => {
+                    console.log('reloadChart');
+                    initChart(
+                        @json($chart_id),
+                        @json($series),
+                        @json($labels),
+                        @json($colors),
+                        @json($height));
+                });
+            });
 
-                function renderChart() {
-                    var options;
-                    options = {
-                        chart: {
-                            height: {{ $height }},
-                            type: "radialBar",
-                            offsetY: -10
-                        },
-                        plotOptions: {
-                            radialBar: {
-                                startAngle: -135,
-                                endAngle: 135,
-                                dataLabels: {
-                                    name: {
-                                        fontSize: "13px",
-                                        color: void 0,
-                                        offsetY: 60
-                                    },
-                                    value: {
-                                        offsetY: 22,
-                                        fontSize: "16px",
-                                        color: void 0,
-                                        formatter: function(e) {
-                                            return e + "%";
-                                        },
+            function validateChartData(series) {
+                return Array.isArray(series) && series.length > 0 && series.every(num => !isNaN(num) && num !== null);
+            }
+
+            function initChart(chart_id, series, labels, colors, height) {
+                let chartContainer = document.querySelector("#" + chart_id);
+                if (!chartContainer) return;
+
+                // Hapus chart lama jika sudah ada
+                if (chartContainer.chartInstance) {
+                    chartContainer.chartInstance.destroy();
+                }
+
+                let options = {
+                    chart: {
+                        height: height, // Default jika height undefined
+                        type: "radialBar",
+                        offsetY: -10
+                    },
+                    plotOptions: {
+                        radialBar: {
+                            startAngle: -135,
+                            endAngle: 135,
+                            dataLabels: {
+                                name: {
+                                    fontSize: "13px",
+                                    offsetY: 60
+                                },
+                                value: {
+                                    offsetY: 22,
+                                    fontSize: "16px",
+                                    formatter: function(value) {
+                                        return isNaN(value) ? "N/A" : value + "%"; // Tangani NaN
                                     },
                                 },
                             },
                         },
-                        colors: ['{{$color}}'],
-                        fill: {
-                            type: "gradient",
-                            gradient: {
-                                shade: "dark",
-                                shadeIntensity: 0.15,
-                                inverseColors: !1,
-                                opacityFrom: 1,
-                                opacityTo: 1,
-                                stops: [0, 50, 65, 91],
-                            },
+                    },
+                    colors: colors,
+                    fill: {
+                        type: "gradient",
+                        gradient: {
+                            shade: "dark",
+                            shadeIntensity: 0.15,
+                            inverseColors: false,
+                            opacityFrom: 1,
+                            opacityTo: 1,
+                            stops: [0, 50, 65, 91],
                         },
-                        stroke: {
-                            dashArray: 4
-                        },
-                        series: {!! json_encode($series) !!},
-                        labels: {!! json_encode($labels) !!},
-                    }
+                    },
+                    stroke: {
+                        dashArray: 4
+                    },
+                    series: series,
+                    labels: labels || ["Progress"],
+                };
 
-                    chart = new ApexCharts(
-                        document.querySelector("#{{ $chart_id }}"),
-                        options
-                    ).render();
-                }
-
-                renderChart();
-            })
+                let chart = new ApexCharts(chartContainer, options);
+                chart.render();
+                chartContainer.chartInstance = chart;
+            }
         </script>
     @endpush
 </div>

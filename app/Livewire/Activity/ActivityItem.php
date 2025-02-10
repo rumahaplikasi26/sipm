@@ -16,18 +16,22 @@ class ActivityItem extends Component
     public $activity;
     public $number;
     public $activity_id;
-    public $color;
+    public $colors;
 
     public function mount($activity, $number)
     {
         $this->activity = $activity;
         $this->number = $number;
 
-        if ($this->activity->progress < 50) {
-            $this->color = 'rgb(179, 44, 20)';
+        if ($this->activity->progress == 0) {
+            $this->colors = 'rgb(179, 44, 20)';
+        } elseif ($this->activity->progress < 50) {
+            $this->colors = 'rgb(255, 166, 0)';
         } else {
-            $this->color = 'rgb(15, 134, 10)';
+            $this->colors = 'rgb(15, 134, 10)';
         }
+
+        $this->dispatch('reloadChart');
     }
 
     public function confirmDelete()
@@ -53,7 +57,7 @@ class ActivityItem extends Component
         try {
             $this->activity->delete();
             $this->alert('success', 'Activity deleted successfully');
-            $this->dispatch('refreshIndex');
+            return redirect()->route('activity');
         } catch (\Exception $e) {
             $this->alert('error', 'Activity could not be deleted');
         }

@@ -28,13 +28,14 @@ class ReportExport implements FromCollection, WithHeadings, WithMapping
         return [
             'ID',
             'Scope',
-            'Group',
+            'Area',
             'Position',
             'Estimate Time',
+            'Quantity',
             'Forecast Date',
             'Plan Date',
             'Actual Date',
-            'Progress (%)',
+            'Progress',
             'Supervisor',
             'Dependencies',
             'Status',
@@ -46,7 +47,7 @@ class ReportExport implements FromCollection, WithHeadings, WithMapping
         // Ambil semua scope dari relasi details.scope dan gabungkan menjadi string
         $historyProgress = collect($activity['history_progress'] ?? [])
             ->map(function ($progress) {
-                return ($progress['date'] ?? '') . ': ' . ($progress['percentage'] ? $progress['percentage'].'%' : '-');
+                return ($progress['date'] ?? '') . ': ' . ($progress['quantity'] ? $progress['quantity']: '-');
             })->join(', ');
 
         // Ambil semua dependency dan gabungkan menjadi string
@@ -60,13 +61,14 @@ class ReportExport implements FromCollection, WithHeadings, WithMapping
         return [
             $activity['id'],
             $activity['scope']['name'] ?? '',
-            $activity['group']['name'] ?? '',
+            $activity['area']['name'] ?? '',
             $activity['position']['name'] ?? '',
             $activity['total_estimate'] .' Day',
+            $activity['total_quantity'] ?? 0,
             $activity['forecast_date'],
             $activity['plan_date'],
             $activity['actual_date'] ?? '-',
-            $historyProgress,
+            $historyProgress. ', '. $activity['progress'].'%',
             $activity['supervisor']['name'] ?? '',
             $dependencies,
             $activity['status']['name'] ?? '',

@@ -2,23 +2,24 @@
 
 namespace App\Livewire\Widget\Chart;
 
+use Livewire\Attributes\Reactive;
 use Livewire\Component;
 
 class RadialBar extends Component
 {
-    public $chart_id;
     public $labels = [];
+    public $chart_id;
     public $height = 200;
     public $series = [];
-    public $color = 'rgba(255, 99, 71, 1)';
+    public $colors = ['rgba(255, 99, 71, 1)'];
 
-    public function mount($chart_id, $series, $color = null)
+    public function mount($chart_id, $series, $colors = [])
     {
         $this->labels = ['Progress'];
         $this->chart_id = $chart_id;
         $this->series = $series;    
 
-        $this->color = $color;
+        $this->colors = $colors ?? ['rgba(255, 99, 71, 1)'];
     }
 
     public function render()

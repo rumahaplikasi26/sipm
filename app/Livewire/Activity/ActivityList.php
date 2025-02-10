@@ -2,10 +2,11 @@
 
 namespace App\Livewire\Activity;
 
+use App\Jobs\SendWhatsappJob;
 use App\Livewire\BaseComponent;
 use App\Models\StatusActivity;
 use App\Models\User;
-use App\Models\Group;
+use App\Models\Area;
 use App\Models\Scope;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -27,13 +28,13 @@ class ActivityList extends BaseComponent
     public $search = '';
     public $perPage = 30;
 
-    public $filterGroup = '';
-    public $filterScope = '';
-    public $filterPosition = '';
+    public $filterArea = [];
+    public $filterScope = [];
+    public $filterPosition = [];
     public $filterDate = '';
-    public $filterSupervisor = '';
+    public $filterSupervisor = [];
 
-    public $groups = [];
+    public $areas = [];
     public $positions = [];
     public $scopes = [];
     public $supervisors = [];
@@ -46,7 +47,6 @@ class ActivityList extends BaseComponent
 
     public $actual_date;
 
-
     protected $listeners = [
         'refreshIndex' => 'handleRefresh',
     ];
@@ -57,7 +57,7 @@ class ActivityList extends BaseComponent
 
     public function mount()
     {
-        $this->groups = Group::all();
+        $this->areas = Area::all();
         $this->positions = Position::all();
         $this->scopes = Scope::all();
         $this->supervisors = User::role('Supervisor')->get();
@@ -66,6 +66,30 @@ class ActivityList extends BaseComponent
     public function updatingSearch()
     {
         $this->resetPage();
+    }
+
+    #[On('filterAreaSelected')]
+    public function filterAreaSelected($value)
+    {
+        $this->filterArea = $value;
+    }
+
+    #[On('filterScopeSelected')]
+    public function filterScopeSelected($value)
+    {
+        $this->filterScope = $value;
+    }
+
+    #[On('filterPositionSelected')]
+    public function filterPositionSelected($value)
+    {
+        $this->filterPosition = $value;
+    }
+
+    #[On('filterSupervisorSelected')]
+    public function filterSupervisorSelected($value)
+    {
+        $this->filterSupervisor = $value;
     }
 
     public function handleRefresh()
@@ -77,11 +101,11 @@ class ActivityList extends BaseComponent
     public function resetFilter()
     {
         $this->search = "";
-        $this->filterGroup = "";
-        $this->filterScope = "";
-        $this->filterPosition = "";
+        $this->filterArea = [];
+        $this->filterScope = [];
+        $this->filterPosition = [];
         $this->filterDate = "";
-        $this->filterSupervisor = "";
+        $this->filterSupervisor = [];
 
         $this->resetPage();
     }
@@ -113,13 +137,27 @@ class ActivityList extends BaseComponent
         $this->validate([
             'activity_id' => 'required',
             'status_id' => 'required',
+        ], [
+            'status_id.required' => 'Status is required',
+            'activity_id.required' => 'Activity is required',
         ]);
 
         try {
-
             $activity = Activity::find($this->activity_id);
             $activity->status_id = $this->status_id;
             $activity->save();
+
+            $supervisors = User::where('id', 1)->get();
+            foreach ($supervisors as $supervisor) {
+                $phone = $supervisor->phone;
+                $message = "🔔 *Activity Update!*\n"
+                    . "The activity *'{$activity->scope->name}'* in *'{$activity->area->name}'* under the position *'{$activity->position->name}'*, supervised by *'{$activity->supervisor->name}'*, has been updated to *'{$activity->status->name}'*.\n"
+                    . "🚀 *Check the details now:* https://kms.tpm-facility.com/activities";
+
+                if ($phone != null) {
+                    SendWhatsappJob::dispatch($phone, $message);
+                }
+            }
 
             $this->alert('success', 'Status updated successfully');
             $this->dispatch('hideFormValidation');
@@ -151,7 +189,7 @@ class ActivityList extends BaseComponent
 
     public function render()
     {
-        $activities = Activity::with('group', 'scope', 'issues', 'supervisor', 'position', 'status');
+        $activities = Activity::with('area', 'scope', 'issues', 'supervisor', 'position', 'status');
 
         if ($this->authUser->hasRole('Supervisor')) {
             $activities->where('supervisor_id', $this->authUser->id);
@@ -162,20 +200,20 @@ class ActivityList extends BaseComponent
                 $query->where('name', 'like', '%' . $this->search . '%');
             });
         })
-            ->when($this->filterGroup, function ($query) {
-                return $query->where('group_id', $this->filterGroup);
+            ->when($this->filterArea, function ($query) {
+                return $query->whereIn('area_id', $this->filterArea);
             })
             ->when($this->filterScope, function ($query) {
-                return $query->where('scope_id', $this->filterScope);
+                return $query->whereIn('scope_id', $this->filterScope);
             })
             ->when($this->filterPosition, function ($query) {
-                return $query->where('position_id', $this->filterPosition);
+                return $query->whereIn('position_id', $this->filterPosition);
             })
             ->when($this->filterDate, function ($query) {
                 return $query->where('date', $this->filterDate);
             })
             ->when($this->filterSupervisor, function ($query) {
-                return $query->where('supervisor_id', $this->filterSupervisor);
+                return $query->whereIn('supervisor_id', $this->filterSupervisor);
             })
             ->orderBy('id', 'desc')
             ->paginate($this->perPage);

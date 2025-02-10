@@ -20,8 +20,9 @@ class EmployeeForm extends Component
     }
 
     #[On('employee-edit')]
-    public function edit(Employee $employee)
+    public function edit($employee_id)
     {
+        $employee = Employee::find($employee_id);
         $this->employee = $employee;
         $this->name = $employee->name;
         $this->employee_id = $employee->id;

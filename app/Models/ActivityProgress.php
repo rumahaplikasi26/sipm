@@ -12,6 +12,7 @@ class ActivityProgress extends Model
         'date',
         'activity_id',
         'user_id',
+        'quantity',
         'percentage',
     ];
 

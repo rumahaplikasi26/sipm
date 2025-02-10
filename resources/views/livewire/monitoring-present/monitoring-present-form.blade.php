@@ -10,7 +10,7 @@
                 <div class="modal-body">
                     <form action="javascript:void(0);" wire:submit.prevent="submitMonitoringPresent">
 
-                        <div class="form-floating mb-3">
+                        {{-- <div class="form-floating mb-3">
                             <input type="date" class="form-control @error('shift_date') is-invalid @enderror"
                                 id="shift_date" wire:model.live="shift_date">
                             <label for="search">Select Shift Date * Pilih Tanggal Awal Masuk Kerja Shift</label>
@@ -20,10 +20,19 @@
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
+                        </div> --}}
+
+                        <div class="form-floating mb-3" wire:loading wire:target="shift_date">
+                            <div class="d-flex justify-content-center">
+                                <div class="spinner-border" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="form-floating mb-3">
-                            <select class="form-select @error('group_id') is-invalid @enderror" @if(!$shift_date) disabled @endif id="group_id"
+                        <div class="form-floating mb-3" wire:loading.remove wire:target="shift_date">
+                            <select class="form-select @error('group_id') is-invalid @enderror"
+                                @if (!$shift_date) disabled @endif id="group_id"
                                 wire:model.live="group_id">
                                 <option selected value="">-- Select Group --</option>
                                 @foreach ($groups as $group)
@@ -41,8 +50,9 @@
                             @enderror
                         </div>
 
-                        <div class="form-floating mb-3">
-                            <select class="form-select @error('shift_id') is-invalid @enderror" @if(!$shift_date) disabled @endif id="shift_id"
+                        <div class="form-floating mb-3" wire:loading.remove wire:target="shift_date">
+                            <select class="form-select @error('shift_id') is-invalid @enderror"
+                                @if (!$shift_date) disabled @endif id="shift_id"
                                 wire:model.live="shift_id">
                                 <option selected value="">-- Select Shift --</option>
                                 @foreach ($shiftForms as $shift)
@@ -60,17 +70,22 @@
                             @enderror
                         </div>
 
-                        <div class="form-floating mb-3">
-                            <select class="form-select @error('type') is-invalid @enderror" @if(!$shift_date) disabled @endif wire:loading.attr="disabled"
+                        <div class="form-floating mb-3" wire:loading.remove wire:target="shift_date">
+                            <select class="form-select @error('type') is-invalid @enderror"
+                                @if (!$shift_date) disabled @endif wire:loading.attr="disabled"
                                 wire:target="shift_id" id="type" wire:model="type">
                                 <option selected value="">-- Select Time --</option>
                                 @role('Supervisor')
                                     @if ($shift_id == $shift_1)
+                                        <option value="07">07:00</option>
                                         <option value="09">09:00</option>
                                         <option value="15">15:00</option>
+                                        <option value="17">17:00</option>
                                     @else
+                                        <option value="19">19:00</option>
                                         <option value="21">21:00</option>
                                         <option value="03">03:00</option>
+                                        <option value="05">05:00</option>
                                     @endif
                                 @else
                                     @if ($shift_id == $shift_1)
@@ -90,7 +105,6 @@
                             </select>
                             <label for="type">Select Time</label>
 
-
                             @error('type')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -103,7 +117,17 @@
                             <label for="search">Search Name, ID</label>
                         </div>
 
-                        <div style="height: 600px; overflow-y: scroll" class="table-responsive">
+
+                        <div class="form-floating mb-3" wire:loading>
+                            <div class="d-flex justify-content-center">
+                                <div class="spinner-border" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        @isset($group_id)
+                        <div style="height: 600px; overflow-y: scroll" class="table-responsive" wire:loading.remove>
                             <table class="table table-bordered align-middle table-wrap table-sm">
                                 <thead>
                                     <th width="20%">Employee Name</th>
@@ -154,6 +178,8 @@
                                                             <option value="">-- Select Reason --</option>
                                                             <option value="sakit">Sakit</option>
                                                             <option value="tanpa_keterangan">Tanpa Keterangan</option>
+                                                            <option value="cuti">Cuti</option>
+                                                            <option value="training">Training</option>
                                                             <option value="pindah_supervisor">Pindah Supervisor</option>
                                                         </select>
 
@@ -197,6 +223,7 @@
                                 </tbody>
                             </table>
                         </div>
+                        @endisset
 
                         <div class="d-flex gap-2 justify-content-end mt-4">
                             <button type="button" class="btn  btn-secondary waves-effect"

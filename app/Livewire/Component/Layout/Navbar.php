@@ -14,10 +14,26 @@ class Navbar extends BaseComponent
         $menus = [
             [
                 'name' => 'Dashboard',
-                'url' => route('dashboard'),
+                'url' => '#',
                 'route' => 'dashboard',
                 'icon' => 'fas fa-tachometer-alt',
-                'permissions' => ['dashboard.index']
+                'permissions' => ['dashboard.index'],
+                'menus' => [
+                    [
+                        'name' => 'Dashboard Attendance',
+                        'url' => route('dashboard'),
+                        'route' => 'dashboard',
+                        'icon' => 'fas fa-users',
+                        'permissions' => ['dashboard.index']
+                    ],
+                    [
+                        'name' => 'Dashboard Activity',
+                        'url' => '#',
+                        'route' => 'dahboard',
+                        'icon' => 'fas fa-users-cog',
+                        'permissions' => ['dashboard.index']
+                    ],
+                ]
             ],
             [
                 'name' => 'Master Data',
@@ -39,6 +55,13 @@ class Navbar extends BaseComponent
                         'route' => 'master.groups',
                         'icon' => 'fas fa-users-cog',
                         'permissions' => ['group.index']
+                    ],
+                    [
+                        'name' => 'Area',
+                        'url' => route('master.areas'),
+                        'route' => 'master.areas',
+                        'icon' => 'fas fa-map-marker-alt',
+                        'permissions' => ['area.index']
                     ],
                     [
                         'name' => 'Position',
@@ -92,6 +115,13 @@ class Navbar extends BaseComponent
                 'route' => 'activity'
             ],
             [
+                'name' => 'Daily Image',
+                'icon' => 'fas fa-camera',
+                'permissions' => ['collection.image.index'],
+                'url' => route('collection.images'),
+                'route' => 'collection.images'
+            ],
+            [
                 'name' => 'Monitoring Present',
                 'icon' => 'fas fa-check-square',
                 'permissions' => ['monitoring.present.index'],
@@ -99,18 +129,27 @@ class Navbar extends BaseComponent
                 'route' => 'monitoring.present'
             ],
             [
-                'name' => 'Report Activity',
+                'name' => 'Report',
                 'icon' => 'fas fa-chart-line',
-                'permissions' => ['activity.report.index'],
-                'url' => route('activity.report'),
-                'route' => 'activity.report.index'
-            ],
-            [
-                'name' => 'Report Attendance',
-                'icon' => 'fas fa-chart-line',
-                'permissions' => ['attendance.report.index'],
-                'url' => route('attendance.report'),
-                'route' => 'attendance.report.index'
+                'permissions' => ['activity.report.index', 'attendance.report.index'],
+                'url' => '#',
+                'route' => '#',
+                'menus' => [
+                    [
+                        'name' => 'Report Activity',
+                        'icon' => 'fas fa-chart-line',
+                        'permissions' => ['activity.report.index'],
+                        'url' => route('activity.report'),
+                        'route' => 'activity.report.index'
+                    ],
+                    [
+                        'name' => 'Report Attendance',
+                        'icon' => 'fas fa-chart-line',
+                        'permissions' => ['attendance.report.index'],
+                        'url' => route('attendance.report'),
+                        'route' => 'attendance.report.index'
+                    ],
+                ],
             ]
         ];
 

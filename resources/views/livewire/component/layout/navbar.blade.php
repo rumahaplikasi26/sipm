@@ -14,10 +14,12 @@
                     @else
                         <!-- Menu dengan submenu -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle arrow-none" href="#" id="menu-{{ Str::slug($menu['name']) }}"
-                               role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle arrow-none" href="#"
+                                id="menu-{{ Str::slug($menu['name']) }}" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
                                 <i class="{{ $menu['icon'] }} me-2"></i>
-                                <span>{{ $menu['name'] }}</span>
+                                <span key="t-{{ Str::slug($menu['name']) }}">{{ $menu['name'] }}</span>
+                                <div class="arrow-down"></div>
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="menu-{{ Str::slug($menu['name']) }}">
                                 @foreach ($menu['menus'] as $subMenu)
@@ -25,7 +27,7 @@
                                         @if (isset($subMenu['menus']))
                                             <!-- Submenu dengan sub-submenu -->
                                             <a class="dropdown-item dropdown-toggle" href="#">
-                                                <i class="{{ $subMenu['icon'] }} me-2"></i>
+                                                {{-- <i class="{{ $subMenu['icon'] }} me-2"></i> --}}
                                                 {{ $subMenu['name'] }}
                                             </a>
                                             <ul class="dropdown-submenu">
@@ -41,7 +43,7 @@
                                         @else
                                             <!-- Submenu tanpa sub-submenu -->
                                             <a class="dropdown-item" href="{{ $subMenu['url'] }}">
-                                                <i class="{{ $subMenu['icon'] }} me-2"></i>
+                                                {{-- <i class="{{ $subMenu['icon'] }} me-2"></i> --}}
                                                 {{ $subMenu['name'] }}
                                             </a>
                                         @endif

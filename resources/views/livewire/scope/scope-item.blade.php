@@ -8,8 +8,8 @@
                     </div>
                 </div>
 
-                <div class="overflow-hidden me-auto">
-                    <h5 class="font-size-13 text-truncate mb-1">{{ $scope->name }}</h5>
+                <div class="overflow-hidden me-auto ">
+                    <h5 class="font-size-13 text-wrap mb-1">{{ $scope->name }}</h5>
                     <p class="text-muted text-truncate mb-0">{{$scope->activity->count()}} Activity</p>
                 </div>
 

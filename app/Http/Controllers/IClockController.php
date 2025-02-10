@@ -6,6 +6,7 @@ use App\Jobs\AttendanceJob;
 use App\Jobs\AttendanceSyncJob;
 use App\Models\ConfigAttendance;
 use App\Models\Employee;
+use App\Models\Machine;
 use App\Models\Shift;
 use App\Models\User;
 use Carbon\Carbon;
@@ -73,7 +74,6 @@ class IClockController extends Controller
 
                 $data = explode("\t", $rey);
 
-                
                 $time = date('H:i:s', strtotime($data[1]));
 
                 $employee = $this->getEmployee($data[0]);
@@ -81,7 +81,7 @@ class IClockController extends Controller
                 $name = '';
                 $phone = '';
                 $shift = null;
-
+                $shiftDate = null;
                 $is_active = false;
 
                 if ($employee != null) {
@@ -99,49 +99,62 @@ class IClockController extends Controller
                     $is_active = false;
                 }
 
-                // Cari shift berdasarkan tanggal atau hari
+                $machine = Machine::where('serial_number', $request->input('SN'))->first();
+
                 $dayOfWeek = Carbon::parse($data[1])->format('l'); // Mendapatkan nama hari
 
-                if(Carbon::parse($data[1])->hour < 6){
-                    $dayOfWeek = Carbon::parse($data[1])->subDay()->format('l');
-                }
-                
-                // Ambil semua shift yang berlaku untuk hari tersebut
-                $shifts = Shift::where('day_of_week', strtolower($dayOfWeek))->get();
-
-                if ($shifts->isNotEmpty()) {
-                    foreach ($shifts as $potentialShift) {
-                        // Validasi apakah fingerprint sesuai dengan waktu shift
-                        if ($this->isValidFingerprintTime($data[1], $potentialShift)) {
-                            $shift = $potentialShift; // Pilih shift yang sesuai
-                            break; // Berhenti pada shift pertama yang valid
-                        }
+                if ($machine->shift == 1) {
+                    $dayOfWeek = Carbon::parse($data[1])->format('l'); // Mendapatkan nama hari
+                    $shiftDate = Carbon::parse($data[1])->toDateString();
+                } else if ($machine->shift == 2) {
+                    if (Carbon::parse($data[1])->hour >= 0 && Carbon::parse($data[1])->hour <= 11) {
+                        $dayOfWeek = Carbon::parse($data[1])->subDay()->format('l');
+                        $shiftDate = Carbon::parse($data[1])->subDay()->toDateString();
+                    } else {
+                        $dayOfWeek = Carbon::parse($data[1])->format('l'); // Mendapatkan nama hari
+                        $shiftDate = Carbon::parse($data[1])->toDateString();
                     }
                 }
 
+                // Ambil semua shift yang berlaku untuk hari tersebut
+                $shift = Shift::where('day_of_week', strtolower($dayOfWeek))->where('shift', $machine->shift)->first();
+
+                if(!isset($shift)) {
+                    \Log::info('Shift Not Found', $request->all());
+                }
+                
+                // if ($shifts->isNotEmpty()) {
+                //     foreach ($shifts as $potentialShift) {
+                //         // Validasi apakah fingerprint sesuai dengan waktu shift
+                //         if ($this->isValidFingerprintTime($data[1], $potentialShift)) {
+                //             $shift = $potentialShift; // Pilih shift yang sesuai
+                //             break; // Berhenti pada shift pertama yang valid
+                //         }
+                //     }
+                // }
 
                 if (isset($shift)) {
 
                     // Tetapkan shift_date berdasarkan waktu fingerprint
                     $timestamp = Carbon::parse($request->datetime);
 
-                    // Tetapkan waktu awal dan akhir shift dengan tanggal yang sesuai
-                    $shiftStartAdjustment = Carbon::parse($timestamp->toDateString() . ' ' . $shift->start_adjustment);
-                    $shiftEndAdjustment = Carbon::parse($timestamp->toDateString() . ' ' . $shift->end_adjustment);
+                    // // Tetapkan waktu awal dan akhir shift dengan tanggal yang sesuai
+                    // $shiftStartAdjustment = Carbon::parse($timestamp->toDateString() . ' ' . $shift->start_adjustment);
+                    // $shiftEndAdjustment = Carbon::parse($timestamp->toDateString() . ' ' . $shift->end_adjustment);
 
-                    // Jika shift berakhir keesokan harinya (melewati tengah malam)
-                    if ($shiftEndAdjustment->lt($shiftStartAdjustment)) {
-                        $shiftEndAdjustment = $shiftEndAdjustment->addDay(); // Tambahkan 1 hari pada waktu akhir shift
-                    }
+                    // // Jika shift berakhir keesokan harinya (melewati tengah malam)
+                    // if ($shiftEndAdjustment->lt($shiftStartAdjustment)) {
+                    //     $shiftEndAdjustment = $shiftEndAdjustment->addDay(); // Tambahkan 1 hari pada waktu akhir shift
+                    // }
 
-                    // Tetapkan shift_date berdasarkan waktu fingerprint
-                    if ($timestamp->hour < 6) {
-                        // Jika fingerprint setelah waktu akhir shift, gunakan tanggal shift sebelumnya
-                        $shiftDate = $shiftStartAdjustment->subDay()->toDateString();
-                    } else {
-                        // Jika fingerprint masih dalam rentang shift, gunakan tanggal saat shift mulai
-                        $shiftDate = $shiftStartAdjustment->toDateString();
-                    }
+                    // // Tetapkan shift_date berdasarkan waktu fingerprint
+                    // if ($timestamp->hour < 6) {
+                    //     // Jika fingerprint setelah waktu akhir shift, gunakan tanggal shift sebelumnya
+                    //     $shiftDate = $shiftStartAdjustment->subDay()->toDateString();
+                    // } else {
+                    //     // Jika fingerprint masih dalam rentang shift, gunakan tanggal saat shift mulai
+                    //     $shiftDate = $shiftStartAdjustment->toDateString();
+                    // }
 
                     $attendanceData = [
                         'sn' => $sn,
@@ -188,49 +201,38 @@ class IClockController extends Controller
     {
         try {
             $shift = null;
+            $shiftDate = null;
 
-            // Cari shift berdasarkan tanggal atau hari
+            $machine = Machine::where('serial_number', $request->input('SN'))->first();
+
+            if (!isset($machine)) {
+                return "ERROR: Machine Not Found";
+            }
+
             $dayOfWeek = Carbon::parse($request->datetime)->format('l'); // Mendapatkan nama hari
 
-            if(Carbon::parse($request->datetime)->hour < 6){
-                $dayOfWeek = Carbon::parse($request->datetime)->subDay()->format('l');
+            if ($machine->shift == 1) {
+                $dayOfWeek = Carbon::parse($request->datetime)->format('l'); // Mendapatkan nama hari
+                $shiftDate = Carbon::parse($request->datetime)->toDateString();
+            } else if ($machine->shift == 2) {
+                if (Carbon::parse($request->datetime)->hour >= 0 && Carbon::parse($request->datetime)->hour <= 12) {
+                    $dayOfWeek = Carbon::parse($request->datetime)->subDay()->format('l');
+                    $shiftDate = Carbon::parse($request->datetime)->subDay()->toDateString();
+                } else {
+                    $dayOfWeek = Carbon::parse($request->datetime)->format('l'); // Mendapatkan nama hari
+                    $shiftDate = Carbon::parse($request->datetime)->toDateString();
+                }
             }
 
             // Ambil semua shift yang berlaku untuk hari tersebut
-            $shifts = Shift::where('day_of_week', strtolower($dayOfWeek))->get();
+            $shift = Shift::where('day_of_week', strtolower($dayOfWeek))->where('shift', $machine->shift)->first();
 
-            if ($shifts->isNotEmpty()) {
-                foreach ($shifts as $potentialShift) {
-                    // Validasi apakah fingerprint sesuai dengan waktu shift
-                    if ($this->isValidFingerprintTime($request->datetime, $potentialShift)) {
-                        $shift = $potentialShift; // Pilih shift yang sesuai
-                        break; // Berhenti pada shift pertama yang valid
-                    }
-                }
-            }
+            // dd($shift);
 
             if (isset($shift)) {
 
                 // Tetapkan shift_date berdasarkan waktu fingerprint
                 $timestamp = Carbon::parse($request->datetime);
-
-                // Tetapkan waktu awal dan akhir shift dengan tanggal yang sesuai
-                $shiftStartAdjustment = Carbon::parse($timestamp->toDateString() . ' ' . $shift->start_adjustment);
-                $shiftEndAdjustment = Carbon::parse($timestamp->toDateString() . ' ' . $shift->end_adjustment);
-
-                // Jika shift berakhir keesokan harinya (melewati tengah malam)
-                if ($shiftEndAdjustment->lt($shiftStartAdjustment)) {
-                    $shiftEndAdjustment = $shiftEndAdjustment->addDay(); // Tambahkan 1 hari pada waktu akhir shift
-                }
-
-                // Tetapkan shift_date berdasarkan waktu fingerprint
-                if ($timestamp->hour < 6) {
-                    // Jika fingerprint setelah waktu akhir shift, gunakan tanggal shift sebelumnya
-                    $shiftDate = $shiftStartAdjustment->subDay()->toDateString();
-                } else {
-                    // Jika fingerprint masih dalam rentang shift, gunakan tanggal saat shift mulai
-                    $shiftDate = $shiftStartAdjustment->toDateString();
-                }
 
                 $attendanceData = [
                     'sn' => 'TESTSN',

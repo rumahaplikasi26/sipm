@@ -28,6 +28,23 @@ class UserForm extends Component
         $this->selectedRoles = $user->roles()->pluck('name')->toArray();
         $this->selectedPermissions = $user->permissions()->pluck('name')->toArray();
         $this->mode = 'edit';
+
+        $this->dispatch('updateSelect2', model: 'selectedRoles', value: json_encode($this->selectedRoles));
+        $this->dispatch('updateSelect2', model: 'selectedPermissions', value: json_encode($this->selectedPermissions));
+
+        $this->dispatch('refresh-select2');
+    }
+
+    #[On('selectedRolesSelected')]
+    public function selectedRolesSelected($value)
+    {
+        $this->selectedRoles = $value;
+    }
+
+    #[On('selectedPermissionsSelected')]
+    public function selectedPermissionsSelected($value)
+    {
+        $this->selectedPermissions = $value;
     }
 
     public function submit()
@@ -51,7 +68,7 @@ class UserForm extends Component
                 $user->assignRole($this->selectedRoles);
                 $user->givePermissionTo($this->selectedPermissions);
             } else {
-                if($this->password == null) {
+                if ($this->password == null) {
                     $this->password = $this->user->password;
                 } else {
                     $this->password = bcrypt($this->password);
@@ -63,8 +80,11 @@ class UserForm extends Component
                     'password' => $this->password,
                 ]);
 
-                $this->user->syncRoles($this->selectedRoles);
-                $this->user->syncPermissions($this->selectedPermissions);
+                // Menambahkan role baru tanpa menghapus role yang sudah ada
+                $this->user->assignRole($this->selectedRoles);
+
+                // Menambahkan permission baru tanpa menghapus permission yang sudah ada
+                $this->user->givePermissionTo($this->selectedPermissions);
             }
 
             $this->alert('success', 'User ' . ($this->mode == 'create' ? 'created' : 'updated') . ' successfully');

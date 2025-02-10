@@ -21,6 +21,10 @@ class Attendance extends Model
         'shift_date'
     ];
 
+    protected $casts = [
+        'timestamp' => 'datetime',
+    ];
+
     public function getDateAttribute()
     {
         return date('Y-m-d', strtotime($this->timestamp));
@@ -45,11 +49,28 @@ class Attendance extends Model
 
     public function employee()
     {
-        return $this->belongsTo(Employee::class);
+        return $this->belongsTo(Employee::class)->withTrashed();
     }
 
     public function shift()
     {
         return $this->belongsTo(Shift::class);
     }
+
+    public function reference()
+    {
+        return $this->belongsTo(AttendanceReference::class, 'shift_id');
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+

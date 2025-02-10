@@ -54,6 +54,11 @@ class MonitoringPresentList extends BaseComponent
         $this->filterType = null;
     }
 
+    public function filter()
+    {
+        $this->resetPage();
+    }
+
     public function render()
     {
         $monitoring_presents = MonitoringPresent::with('shift', 'user', 'group', 'details');
@@ -74,7 +79,7 @@ class MonitoringPresentList extends BaseComponent
             return $query->where('group_id', $this->filterGroup);
         })->when($this->filterType, function ($query) {
             return $query->where('type', $this->filterType);
-        });
+        })->orderBy('id', 'desc');
 
         $monitoring_presents = $monitoring_presents->paginate($this->perPage);
 

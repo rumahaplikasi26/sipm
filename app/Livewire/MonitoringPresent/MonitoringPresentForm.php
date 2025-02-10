@@ -112,6 +112,7 @@ class MonitoringPresentForm extends BaseComponent
                 ->where('role', $this->role)
                 ->where('type', $this->type)
                 ->where('user_id', $this->authUser->id)
+                ->where('shift_date', $this->shift_date)
                 ->exists();
 
             if ($existMonitoring) {
@@ -192,6 +193,9 @@ class MonitoringPresentForm extends BaseComponent
 
     public function mount($groups)
     {
+        // $hour = 7;
+        $hour = Carbon::now()->hour;
+
         if ($this->authUser->hasRole('Supervisor')) {
             $this->employees = Employee::with('group')->whereHas('group', function ($query) {
                 $query->where('supervisor_id', $this->authUser->id);
@@ -209,10 +213,17 @@ class MonitoringPresentForm extends BaseComponent
             $this->reasons[$employee->id] = '';
             $this->move_supervisors[$employee->id] = '';
         }
+        
+        $this->shiftForms = Shift::where('day_of_week', strtolower(Carbon::now()->format('l')))->get();
+        $this->shift_date = Carbon::now()->format('Y-m-d');
+
+        if($hour >= 0 && $hour < 7){
+            $this->shift_date = Carbon::now()->subDay()->format('Y-m-d');
+            $this->shiftForms = Shift::where('day_of_week', strtolower(Carbon::now()->subDay()->format('l')))->get();  
+        }
 
         $this->user_id = $this->authUser->id;
         $this->groups = $groups;
-        $this->shiftForms = Shift::where('day_of_week', strtolower(Carbon::now()->format('l')))->get();
         $this->supervisors = User::role('Supervisor')->get();
         // dd($this->shiftForms);
         $this->shift_1 = $this->shiftForms->first()->id;

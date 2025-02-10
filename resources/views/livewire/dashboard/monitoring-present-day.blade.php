@@ -24,7 +24,14 @@
             </div>
 
             <div class="row">
-                <div class="col-12">
+                <div class="col-12" wire:loading>
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12" wire:loading.remove>
                     <table class="table table-bordered table-striped table-hover align-middle">
                         <thead>
                             <tr class="text-center align-middle">
@@ -45,8 +52,8 @@
                                 <tr class="text-center align-middle">
                                     <td>{{ $loop->iteration }}</td>
                                     <td class="text-start">
-                                    {{ $data->first()->group->name ?? 'Group not found' }} 
-                                    {{ $data->first()->group->supervisor->name ?? '' }}
+                                        {{ $data->first()->group->name ?? 'Group not found' }}
+                                        {{ $data->first()->group->supervisor->name ?? '' }}
                                     </td>
                                     <td>
                                         {{ $data->where('role', 'supervisor')->sum(fn($item) => $item->details->where('is_present', 1)->count()) }}

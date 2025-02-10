@@ -13,7 +13,7 @@ class Activity extends Model
 
     protected $fillable = [
         'scope_id',
-        'group_id',
+        'area_id',
         'position_id',
         'total_estimate',
         'forecast_date',
@@ -21,7 +21,9 @@ class Activity extends Model
         'actual_date',
         'supervisor_id',
         'description',
-        'status_id'
+        'status_id',
+        'change_to_activity_id',
+        'total_quantity',
     ];
 
     public function getProgressColorAttribute()
@@ -40,9 +42,9 @@ class Activity extends Model
         return $this->belongsTo(Scope::class);
     }
 
-    public function group()
+    public function area()
     {
-        return $this->belongsTo(Group::class);
+        return $this->belongsTo(Area::class);
     }
 
     public function position()
@@ -68,5 +70,15 @@ class Activity extends Model
     public function historyProgress()
     {
         return $this->hasMany(ActivityProgress::class);
+    }
+
+    public function employees()
+    {
+        return $this->belongsToMany(Employee::class, 'activity_employees', 'activity_id', 'employee_id');
+    }
+
+    public function changeToActivity()
+    {
+        return $this->belongsTo(Activity::class, 'change_to_activity_id');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Livewire\Dashboard;
 
 use App\Models\MonitoringPresent;
+use App\Models\MonitoringPresentDetail;
 use App\Models\Shift;
 use Carbon\Carbon;
 use Livewire\Attributes\On;
@@ -15,7 +16,14 @@ class MonitoringSupervisor extends Component
     public $shift;
     public $shift_id;
     public $dateString;
-    public $timeTypes = ['9', '15', '21', '3'];
+    public $timeTypes = ['7', '9', '15', '17', '19', '21', '3', '5'];
+    public $totals = [];
+    public $selectedTime;
+    public $selectedGroupId;
+    public $selectedType;
+    public $selectedSupervisor;
+    public $showModal = false;
+    public $employeeData = [];
 
     public function mount($date)
     {
@@ -59,11 +67,31 @@ class MonitoringSupervisor extends Component
                 'details as pindah_supervisor_count' => function ($query) {
                     $query->where('reason', 'pindah_supervisor');
                 },
+                'details as cuti_count' => function ($query) {
+                    $query->where('reason', 'cuti');
+                },
+                'details as training_count' => function ($query) {
+                    $query->where('reason', 'training');
+                },
             ])
             ->where('role', 'supervisor')
             ->whereDate('shift_date', $this->date)
             ->get()
             ->groupBy('group_id');
+
+        $this->totals = [];
+
+        foreach ($this->timeTypes as $type) {
+            $formattedTime = str_pad($type, 2, '0', STR_PAD_LEFT);
+            $this->totals[$formattedTime] = [
+                'H' => 0,
+                'S' => 0,
+                'TK' => 0,
+                'PS' => 0,
+                'C' => 0,
+                'T' => 0
+            ];
+        }
 
         // Format data untuk tabel
         $this->data = $monitoring->map(function ($group, $groupId) {
@@ -73,6 +101,7 @@ class MonitoringSupervisor extends Component
 
             // Format data untuk setiap tipe
             return [
+                'group_id' => $groupId,
                 'group_name' => $groupName,
                 'supervisor_name' => $supervisorName,
                 'types' => collect($this->timeTypes)->mapWithKeys(function ($type) use ($types) {
@@ -81,18 +110,73 @@ class MonitoringSupervisor extends Component
 
                     // Ambil data berdasarkan tipe
                     $typeData = $types->get((int) $formattedTime, collect()); // Pastikan pencocokan tipe dalam format integer
+                    // Hitung total untuk masing-masing kategori
+                    $hadir = $typeData->sum('hadir_count');
+                    $sakit = $typeData->sum('sakit_count');
+                    $tanpaKeterangan = $typeData->sum('tanpa_keterangan_count');
+                    $pindahSupervisor = $typeData->sum('pindah_supervisor_count');
+                    $cuti = $typeData->sum('cuti_count');
+                    $training = $typeData->sum('training_count');
+
+                    // Tambahkan ke total
+                    $this->totals[$formattedTime]['H'] += $hadir;
+                    $this->totals[$formattedTime]['S'] += $sakit;
+                    $this->totals[$formattedTime]['TK'] += $tanpaKeterangan;
+                    $this->totals[$formattedTime]['PS'] += $pindahSupervisor;
+                    $this->totals[$formattedTime]['C'] += $cuti;
+                    $this->totals[$formattedTime]['T'] += $training;
 
                     return [
                         $formattedTime => [
-                            'H' => $typeData->sum('hadir_count'),
-                            'S' => $typeData->sum('sakit_count'),
-                            'TK' => $typeData->sum('tanpa_keterangan_count'),
-                            'PS' => $typeData->sum('pindah_supervisor_count'),
+                            'H' => $hadir,
+                            'S' => $sakit,
+                            'TK' => $tanpaKeterangan,
+                            'PS' => $pindahSupervisor,
+                            'C' => $cuti,
+                            'T' => $training
                         ],
                     ];
                 }),
             ];
         });
+    }
+
+    public function showDetail($group_id, $time, $type, $supervisor)
+    {
+        $this->selectedTime = $time;
+        $this->selectedType = $type;
+        $this->selectedGroupId = $group_id;
+        $this->selectedSupervisor = $supervisor;
+
+        $this->employeeData = MonitoringPresentDetail::with('employee')->whereHas('monitoringPresent', function ($query) use ($group_id, $time, $type) {
+            $query->where('group_id', $group_id)
+                ->where('type', $time);
+
+            if ($type == 'H') {
+                $query->where('is_present', 1);
+            } elseif ($type == 'TK') {
+                $query->where('reason', 'tanpa_keterangan');
+            } elseif ($type == 'PS') {
+                $query->where('reason', 'pindah_supervisor');
+            } elseif ($type == 'C') {
+                $query->where('reason', 'cuti');
+            } elseif ($type == 'T') {
+                $query->where('reason', 'training');
+            } elseif ($type == 'S') {
+                $query->where('reason', 'sakit');
+            }
+
+            $query->where('role', 'supervisor')
+                ->whereDate('shift_date', $this->date);
+        })->get();
+
+        // dd($this->employeeData, $this->selectedGroupId, $this->selectedTime, $this->selectedType);
+        $this->showModal = true;
+    }
+
+    public function closeModal()
+    {
+        $this->showModal = false;
     }
 
     public function formatTime($type)

@@ -8,6 +8,20 @@
     <!-- Begin page -->
     <div id="layout-wrapper">
 
+        <!-- Loader -->
+        <div id="preloader">
+            <div id="status">
+                <div class="spinner-chase">
+                    <div class="chase-dot"></div>
+                    <div class="chase-dot"></div>
+                    <div class="chase-dot"></div>
+                    <div class="chase-dot"></div>
+                    <div class="chase-dot"></div>
+                    <div class="chase-dot"></div>
+                </div>
+            </div>
+        </div>
+
         <header id="page-topbar">
             @livewire('component.layout.header', key('header-component'))
         </header>

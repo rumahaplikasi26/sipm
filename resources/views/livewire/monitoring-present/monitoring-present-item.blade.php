@@ -28,7 +28,7 @@
             </div>
             <div>
                 <h5 class="font-size-15">
-                    <a href="javascript: void(0);" class="text-dark" id="task-name">{{ $monitoring_present->datetime->format('d F Y H:i') }}</a>
+                    <a href="javascript: void(0);" class="text-dark" id="task-name">{{ $monitoring_present->shift_date->format('d F Y') }}</a>
                 </h5>
             </div>
         </div>
@@ -37,6 +37,11 @@
             <ul class="ps-3 mb-1 text-muted" id="task-desc">
                 <li>Total Present: {{ $monitoring_present->total_present }}</li>
                 <li>Total Absent: {{ $monitoring_present->total_absent }}</li>
+                <li>Total Sick: {{ $monitoring_present->total_sick }}</li>
+                <li>Total Leave: {{ $monitoring_present->total_leave }}</li>
+                <li>Total Training: {{ $monitoring_present->total_training }}</li>
+                <li>Total Pindah Supervisor: {{ $monitoring_present->total_move_supervisor }}</li>
+                
                 <li>Group: {{ $monitoring_present->group->name }}</li>
                 <li>{{ $monitoring_present->roleName }}: {{ $monitoring_present->user->name }}</li>
             </ul>

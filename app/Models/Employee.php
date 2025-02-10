@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Employee extends Model
 {
+    use SoftDeletes;
     protected $table = 'employees';
     protected $primaryKey = 'id';
+    protected $dates = ['deleted_at'];
 
     protected $fillable = [
         'id',
@@ -36,5 +39,10 @@ class Employee extends Model
     public function schedules()
     {
         return $this->hasMany(ShiftSchedule::class);
+    }
+
+    public function activities()
+    {
+        return $this->belongsToMany(Activity::class, 'activity_employees', 'employee_id', 'activity_id');
     }
 }

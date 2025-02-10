@@ -5,11 +5,12 @@
     </div>
     <div class="offcanvas-body">
         <form wire:submit.prevent="submit" class="needs-validation" novalidate>
-            @foreach($dependencies as $index => $dependency)
+            @foreach ($dependencies as $index => $dependency)
                 <div class="dependency-group border rounded p-3 mb-3">
                     <div class="d-flex justify-content-end mb-2">
-                        @if($index > 0)
-                            <button type="button" class="btn btn-danger btn-sm" wire:click="removeDependency({{ $index }})">
+                        @if ($index > 0)
+                            <button type="button" class="btn btn-danger btn-sm"
+                                wire:click="removeDependency({{ $index }})">
                                 Remove
                             </button>
                         @endif
@@ -17,8 +18,9 @@
 
                     <div class="mb-3">
                         <label class="form-label">Date</label>
-                        <input type="date" class="form-control @error('dependencies.' . $index . '.date') is-invalid @enderror"
-                               wire:model="dependencies.{{ $index }}.date">
+                        <input type="date"
+                            class="form-control @error('dependencies.' . $index . '.date') is-invalid @enderror"
+                            wire:model="dependencies.{{ $index }}.date">
 
                         @error('dependencies.' . $index . '.date')
                             <span class="invalid-feedback" role="alert">
@@ -29,8 +31,9 @@
 
                     <div class="mb-3">
                         <label class="form-label">Category Dependency</label>
-                        <select class="form-control @error('dependencies.' . $index . '.category_dependency_id') is-invalid @enderror"
-                                wire:model.live="dependencies.{{ $index }}.category_dependency_id">
+                        <select
+                            class="form-control @error('dependencies.' . $index . '.category_dependency_id') is-invalid @enderror"
+                            wire:model.live="dependencies.{{ $index }}.category_dependency_id">
                             <option value="">-- Select Category Dependency --</option>
                             @foreach ($category_dependencies as $category)
                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -49,8 +52,9 @@
                         <p class="text-muted mb-2 font-size-10">
                             Berapa persentase masalah mempengaruhi aktivitas ini
                         </p>
-                        <input type="number" class="form-control @error('dependencies.' . $index . '.percentage_dependency') is-invalid @enderror"
-                               wire:model="dependencies.{{ $index }}.percentage_dependency">
+                        <input type="number"
+                            class="form-control @error('dependencies.' . $index . '.percentage_dependency') is-invalid @enderror"
+                            wire:model="dependencies.{{ $index }}.percentage_dependency">
 
                         @error('dependencies.' . $index . '.percentage_dependency')
                             <span class="invalid-feedback" role="alert">
@@ -59,21 +63,24 @@
                         @enderror
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Description</label>
-                        <p class="text-muted mb-2 font-size-10">
-                            Deskripsi dapat di isi dengan penjelasan terkait permasalahan dan dapat juga untuk solusi yang sudah/akan di jalankan
-                        </p>
-                        <textarea @if(!$isEditDescription) disabled @endif class="form-control @error('dependencies.' . $index . '.description') is-invalid @enderror"
-                                wire:model="dependencies.{{ $index }}.description"
-                                rows="3"></textarea>
+                    @if ($isEditDescription)
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <p class="text-muted mb-2 font-size-10">
+                                Deskripsi dapat di isi dengan penjelasan terkait permasalahan dan dapat juga untuk
+                                solusi yang sudah/akan di jalankan
+                            </p>
+                            <textarea @if (!$isEditDescription) disabled @endif
+                                class="form-control @error('dependencies.' . $index . '.description') is-invalid @enderror"
+                                wire:model="dependencies.{{ $index }}.description" rows="3"></textarea>
 
-                        @error('dependencies.' . $index . '.description')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
+                            @error('dependencies.' . $index . '.description')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    @endif
                 </div>
             @endforeach
 

@@ -3,10 +3,12 @@
 namespace App\Livewire\Report;
 
 use App\Models\Activity;
+use App\Models\Area;
 use App\Models\User;
 use App\Models\Group;
 use App\Models\Scope;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use App\Models\Position;
 
@@ -17,13 +19,14 @@ class ReportIndex extends Component
     public $search = '';
     public $perPage = 30;
 
-    public $filterGroup = '';
-    public $filterScope = '';
-    public $filterPosition = '';
-    public $filterDate = '';
-    public $filterSupervisor = '';
 
-    public $groups = [];
+    public $filterArea = [];
+    public $filterScope = [];
+    public $filterPosition = [];
+    public $filterDate = '';
+    public $filterSupervisor = [];
+
+    public $areas = [];
     public $positions = [];
     public $scopes = [];
     public $supervisors = [];
@@ -39,7 +42,7 @@ class ReportIndex extends Component
 
     public function mount()
     {
-        $this->groups = Group::all();
+        $this->areas = Area::all();
         $this->positions = Position::all();
         $this->scopes = Scope::all();
         $this->supervisors = User::role('Supervisor')->get();
@@ -48,28 +51,50 @@ class ReportIndex extends Component
     public function resetFilter()
     {
         $this->search = "";
-        $this->filterGroup = "";
-        $this->filterScope = "";
-        $this->filterPosition = "";
+        $this->filterArea = [];
+        $this->filterScope = [];
+        $this->filterPosition = [];
         $this->filterDate = "";
-        $this->filterSupervisor = "";
+        $this->filterSupervisor = [];
 
         $this->activities = [];
     }
 
+    #[On('filterAreaSelected')]
+    public function filterAreaSelected($value)
+    {
+        $this->filterArea = $value;
+    }
+
+    #[On('filterScopeSelected')]
+    public function filterScopeSelected($value)
+    {
+        $this->filterScope = $value;
+    }
+
+    #[On('filterPositionSelected')]
+    public function filterPositionSelected($value)
+    {
+        $this->filterPosition = $value;
+    }
+
+    #[On('filterSupervisorSelected')]
+    public function filterSupervisorSelected($value)
+    {
+        $this->filterSupervisor = $value;
+    }
+
     public function filter()
     {
-        $this->activities = Activity::with('group', 'scope', 'historyProgress','status', 'issues.categoryDependency','supervisor', 'position')
+        $this->activities = Activity::with('area', 'scope', 'issues.categoryDependency', 'supervisor', 'position', 'status')
         ->with(['historyProgress' => function ($query) {
             $query->orderBy('date', 'asc');
         }])
-        ->when($this->search, function ($query) {
-            return $query->whereHas('scope', function ($query) {
-                $query->where('name', 'like', '%' . $this->search . '%');
-            });
+        ->when($this->filterScope, function ($query) {
+            return $query->whereIn('scope_id', $this->filterScope);
         })
-        ->when($this->filterGroup, function ($query) {
-            return $query->where('group_id', $this->filterGroup);
+        ->when($this->filterArea, function ($query) {
+            return $query->whereIn('area_id', $this->filterArea);
         })
         ->when($this->filterPosition, function ($query) {
             return $query->where('position_id', $this->filterPosition);

@@ -6,14 +6,15 @@ use App\Models\Attendance;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Livewire\Component;
+use Livewire\Attributes\On;
 
 class ReportAttendanceIndex extends Component
 {
-    public $filterGroup = '';
-    public $filterPosition = '';
+    public $filterGroup = [];
+    public $filterPosition = [];
     public $filterStartDate = '';
     public $filterEndDate = '';
-    public $filterEmployee = '';
+    public $filterEmployee = [];
 
     public $groups = [];
     public $positions = [];
@@ -30,20 +31,40 @@ class ReportAttendanceIndex extends Component
 
     protected $queryString = [
         'perPage' => ['except' => 30],
-        'filterGroup' => ['except' => ''],
-        'filterPosition' => ['except' => ''],
+        'filterGroup' => ['except' => []],
+        'filterPosition' => ['except' => []],
         'filterStartDate' => ['except' => ''],
         'filterEndDate' => ['except' => ''],
-        'filterEmployee' => ['except' => ''],
+        'filterEmployee' => ['except' => []],
     ];
 
     public function resetFilter()
     {
-        $this->filterGroup = '';
-        $this->filterPosition = '';
+        $this->filterGroup = [];
+        $this->filterPosition = [];
         $this->filterStartDate = '';
         $this->filterEndDate = '';
-        $this->filterEmployee = '';
+        $this->filterEmployee = [];
+
+        $this->dispatch('reset-select2');
+    }
+
+    #[On('filterEmployeeSelected')]
+    public function filterEmployeeSelected($value)
+    {
+        $this->filterEmployee = $value;
+    }
+
+    #[On('filterGroupSelected')]
+    public function filterGroupSelected($value)
+    {
+        $this->filterGroup = $value;
+    }
+
+    #[On('filterPositionSelected')]
+    public function filterPositionSelected($value)
+    {
+        $this->filterPosition = $value;
     }
 
     public function handleRefresh()
@@ -67,19 +88,22 @@ class ReportAttendanceIndex extends Component
 
         // Pastikan rentang tanggal tersedia
         $startDate = Carbon::parse($this->filterStartDate);
-        $endDate = Carbon::parse($this->filterEndDate);
+        $endDate = Carbon::parse($this->filterEndDate)->endOfDay();
 
         // Ambil semua data attendance sesuai filter
-        $attendances = Attendance::with('employee')
+        $attendances = Attendance::with('employee.group.supervisor', 'employee.position')
             ->when($this->filterGroup, function ($query) {
                 $query->whereHas('employee.group', function ($query) {
-                    $query->where('id', $this->filterGroup);
+                    $query->whereIn('id', $this->filterGroup);
                 });
             })
             ->when($this->filterPosition, function ($query) {
                 $query->whereHas('employee.position', function ($query) {
-                    $query->where('id', $this->filterPosition);
+                    $query->whereIn('id', $this->filterPosition);
                 });
+            })
+            ->when($this->filterEmployee, function ($query) {
+                $query->whereIn('employee_id', $this->filterEmployee);
             })
             ->whereBetween('timestamp', [$startDate, $endDate]) // Filter rentang tanggal
             ->get();
@@ -100,37 +124,46 @@ class ReportAttendanceIndex extends Component
             $employee = $employeeAttendances->first()->employee; // Ambil data karyawan
             $dates = [];
 
+            $attendanceCount = 0;
             // Loop rentang tanggal
             for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
-                $formattedDate = $date->format('Y-m-d');
+                $formattedDate = $date->format('Y-m-d'); // Format tanggal 'YYYY-MM-DD'
 
                 // Cari attendance pada tanggal ini
                 $attendanceOnDate = $employeeAttendances->filter(function ($attendance) use ($formattedDate) {
-                    return $attendance->timestamp >= "$formattedDate 00:00:00" &&
-                        $attendance->timestamp <= "$formattedDate 23:59:59";
+                    // Cek apakah attendance berada dalam rentang tanggal yang sesuai
+                    $attendanceDate = Carbon::parse($attendance->timestamp)->toDateString();
+                    return $attendanceDate == $formattedDate;
                 });
 
                 if ($attendanceOnDate->isNotEmpty()) {
-                    // Ambil jam awal (paling kecil) dan jam akhir (paling besar)
-                    $startTime = $attendanceOnDate->min('timestamp');
-                    $endTime = $attendanceOnDate->max('timestamp');
+                    // Ambil semua waktu absensi pada hari tersebut
+                    $times = $attendanceOnDate->map(function ($attendance) {
+                        return Carbon::parse($attendance->timestamp)->format('H:i'); // Format waktu 'H:i'
+                    });
 
-                    $dates[$formattedDate] = Carbon::parse($startTime)->format('H:i') . ' - ' . Carbon::parse($endTime)->format('H:i');
+                    // Gabungkan semua waktu dalam satu string, dipisahkan oleh koma
+                    $dates[$formattedDate] = $times->implode(', ');
+                    $attendanceCount += $attendanceOnDate->count(); // Tambahkan jumlah absensi
                 } else {
-                    $dates[$formattedDate] = '-';
+                    $dates[$formattedDate] = '-'; // Jika tidak ada absensi, tampilkan '-'
                 }
             }
 
             return [
                 'employee_id' => $employee->id,
+                'supervisor_name' => $employee->group?->supervisor?->name,
+                'position_name' => $employee->position?->name,
                 'name' => $employee->name,
-                'attendance' => $dates,
+                'phone' => $employee->phone,
+                'attendance' => $dates, // Tanggal dengan jam absensi
+                'attendance_count' => $attendanceCount, // Tambahkan jumlah absensi
             ];
         });
 
         // dd($employees);
         // Kirim data ke frontend
-        $this->dispatch('refreshAttendances', employees: $employees, dateArray:$this->dateArray);
+        $this->dispatch('refreshAttendances', employees: $employees, dateArray: $this->dateArray);
     }
 
     public function render()

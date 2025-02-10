@@ -38,11 +38,22 @@
                             <div class="col-xxl-2 col-lg-4 form-floating">
                                 <select class="form-select" id="filterType" wire:model="filterType">
                                     <option selected value="">-- Select Type --</option>
-                                    <option value="in">In</option>
-                                    <option value="in_break">In Break</option>
-                                    <option value="out">Out</option>
+                                    <option value="08">08:00</option>
+                                    <option value="09">09:00</option>
+                                    <option value="10">10:00</option>
+                                    <option value="14">14:00</option>
+                                    <option value="15">15:00</option>
+                                    <option value="16">16:00</option>
+                                    <option value="18">18:00</option>
+                                    <option value="20">20:00</option>
+                                    <option value="21">21:00</option>
+                                    <option value="22">22:00</option>
+                                    <option value="02">02:00</option>
+                                    <option value="03">03:00</option>
+                                    <option value="04">04:00</option>
+                                    <option value="06">06:00</option>
                                 </select>
-                                <label for="filterType">Filter Select Type</label>
+                                <label for="filterType">Filter Select Time</label>
                             </div>
                             <div class="col-xxl-2 col-lg-4 form-floating">
                                 <input type="date" class="form-control" id="filterStartDate"
@@ -72,7 +83,7 @@
     <div class="row">
         @foreach ($monitoring_presents as $monitoring_present)
             <div class="col-md-3 mb-3">
-                @livewire('monitoring-present.monitoring-present-item', ['monitoring_present' => $monitoring_present], key($monitoring_present->id))
+                @livewire('monitoring-present.monitoring-present-item', ['monitoring_present' => $monitoring_present], key($monitoring_present->id . time()))
             </div>
         @endforeach
 

@@ -22,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'password_string',
     ];
 
     /**
@@ -31,6 +32,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
+        'password_string',
         'remember_token',
     ];
 
@@ -50,5 +52,10 @@ class User extends Authenticatable
     public function groups()
     {
         return $this->hasMany(Group::class, 'supervisor_id');
+    }
+
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
     }
 }

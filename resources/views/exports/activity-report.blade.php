@@ -53,9 +53,10 @@
             <tr>
                 <th>ID</th>
                 <th>Scope</th>
-                <th>Group</th>
+                <th>Area</th>
                 <th>Position</th>
                 <th>Est. Time</th>
+                <th>Quantity</th>
                 <th>Forecast</th>
                 <th>Plan</th>
                 <th>Actual</th>
@@ -70,19 +71,20 @@
                 <tr>
                     <td>{{ $activity['id'] }}</td>
                     <td>{{ $activity['scope']['name'] ?? '-' }}</td>
-                    <td>{{ $activity['group']['name'] ?? '-' }}</td>
+                    <td>{{ $activity['area']['name'] ?? '-' }}</td>
                     <td>{{ $activity['position']['name'] ?? '-' }}</td>
                     <td>{{ $activity['total_estimate'] }} Day</td>
+                    <td>{{ $activity['total_quantity'] ?? 0 }}</td>
                     <td>{{ $activity['forecast_date'] }}</td>
                     <td>{{ $activity['plan_date'] }}</td>
                     <td>{{ $activity['actual_date'] ?? '-' }}</td>
                     <td>
                         @if(!empty($activity['history_progress']))
                             @foreach($activity['history_progress'] as $history)
-                               {{ $history['date'] }}: {{ $history['percentage'] }} % <br>
+                               {{ $history['date'] }}: {{ $history['quantity'] }}<br>
                             @endforeach
                         @endif
-                        Total: {{ $activity['progress'] }} %
+                        Progress: {{ $activity['progress'] }} %
                     </td>
                     <td>{{ $activity['supervisor']['name'] ?? '-' }}</td>
                     <td>

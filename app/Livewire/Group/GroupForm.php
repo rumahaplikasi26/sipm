@@ -63,7 +63,7 @@ class GroupForm extends Component
             $this->resetForm();
             $this->dispatch('refreshIndex');
         } catch (\Exception $e) {
-            $this->alert('error', 'Group could not be saved');
+            $this->alert('error', $e->getMessage());
         }
     }
 

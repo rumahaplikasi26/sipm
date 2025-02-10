@@ -2,8 +2,10 @@
 
 namespace App\Livewire\Activity;
 
+use App\Jobs\SendWhatsappJob;
 use App\Livewire\BaseComponent;
 use App\Models\ActivityIssue;
+use App\Models\User;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -27,7 +29,7 @@ class ActivityDependencyForm extends BaseComponent
 
     public function mount()
     {
-        if($this->authUser->hasRole('Supervisor')){
+        if ($this->authUser->hasRole('Supervisor')) {
             $this->isEditDescription = false;
         }
         // Ambil data category dependencies (contoh)
@@ -108,16 +110,23 @@ class ActivityDependencyForm extends BaseComponent
             foreach ($this->dependencies as $dependency) {
                 if (!empty($dependency['id'])) {
                     // Update existing dependency
-                    ActivityIssue::find($dependency['id'])->update([
+                    $resolved_at = null;
+
+                    if($dependency['description'] != ''){
+                        $resolved_at = date('Y-m-d H:i:s');
+                    }
+
+                    $issue = ActivityIssue::find($dependency['id'])->update([
                         'date' => $dependency['date'],
                         'category_dependency_id' => $dependency['category_dependency_id'],
                         'description' => $dependency['description'],
                         'percentage_dependency' => $dependency['percentage_dependency'],
+                        'resolved_at'=> $resolved_at
                         // 'percentage_solution' => $dependency['percentage_solution'],
                     ]);
                 } else {
                     // Create new dependency
-                    ActivityIssue::create([
+                    $issue = ActivityIssue::create([
                         'activity_id' => $this->activity_id,
                         'date' => $dependency['date'],
                         'category_dependency_id' => $dependency['category_dependency_id'],
@@ -125,6 +134,29 @@ class ActivityDependencyForm extends BaseComponent
                         'percentage_dependency' => $dependency['percentage_dependency'],
                         // 'percentage_solution' => $dependency['percentage_solution'],
                     ]);
+
+                    // Ambil data activity terkait
+                    $activity = $issue->activity;
+                    $supervisorName = $activity->supervisor ? $activity->supervisor->name : 'Unknown Supervisor';
+
+                    $message = "🔔 *New Issue Created!*\n\n"
+                        . "*Scope:* {$activity->scope->name}\n"
+                        . "*Area:* {$activity->area->name}\n"
+                        . "*Posisi:* {$activity->position->name}\n"
+                        . "*Planned Date:* {$activity->plan_date}\n"
+                        . "*Supervisor:* {$supervisorName}\n\n"
+
+                        . "*Date:* {$issue->date}\n"
+                        . "*Category Dependency:* {$issue->categoryDependency->name}\n"
+                        . "*Percentage Dependency:* {$issue->percentage_dependency}%\n\n"
+                        . "Please address this issue promptly.";
+
+                    // Kirim ke semua Site Manager
+                    // $siteManagers = User::role('Site Manager')->get();
+                    $siteManagers = User::where('id', 1)->get();
+                    foreach ($siteManagers as $manager) {
+                        SendWhatsappJob::dispatch($manager->phone, $message);
+                    }
                 }
             }
 

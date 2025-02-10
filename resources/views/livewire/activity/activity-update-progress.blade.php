@@ -12,14 +12,14 @@
                         <table class="table table-borderless table-striped align-middle">
                             <thead>
                                 <th width="80%">Date</th>
-                                <th>Percentage</th>
+                                <th>Quantity</th>
                             </thead>
                             <tbody>
                                 @empty(!$progress)
                                     @foreach ($progress as $prg)
                                         <tr>
                                             <td>{{ $prg['date'] }}</td>
-                                            <td>{{ $prg['percentage'] }}</td>
+                                            <td>{{ $prg['quantity'] }}</td>
                                         </tr>
                                     @endforeach
                                 @endempty
@@ -35,9 +35,9 @@
                                         @enderror
                                     </td>
                                     <td>
-                                        <input type="number" class="form-control @error('percentage') is-invalid @enderror" wire:model="percentage">
+                                        <input type="number" class="form-control @error('quantity') is-invalid @enderror" wire:model="quantity">
 
-                                        @error('percentage')
+                                        @error('quantity')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>

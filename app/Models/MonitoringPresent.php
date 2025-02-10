@@ -21,6 +21,7 @@ class MonitoringPresent extends Model
 
     protected $casts = [
         'datetime' => 'datetime',
+        'shift_date' => 'date'
     ];
 
     protected function roleName(): Attribute
@@ -40,7 +41,35 @@ class MonitoringPresent extends Model
     protected function totalAbsent(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->details()->where('is_present', 0)->count(),
+            get: fn () => $this->details()->where('is_present', 0)->where('reason', 'tanpa_keterangan')->count(),
+        );
+    }
+
+    protected function totalTraining(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->details()->where('reason', 'training')->count(),
+        );
+    }
+
+    protected function totalSick(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->details()->where('reason', 'sakit')->count(),
+        );
+    }
+
+    protected function totalLeave(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->details()->where('reason', 'cuti')->count(),
+        );
+    }
+
+    protected function totalMoveSupervisor(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->details()->where('reason', 'pindah_supervisor')->count(),
         );
     }
 

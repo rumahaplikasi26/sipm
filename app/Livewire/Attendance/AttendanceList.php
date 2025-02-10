@@ -5,6 +5,7 @@ namespace App\Livewire\Attendance;
 use App\Livewire\BaseComponent;
 use App\Models\Attendance;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -20,11 +21,11 @@ class AttendanceList extends BaseComponent
     public $search = '';
     public $perPage = 25;
 
-    public $filterGroup = '';
-    public $filterPosition = '';
+    public $filterGroup = [];
+    public $filterPosition = [];
     public $filterStartDate = '';
     public $filterEndDate = '';
-    public $filterEmployee = '';
+    public $filterEmployee = [];
 
     public $groups = [];
     public $positions = [];
@@ -38,21 +39,23 @@ class AttendanceList extends BaseComponent
     protected $queryString = [
         'search' => ['except' => ''],
         'perPage' => ['except' => 30],
-        'filterGroup' => ['except' => ''],
-        'filterPosition' => ['except' => ''],
+        'filterGroup' => ['except' => []],
+        'filterPosition' => ['except' => []],
         'filterStartDate' => ['except' => ''],
         'filterEndDate' => ['except' => ''],
-        'filterEmployee' => ['except' => ''],
+        'filterEmployee' => ['except' => []],
     ];
 
     public function resetFilter()
     {
         $this->search = '';
-        $this->filterGroup = '';
-        $this->filterPosition = '';
+        $this->filterGroup = [];
+        $this->filterPosition = [];
         $this->filterStartDate = '';
         $this->filterEndDate = '';
-        $this->filterEmployee = '';
+        $this->filterEmployee = [];
+
+        $this->dispatch('reset-select2');
     }
 
     public function handleRefresh()
@@ -73,29 +76,52 @@ class AttendanceList extends BaseComponent
         $this->dispatch('$refresh');
     }
 
+    #[On('filterEmployeeSelected')]
+    public function filterEmployeeSelected($value)
+    {
+        $this->filterEmployee = $value;
+        $this->filter();
+    }
+
+    #[On('filterGroupSelected')]
+    public function filterGroupSelected($value)
+    {
+        $this->filterGroup = $value;
+        $this->filter();
+    }
+
+    #[On('filterPositionSelected')]
+    public function filterPositionSelected($value)
+    {
+        $this->filterPosition = $value;
+        $this->filter();
+    }
+
     public function render()
     {
-        $attendances = Attendance::with('employee.group', 'employee.position')->when($this->search, function ($query) {
-            $query->whereHas('employee', function ($query) {
-                $query->where('name', 'like', '%' . $this->search . '%');
+        $attendances = Attendance::with('employee.group', 'employee.position')
+            ->when($this->search, function ($query) {
+                $query->whereHas('employee', function ($query) {
+                    $query->whereNull('deleted_at'); // Hanya mengambil employee yang masih aktif
+                    $query->where('name', 'like', '%' . $this->search . '%');
+                });
             });
-        });
 
-        if($this->authUser->hasRole('Supervisor')) {
+        if ($this->authUser->hasRole('Supervisor')) {
             $attendances->whereHas('employee.group', function ($query) {
                 $query->where('supervisor_id', $this->authUser->id);
             });
         }
 
         $attendances = $attendances->when($this->filterEmployee, function ($query) {
-            $query->where('employee_id', $this->filterEmployee);
+            $query->whereIn('employee_id', $this->filterEmployee);
         })->when($this->filterGroup, function ($query) {
             $query->whereHas('employee', function ($query) {
-                $query->where('group_id', $this->filterGroup);
+                $query->whereIn('group_id', $this->filterGroup);
             });
         })->when($this->filterPosition, function ($query) {
             $query->whereHas('employee', function ($query) {
-                $query->where('position_id', $this->filterPosition);
+                $query->whereIn('position_id', $this->filterPosition);
             });
         })->when($this->filterStartDate, function ($query) {
             $query->whereDate('timestamp', '>=', $this->filterStartDate);

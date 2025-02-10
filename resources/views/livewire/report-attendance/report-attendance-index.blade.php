@@ -7,38 +7,52 @@
                 <div class="card-body">
                     <form action="javascript:void(0);">
                         <div class="row g-3">
-                            <div class="col-xxl-2 col-lg-6 form-floating">
-                                <select class="form-select" id="selectEmployee" wire:model="filterEmployee">
-                                    <option selected value="">-- Select Employee --</option>
-                                    @foreach ($employees as $employee)
-                                        <option value="{{ $employee->id }}">{{ $employee->name }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="selectEmployee">Filter Select Employee</label>
+                            <div class="col-xxl-2 col-lg-6">
+                                @livewire(
+                                    'component.form.select2',
+                                    [
+                                        'label' => 'Filter Employee',
+                                        'model' => 'filterEmployee',
+                                        'options' => $employees->map(fn($e) => ['value' => $e->id, 'text' => $e->name])->toArray(),
+                                        'selected' => $filterEmployee,
+                                        'placeholder' => '-- Select Employee --',
+                                        'multiple' => true,
+                                    ],
+                                    key('filterEmployee')
+                                )
                             </div>
-                            <div class="col-xxl-2 col-lg-6 form-floating">
-                                <select class="form-select" id="selectGroup" wire:model="filterGroup">
-                                    <option selected value="">-- Select Group --</option>
-                                    @foreach ($groups as $group)
-                                        <option value="{{ $group->id }}">{{ $group->name }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="selectGroup">Filter Select Group</label>
+                            <div class="col-xxl-2 col-lg-6">
+                                @livewire(
+                                    'component.form.select2',
+                                    [
+                                        'label' => 'Filter Group',
+                                        'model' => 'filterGroup',
+                                        'options' => $groups->map(fn($e) => ['value' => $e->id, 'text' => $e->name . ' | ' . $e->supervisor->name])->toArray(),
+                                        'selected' => $filterGroup,
+                                        'placeholder' => '-- Select Group --',
+                                        'multiple' => true,
+                                    ],
+                                    key('filterGroup')
+                                )
                             </div>
-                            <div class="col-xxl-2 col-lg-4 form-floating">
-                                <select class="form-select" id="selectPosition" wire:model="filterPosition">
-                                    <option selected value="">-- Select Position --</option>
-                                    @foreach ($positions as $position)
-                                        <option value="{{ $position->id }}">{{ $position->name }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="selectPosition">Filter Select Position</label>
+                            <div class="col-xxl-2 col-lg-4">
+                                @livewire(
+                                    'component.form.select2',
+                                    [
+                                        'label' => 'Filter Position',
+                                        'model' => 'filterPosition',
+                                        'options' => $positions->map(fn($e) => ['value' => $e->id, 'text' => $e->name])->toArray(),
+                                        'selected' => $filterPosition,
+                                        'placeholder' => '-- Select Position --',
+                                        'multiple' => true,
+                                    ],
+                                    key('filterPosition')
+                                )
                             </div>
-                            <div class="col-xxl-2 col-lg-4 form-floating">
-                                <input type="date"
-                                    class="form-control @error('filterStartDate') is-invalid @enderror"
-                                    id="filterStartDate" wire:model="filterStartDate">
+                            <div class="col-xxl-2 col-lg-4">
                                 <label for="filterStartDate">Filter Start Date</label>
+                                <input type="date" class="form-control @error('filterStartDate') is-invalid @enderror" id="filterStartDate"
+                                    wire:model="filterStartDate">
 
                                 @error('filterStartDate')
                                     <span class="invalid-feedback" role="alert">
@@ -46,10 +60,10 @@
                                     </span>
                                 @enderror
                             </div>
-                            <div class="col-xxl-2 col-lg-4 form-floating">
-                                <input type="date" class="form-control @error('filterEndDate') is-invalid @enderror"
-                                    id="filterEndDate" wire:model="filterEndDate">
+                            <div class="col-xxl-2 col-lg-4">
                                 <label for="filterEndDate">Filter End Date</label>
+                                <input type="date" class="form-control @error('filterEndDate') is-invalid @enderror" id="filterEndDate"
+                                    wire:model="filterEndDate">
 
                                 @error('filterEndDate')
                                     <span class="invalid-feedback" role="alert">

@@ -46,29 +46,37 @@ class AttendanceJob implements ShouldQueue
 
             // if (empty($isFirstAttendance)) {
             //     if ($data['is_active'] == true) {
-            //         $activeActivity = Activity::with('details.scope', 'group', 'supervisor')
-            //             ->where('group_id', $data['group_id'])
-            //             ->where('position_id', $data['position_id'])
+            //         $activities = Activity::with('employees', 'scope', 'area', 'supervisor')
             //             ->where('status_id', 1)
-            //             ->whereDate('date', date('Y-m-d', strtotime($data['timestamp'])))
-            //             ->first();
+            //             ->where('progress', '<', 100)
+            //             ->whereHas('employees', function ($query) use ($employeeExists) {
+            //                 $query->where('employee_id', $employeeExists->id);
+            //             })
+            //             ->get();
 
-            //         if ($data['phone'] != null && $activeActivity != null) {
-            //             $scopes = '';
-            //             $date = Carbon::parse($activeActivity->date)->isoFormat('dddd, DD MMMM YYYY');
-            //             foreach ($activeActivity->details as $detail) {
-            //                 $scopes .= $detail->scope->name . ', ';
+            //         if ($data['phone'] != null && $activities->count() > 0) {
+
+            //             foreach ($activities as $activity) {
+            //                 $activeActivity = $activity;
+            //                 $message = "*Notifikasi Aktivitas Hari Ini*\n\n" .
+            //                     "Halo *{$data['name']}*,\n\n" .
+            //                     "📋 *Detail Aktivitas*\n" .
+            //                     "------------------------\n" .
+
+            //                     "🔹 *Judul Aktivitas:* {$activity->scope->name}\n" .
+            //                     "📅 *Forecast Date:* " . date('d M Y', strtotime($activity->forecast_date)) . "\n" .
+            //                     "📆 *Plan Date:* " . date('d M Y', strtotime($activity->plan_date)) . "\n" .
+            //                     "📊 *Progress:* {$activity->progress}%" . $this->getProgressIcon($activity->progress) . "\n" .
+            //                     "👥 *Supervisor:* {$activity->supervisor->name}\n" .
+            //                     "📍 *Area:* {$activity->area->name}\n" .
+            //                     "📝 *Deskripsi:* {$activity->description}\n\n" .
+
+            //                     "_Terima kasih_";
+
+            //                 $this->sendWhatsAppNotification($data['phone'], $message);
+            //                 \Log::info(date('Y-m-d H:i:s') . ' ' . 'Sent Whatsapp ' . $data['phone'] . ' Successfully');
             //             }
 
-            //             // Send Activity Notification di ambil dari variabel $activeActivity title, date, scope->name, group->name, forecast_date, plan_date, actual_date, description, supervisor->name buat kalimat pesannya
-            //             $message = "Dear {$data['name']}, Anda memiliki aktivitas berikut:\n" .
-            //                 "Judul: {$activeActivity->title}\n" .
-            //                 "Tanggal: {$date}\n" .
-            //                 "Grup: {$activeActivity->group->name}\n" .
-            //                 "Scope: {$scopes}\n";
-
-            //             $this->sendWhatsAppNotification($data['phone'], $message);
-            //             \Log::info(date('Y-m-d H:i:s') . ' ' . 'Sent Whatsapp ' . $data['phone'] . ' Successfully');
             //             \Log::info(date('Y-m-d H:i:s') . ' ' . 'Attendance Sync Job Completed With Send Activity Successfully');
             //         }
             //     }
@@ -90,6 +98,18 @@ class AttendanceJob implements ShouldQueue
         } catch (\Throwable $th) {
             \Log::error(date('Y-m-d H:i:s') . ' ' . $th->getMessage());
         }
+    }
+
+    // Helper method to get progress icon
+    private function getProgressIcon($progress)
+    {
+        if ($progress < 25)
+            return '🔴';
+        if ($progress < 50)
+            return '🟠';
+        if ($progress < 75)
+            return '🟡';
+        return '🟢';
     }
 
     /**
@@ -117,8 +137,8 @@ class AttendanceJob implements ShouldQueue
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
                 CURLOPT_POSTFIELDS => array(
-                    'appkey' => '591d8e3f-1d20-4ebb-9eaa-ecc76507669f',
-                    'authkey' => 'kt0xK5HWormDW4GwdO1NHq9hiEvNOIdEd7d2XfmUjLRS1IkKQs',
+                    'appkey' => '27e7f841-13e9-40e3-91c4-54ed22300573',
+                    'authkey' => 'I1Dkd1vkWwXpatbjJKukv3AwBXJAq8on1ZRC0Rdl1Xn1HO8ky2',
                     'to' => $no_hp,
                     'message' => $message,
                     'sandbox' => 'false'

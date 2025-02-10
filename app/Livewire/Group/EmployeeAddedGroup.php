@@ -3,6 +3,7 @@
 namespace App\Livewire\Group;
 
 use App\Models\Employee;
+use App\Models\Group;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -18,6 +19,7 @@ class EmployeeAddedGroup extends Component
     public $number = 0;
     public $limit = 20;
     public $offset = 0;
+    public $removeEmployees = [];
 
     public function mount()
     {
@@ -28,6 +30,12 @@ class EmployeeAddedGroup extends Component
     public function showModalAddGroup($group_id)
     {
         $this->group_id = $group_id;
+        $group = Group::find($group_id);
+
+        foreach ($group->employees as $employee) {  
+            $this->addEmployee($employee->id, $employee->name);
+        }
+
         $this->dispatch('open-modal-add-group');
     }
 
@@ -54,6 +62,7 @@ class EmployeeAddedGroup extends Component
     {
         foreach ($this->selectedEmployees as $key => $selectedEmployee) {
             if ($selectedEmployee['id'] == $employee_id) {
+                $this->removeEmployees[] = $employee_id;
                 unset($this->selectedEmployees[$key]);
             }
         }
@@ -84,7 +93,10 @@ class EmployeeAddedGroup extends Component
         ]);
 
         try {
+            $removeEmployeeIDs = $this->removeEmployees;
             $employeeIDs = array_column($this->selectedEmployees, 'id');
+            
+            Employee::whereIn('id', $removeEmployeeIDs)->update(['group_id' => null]);
             Employee::whereIn('id', $employeeIDs)->update(['group_id' => $this->group_id]);
             $this->dispatch('close-modal-add-group');
             $this->alert('success', 'Successfully added employees');

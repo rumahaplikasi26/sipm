@@ -26,6 +26,11 @@ class EmployeeList extends BaseComponent
         'search' => ['except' => ''],
     ];
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function handleRefresh()
     {
         $this->alert('success', 'Refreshed successfully');

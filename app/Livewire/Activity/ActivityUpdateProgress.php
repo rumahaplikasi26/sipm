@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Activity;
 
+use App\Jobs\SendWhatsappJob;
 use App\Livewire\BaseComponent;
 use App\Models\Activity;
 use App\Models\ActivityDetail;
@@ -19,7 +20,7 @@ class ActivityUpdateProgress extends BaseComponent
     public $scopes = [];
     public $progress;
 
-    public $percentage, $date, $lastProgress;
+    public $quantity, $date, $lastProgress, $totalQuantity, $totalProgress;
 
     #[On('show-modal-progress')]
     public function updateProgress($activity_id)
@@ -27,7 +28,7 @@ class ActivityUpdateProgress extends BaseComponent
         $this->activity_id = $activity_id;
         $activity = Activity::with('historyProgress')->find($activity_id);
         $this->progress = $activity->historyProgress->toArray();
-
+        $this->totalQuantity = $activity->total_quantity ?? 0;
         $this->lastProgress = $activity->progress;
 
         $this->dispatch('showFormProgress');
@@ -38,7 +39,7 @@ class ActivityUpdateProgress extends BaseComponent
         $this->validate([
             'date' => 'required',
             'activity_id' => 'required',
-            'percentage' => 'required',
+            'quantity' => 'required',
         ]);
 
         try {
@@ -48,12 +49,16 @@ class ActivityUpdateProgress extends BaseComponent
                 'activity_id' => $this->activity_id,
                 'date' => $this->date,
                 'user_id' => $this->authUser->id,
-                'percentage' => $this->percentage,
+                'quantity' => $this->quantity,
             ]);
 
             $activity = ActivityProgress::where('activity_id', $this->activity_id)->get();
-            $totalProgress = $activity->sum('percentage');
+            $totalQuantity = $activity->sum('quantity') ?? 0;
 
+            // convert to percentage
+            $totalProgress = ($totalQuantity / $this->totalQuantity) * 100;
+            // dd($totalQuantity, $this->totalQuantity, $totalProgress);
+            
             Activity::where('id', $this->activity_id)->update([
                 'progress' => $totalProgress
             ]);

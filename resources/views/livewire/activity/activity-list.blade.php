@@ -4,8 +4,11 @@
             <div class="d-flex justify-content-end">
                 <div class="flex-shrink-0">
                     @can('activity.create')
-                        <a href="#!" class="btn btn-primary" wire:click="$dispatch('showForm')">Add New Activity</a>
+                        {{-- <a href="javascript:void(0);" class="btn btn-primary" wire:click="$dispatch('showForm')">Add New Activity</a> --}}
+                        <a href="{{ route('activity.create') }}" class="btn btn-primary">Add New Activity</a>
+                        <a href="{{route('activity.import')}}" class="btn btn-success">Import Activity</a>
                     @endcan
+
                     <a href="#!" class="btn btn-light" wire:click="$dispatch('refreshIndex')"><i
                             class="mdi mdi-refresh"></i></a>
                 </div>
@@ -18,42 +21,67 @@
                     <form action="javascript:void(0);">
                         <div class="row g-3">
                             <div class="col-xxl-2 col-lg-6">
+                                <label for="searchInput">Search</label>
                                 <input type="search" class="form-control" id="searchInput" wire:model="search"
                                     placeholder="Search for ...">
                             </div>
                             <div class="col-xxl-2 col-lg-6">
-                                <select class="form-control select2" wire:model="filterGroup">
-                                    <option>Group</option>
-                                    @foreach ($groups as $group)
-                                        <option value="{{ $group->id }}">{{ $group->name }}</option>
-                                    @endforeach
-                                </select>
+                                @livewire(
+                                    'component.form.select2',
+                                    [
+                                        'label' => 'Filter Area',
+                                        'model' => 'filterArea',
+                                        'options' => $areas->map(fn($e) => ['value' => $e->id, 'text' => $e->name])->toArray(),
+                                        'selected' => $filterArea,
+                                        'placeholder' => '-- Select Area --',
+                                        'multiple' => true,
+                                    ],
+                                    key('filterArea')
+                                )
                             </div>
                             <div class="col-xxl-2 col-lg-4">
-                                <select class="form-control select2" wire:model="filterPosition">
-                                    <option>Position</option>
-                                    @foreach ($positions as $position)
-                                        <option value="{{ $position->id }}">{{ $position->name }}</option>
-                                    @endforeach
-                                </select>
+                                @livewire(
+                                    'component.form.select2',
+                                    [
+                                        'label' => 'Filter Position',
+                                        'model' => 'filterPosition',
+                                        'options' => $positions->map(fn($e) => ['value' => $e->id, 'text' => $e->name])->toArray(),
+                                        'selected' => $filterPosition,
+                                        'placeholder' => '-- Select Position --',
+                                        'multiple' => true,
+                                    ],
+                                    key('filterPosition')
+                                )
                             </div>
                             <div class="col-xxl-2 col-lg-4">
-                                <select class="form-control select2" wire:model="filterSupervisor">
-                                    <option>Supervisor</option>
-                                    @foreach ($supervisors as $supervisor)
-                                        <option value="{{ $supervisor->id }}">{{ $supervisor->name }}</option>
-                                    @endforeach
-                                </select>
+                                @livewire(
+                                    'component.form.select2',
+                                    [
+                                        'label' => 'Filter Supervisor',
+                                        'model' => 'filterSupervisor',
+                                        'options' => $supervisors->map(fn($e) => ['value' => $e->id, 'text' => $e->name])->toArray(),
+                                        'selected' => $filterSupervisor,
+                                        'placeholder' => '-- Select Supervisor --',
+                                        'multiple' => true,
+                                    ],
+                                    key('filterSupervisor')
+                                )
                             </div>
                             <div class="col-xxl-2 col-lg-4">
+                                <label for="filterDate">Filter Date</label>
                                 <input type="date" class="form-control" placeholder="Select date"
                                     wire:model="filterDate">
                             </div>
                             <div class="col-xxl-2 col-lg-4 d-flex gap-2 align-items-center justify-content-center">
-                                <button type="button" class="btn btn-soft-secondary" wire:click="filter"><i
-                                        class="mdi mdi-filter-outline align-middle"></i> Filter</button>
-                                <button type="button" class="btn btn-soft-danger" wire:click="resetFilter"><i
-                                        class="mdi mdi-close align-middle"></i> Reset</button>
+                                <button type="button"
+                                    class="btn btn-soft-secondary waves-effect waves-light flex-grow-1"
+                                    wire:click="filter">
+                                    <i class="mdi mdi-filter-outline d-block font-size-16"></i> Filter
+                                </button>
+                                <button type="button" class="btn btn-soft-danger waves-effect waves-light flex-grow-1"
+                                    wire:click="resetFilter">
+                                    <i class="mdi mdi-refresh d-block font-size-16"></i> Reset
+                                </button>
                             </div>
                         </div>
                         <!--end row-->
@@ -66,8 +94,8 @@
 
     <div class="row">
         @foreach ($activities as $activity)
-            <div class="col-md-3 mb-3">
-                @livewire('activity.activity-item', ['activity' => $activity, 'number' => $loop->iteration], key($activity->id))
+            <div class="col-md-4 col-lg-3 mb-3">
+                @livewire('activity.activity-item', ['activity' => $activity, 'number' => $loop->iteration], key('activity-item-' . $activity->id . time()))
             </div>
         @endforeach
 
@@ -78,7 +106,7 @@
 
     <div id="validationActivity" class="modal fade" tabindex="-1" aria-labelledby="validationActivityLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-sm">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="validationActivityLabel">Validation Activity</h5>
@@ -88,19 +116,18 @@
                     <form class="needs-validation" novalidate wire:submit.prevent="submitValidation">
                         <div class="mb-3">
                             <label for="status_id" class="form-label">Status</label>
-                            <div class="d-flex gap-3">
-                                <div class="btn-group w-100" role="group"
-                                    aria-label="Basic radio toggle button group">
-                                    @foreach ($statuses as $status)
+                            <div class="row row-cols-2 row-cols-md-4 g-2">
+                                @foreach ($statuses as $status)
+                                    <div class="col">
                                         <input type="radio" class="btn-check" name="status_id"
                                             id="status_id{{ $status->id }}" autocomplete="off" wire:model="status_id"
                                             value="{{ $status->id }}">
-                                        <label class="btn btn-outline-{{ str_replace('bg-', '', $status->bg_color) }}"
+                                        <label class="btn btn-outline-{{ str_replace('bg-', '', $status->bg_color) }} w-100"
                                             for="status_id{{ $status->id }}">{{ $status->name }}</label>
-                                    @endforeach
-                                </div>
-
+                                    </div>
+                                @endforeach
                             </div>
+                            
                         </div>
 
                         <div class="d-flex gap-2 justify-content-end">
