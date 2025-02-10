@@ -8,7 +8,7 @@
                 <input type="date" class="form-control" wire:model.live="date">
             </div>
         </div>
-  
+
         @livewire('dashboard.attendance-stats', ['date' => $date], key('attendance-stats'))
         @livewire('dashboard.attendance-stats-night', ['date' => $date], key('attendance-stats-night'))
 
@@ -27,5 +27,4 @@
     @endcan
 
     @livewire('component.modal.attendance-stats-modal', key('attendance-stats-modal'))
-
 </div>

@@ -20,6 +20,7 @@ class AttendancePerPositionNight extends Component
     public $showModal = false;
     public $selectedCategory = '';
     public $selectedDivision = '';
+    public $selectedType = '';
     public $supervisorData = [];
 
     public $employeeData = []; // Untuk menyimpan data karyawan yang akan ditampilkan
@@ -39,18 +40,17 @@ class AttendancePerPositionNight extends Component
     public function generateAttendance()
     {
         // Ambil data attendance berdasarkan tanggal dan shift
-        $attendances = Attendance::with(['shift', 'employee.group'])
+        $attendances = Attendance::with(['reference', 'employee.position', 'employee.group.supervisor'])
             ->whereDate('shift_date', $this->date)
             ->where('shift_id', $this->shift_id)
             ->get();
+
 
         // Kelompokkan data berdasarkan divisi (group)
         $groupedAttendances = $this->groupByDivision($attendances);
 
         // Hitung total per kategori per divisi
         $this->attendanceData = $this->calculateTotals($groupedAttendances);
-
-        $this->dispatch('refreshCard');
     }
 
     private function groupByDivision($attendances)
@@ -72,82 +72,110 @@ class AttendancePerPositionNight extends Component
 
     private function calculateTotals($groupedAttendances)
     {
-        $reportData = [];
+        $attendanceData = [];
 
-        foreach ($groupedAttendances as $division => $attendances) {
-            $totalIn = $this->calculateCategory($attendances, 'IN');
-            $totalBreakIn = $this->calculateCategory($attendances, 'BreakIn');
-            $totalBreakOut = $this->calculateCategory($attendances, 'BreakOut');
-            $totalOut = $this->calculateCategory($attendances, 'OUT');
-
-            $reportData[] = [
-                'division' => $division ?? '',
-                'totalIn' => $totalIn,
-                'totalBreakIn' => $totalBreakIn,
-                'totalBreakOut' => $totalBreakOut,
-                'totalOut' => $totalOut,
+        foreach ($groupedAttendances as $position => $attendances) {
+            $attendanceData[$position] = [
+                'IN' => $this->calculateCategory($attendances, 'in'),
+                'OUT' => $this->calculateCategory($attendances, 'out'),
+                'BreakIN' => $this->calculateCategory($attendances, 'break_in'),
+                'BreakOut' => $this->calculateCategory($attendances, 'break_out'),
             ];
         }
 
-        return $reportData;
+        return $attendanceData;
     }
 
     private function calculateCategory($attendances, $category)
     {
-        switch ($category) {
-            case 'IN':
-                $filterFunction = function ($attendance) {
-                    return $this->isIn($attendance);
-                };
-                break;
-            case 'BreakIn':
-                $filterFunction = function ($attendance) {
-                    return $this->isBreakIn($attendance);
-                };
-                break;
-            case 'BreakOut':
-                $filterFunction = function ($attendance) {
-                    return $this->isBreakOut($attendance);
-                };
-                break;
-            case 'OUT':
-                $filterFunction = function ($attendance) {
-                    return $this->isOut($attendance);
-                };
-                break;
-            default:
-                return 0;
+        $ontimeCount = 0;
+        $earlyCount = 0;
+        $lateCount = 0;
+
+        // Array untuk menyimpan karyawan yang sudah diproses
+        $processedEmployees = [];
+
+        foreach ($attendances as $attendance) {
+            $reference = $attendance->reference;
+            if ($reference) {
+                // Split waktu kategori
+                $onTime = explode('-', $reference->{$category});
+                $earlyTime = explode('-', $reference->{'early_' . $category});
+                $lateTime = explode('-', $reference->{'late_' . $category});
+
+                $startOnTime = Carbon::parse($onTime[0])->setDateFrom(Carbon::parse($attendance->shift_date));
+                $endOnTime = Carbon::parse($onTime[1])->setDateFrom(Carbon::parse($attendance->shift_date));
+
+                $startEarly = Carbon::parse($earlyTime[0])->setDateFrom(Carbon::parse($attendance->shift_date));
+                $endEarly = Carbon::parse($earlyTime[1])->setDateFrom(Carbon::parse($attendance->shift_date));
+
+                $startLate = Carbon::parse($lateTime[0])->setDateFrom(Carbon::parse($attendance->shift_date));
+                $endLate = Carbon::parse($lateTime[1])->setDateFrom(Carbon::parse($attendance->shift_date));
+
+                // Tangani perpindahan hari (cross-day)
+                if ($endOnTime->lessThan($startOnTime)) {
+                    $endOnTime->addDay(); // Tambahkan 1 hari jika waktu melewati tengah malam
+                }
+                if ($endEarly->lessThan($startEarly)) {
+                    $endEarly->addDay();
+                }
+                if ($endLate->lessThan($startLate)) {
+                    $endLate->addDay();
+                }
+
+                $attendanceTime = Carbon::parse($attendance->timestamp)->setDateFrom(Carbon::parse($attendance->shift_date)); // Waktu absensi karyawan
+
+                // Cek apakah karyawan sudah diproses
+                if (!in_array($attendance->employee->id, $processedEmployees)) {
+                    // Cek apakah datang lebih awal (Early)
+                    if ($attendanceTime->between($startEarly, $endEarly)) {
+                        $earlyCount++;
+                        $processedEmployees[] = $attendance->employee->id; // Tandai karyawan sudah diproses
+                    }
+                    // Cek apakah tepat waktu (Ontime)
+                    elseif ($attendanceTime->between($startOnTime, $endOnTime)) {
+                        $ontimeCount++;
+                        $processedEmployees[] = $attendance->employee->id; // Tandai karyawan sudah diproses
+                    }
+                    // Cek apakah terlambat (Late)
+                    elseif ($attendanceTime->between($startLate, $endLate)) {
+                        $lateCount++;
+                        $processedEmployees[] = $attendance->employee->id; // Tandai karyawan sudah diproses
+                    }
+                }
+            }
         }
 
-        // Menghitung total karyawan per kategori
-        return collect($attendances)->groupBy('employee_id')->filter(function ($group) use ($filterFunction) {
-            return $group->contains($filterFunction);
-        })->count();
+        return [
+            'ontime' => $ontimeCount,
+            'early' => $earlyCount,
+            'late' => $lateCount,
+        ];
     }
 
-    public function showSupervisorData($category, $division)
+    public function showSupervisorData($category, $type, $division)
     {
         $this->selectedCategory = $category;
         $this->selectedDivision = $division;
+        $this->selectedType = $type;
 
         // Ambil data supervisor berdasarkan kategori dan divisi
-        $this->supervisorData = $this->getSupervisorData($category, $division);
+        $this->supervisorData = $this->getSupervisorData($category, $type, $division);
         // dd($this->supervisorData);
         $this->showModal = true;
     }
 
-    private function getSupervisorData($category, $division)
+    private function getSupervisorData($category, $type, $division)
     {
         // Ambil data attendance berdasarkan kategori dan divisi
-        $attendances = Attendance::with(['employee.group.supervisor'])
+        $attendances = Attendance::with(['employee.group.supervisor', 'reference'])
             ->whereDate('shift_date', $this->date)
             ->where('shift_id', $this->shift_id);
 
+        // Filter berdasarkan divisi
         if ($division != '-') {
             $attendances = $attendances->whereHas('employee.position', function ($query) use ($division) {
-                if ($division != '-') {
-                    $query->where('name', $division);
-                }
+                $query->where('name', $division);
             });
         } else {
             $attendances = $attendances->whereHas('employee', function ($query) {
@@ -157,17 +185,51 @@ class AttendancePerPositionNight extends Component
 
         $attendances = $attendances->get();
 
-        // Filter data berdasarkan kategori
-        $filterFunction = match ($category) {
-            'IN' => fn($attendance) => $this->isIn($attendance),
-            'OUT' => fn($attendance) => $this->isOut($attendance),
-            'BreakIn' => fn($attendance) => $this->isBreakIn($attendance),
-            'BreakOut' => fn($attendance) => $this->isBreakOut($attendance),
-            default => fn($attendance) => false,
-        };
+        // Filter data berdasarkan kategori dan tipe
+        $filteredAttendances = $attendances->filter(function ($attendance) use ($category, $type) {
+            $reference = $attendance->reference;
+            if (!$reference) {
+                return false;
+            }
 
-        // Hanya ambil data yang sesuai kategori
-        $filteredAttendances = $attendances->filter($filterFunction);
+            $onTime = explode('-', $reference->{$category});
+            $earlyTime = explode('-', $reference->{'early_' . $category});
+            $lateTime = explode('-', $reference->{'late_' . $category});
+
+            $startOnTime = Carbon::parse($onTime[0])->setDateFrom(Carbon::parse($attendance->shift_date));
+            $endOnTime = Carbon::parse($onTime[1])->setDateFrom(Carbon::parse($attendance->shift_date));
+
+            $startEarly = Carbon::parse($earlyTime[0])->setDateFrom(Carbon::parse($attendance->shift_date));
+            $endEarly = Carbon::parse($earlyTime[1])->setDateFrom(Carbon::parse($attendance->shift_date));
+
+            $startLate = Carbon::parse($lateTime[0])->setDateFrom(Carbon::parse($attendance->shift_date));
+            $endLate = Carbon::parse($lateTime[1])->setDateFrom(Carbon::parse($attendance->shift_date));
+
+            // Tangani perpindahan hari (cross-day)
+            if ($endOnTime->lessThan($startOnTime)) {
+                $endOnTime->addDay(); // Tambahkan 1 hari jika waktu melewati tengah malam
+            }
+            if ($endEarly->lessThan($startEarly)) {
+                $endEarly->addDay();
+            }
+            if ($endLate->lessThan($startLate)) {
+                $endLate->addDay();
+            }
+
+            $attendanceTime = Carbon::parse($attendance->timestamp)->setDateFrom(Carbon::parse($attendance->shift_date)); // Waktu absensi karyawan
+
+            // Filter berdasarkan tipe (ontime, early, late)
+            switch ($type) {
+                case 'ontime':
+                    return $attendanceTime->between($startOnTime, $endOnTime);
+                case 'early':
+                    return $attendanceTime->between($startEarly, $endEarly);
+                case 'late':
+                    return $attendanceTime->between($startLate, $endLate);
+                default:
+                    return false;
+            }
+        });
 
         // Buat data unik berdasarkan employee_id agar tidak ada duplikasi
         $uniqueAttendances = $filteredAttendances->unique('employee_id');
@@ -176,14 +238,13 @@ class AttendancePerPositionNight extends Component
         $supervisorData = [];
 
         foreach ($uniqueAttendances as $attendance) {
-            if ($filterFunction($attendance)) {
-                $supervisor = $attendance->employee->group->supervisor->name ?? 'Tanpa Supervisor';
-                if (!isset($supervisorData[$supervisor])) {
-                    $supervisorData[$supervisor] = 0;
-                }
+            $supervisor = $attendance->employee->group->supervisor->name ?? 'Tanpa Supervisor';
 
-                $supervisorData[$supervisor]++;
+            if (!isset($supervisorData[$supervisor])) {
+                $supervisorData[$supervisor] = 0;
             }
+
+            $supervisorData[$supervisor]++;
         }
 
         return $supervisorData;
@@ -222,26 +283,50 @@ class AttendancePerPositionNight extends Component
 
         $attendances = $attendances->get();
 
-        // Filter berdasarkan kategori yang sedang dipilih
-        $filterFunction = match ($this->selectedCategory) {
-            'IN' => fn($attendance) => $this->isIn($attendance),
-            'OUT' => fn($attendance) => $this->isOut($attendance),
-            'BreakIn' => fn($attendance) => $this->isBreakIn($attendance),
-            'BreakOut' => fn($attendance) => $this->isBreakOut($attendance),
-            default => fn($attendance) => false,
-        };
+        $filteredAttendances = $attendances->filter(function ($attendance) {
+            $reference = $attendance->reference;
+            if (!$reference) {
+                return false;
+            }
 
-        // Hanya ambil attendance yang sesuai dengan kategori
-        $filteredAttendances = $attendances->filter($filterFunction);
+            $onTime = explode('-', $reference->{$this->selectedCategory});
+            $earlyTime = explode('-', $reference->{'early_' . $this->selectedCategory});
+            $lateTime = explode('-', $reference->{'late_' . $this->selectedCategory});
 
-         // Buat data unik berdasarkan employee_id agar tidak ada duplikasi && get data attendance dan nama employeenya
-         $this->employeeData = $filteredAttendances->unique('employee_id')->map(function ($attendance) {
+            $startOnTime = Carbon::parse($onTime[0])->setDateFrom(Carbon::parse($attendance->shift_date));
+            $endOnTime = Carbon::parse($onTime[1])->setDateFrom(Carbon::parse($attendance->shift_date));
+
+            $startEarly = Carbon::parse($earlyTime[0])->setDateFrom(Carbon::parse($attendance->shift_date));
+            $endEarly = Carbon::parse($earlyTime[1])->setDateFrom(Carbon::parse($attendance->shift_date));
+
+            $startLate = Carbon::parse($lateTime[0])->setDateFrom(Carbon::parse($attendance->shift_date));
+            $endLate = Carbon::parse($lateTime[1])->setDateFrom(Carbon::parse($attendance->shift_date));
+
+            $attendanceTime = Carbon::parse($attendance->timestamp)->setDateFrom(Carbon::parse($attendance->shift_date)); // Waktu absensi karyawan
+
+            // Filter berdasarkan tipe (ontime, early, late)
+            switch ($this->selectedType) {
+                case 'ontime':
+                    return $attendanceTime->between($startOnTime, $endOnTime);
+                case 'early':
+                    return $attendanceTime->between($startEarly, $endEarly);
+                case 'late':
+                    return $attendanceTime->between($startLate, $endLate);
+                default:
+                    return false;
+            }
+        });
+
+        // Buat data unik berdasarkan employee_id agar tidak ada duplikasi && get data attendance dan nama employeenya
+        $this->employeeData = $filteredAttendances->unique('employee_id')->map(function ($attendance) {
             return [
                 'name' => $attendance->employee->name,
                 'phone' => $attendance->employee->phone,
                 'timestamp' => $attendance->timestamp
             ];
         });
+
+        // dd($this->employeeData);
     }
 
     public function closeModal()
@@ -252,65 +337,6 @@ class AttendancePerPositionNight extends Component
         $this->supervisorData = [];
         $this->selectedSupervisor = '';
         $this->employeeData = [];
-    }
-
-    // Cek apakah waktu sesuai dengan kategori 'IN'
-    private function isIn($attendance)
-    {
-        $time = Carbon::parse($attendance->timestamp);
-        $shift = $attendance->shift;
-        $start_adjustment = Carbon::parse($shift->start_adjustment)->setDateFrom(Carbon::parse($attendance->shift_date));
-        $break_start = Carbon::parse($shift->break_start_time)->setDateFrom(Carbon::parse($attendance->shift_date));
-
-        if ($break_start->hour < $start_adjustment->hour) {
-            $break_start->addDay();
-        }
-
-        return $time->between($start_adjustment, $break_start);
-    }
-
-    // Cek apakah waktu sesuai dengan kategori 'BreakIn'
-    private function isBreakIn($attendance)
-    {
-        $time = Carbon::parse($attendance->timestamp);
-        $shift = $attendance->shift;
-        $break_start = Carbon::parse($shift->break_start_time)
-            ->setDateFrom(Carbon::parse($attendance->shift_date));
-        $break_end = Carbon::parse($shift->break_end_time)
-            ->setDateFrom(Carbon::parse($attendance->shift_date));
-
-        // Handle pergantian hari untuk break_end
-        if ($break_end->hour < $break_start->hour) {
-            $break_end->addDay();
-        }
-
-        return $time->between($break_start, $break_end);
-    }
-
-    // Cek apakah waktu sesuai dengan kategori 'BreakOut'
-    private function isBreakOut($attendance)
-    {
-        $time = Carbon::parse($attendance->timestamp);
-        $shift = $attendance->shift;
-        $break_end = Carbon::parse($shift->break_end_time)
-            ->setDateFrom(Carbon::parse($attendance->shift_date))->addDay();
-        $end_time = Carbon::parse($shift->end_time)
-            ->setDateFrom(Carbon::parse($attendance->shift_date))->addDay();
-
-        return $time->between($break_end, $end_time);
-    }
-
-    // Cek apakah waktu sesuai dengan kategori 'OUT'
-    private function isOut($attendance)
-    {
-        $time = Carbon::parse($attendance->timestamp);
-        $shift = $attendance->shift;
-        $end_time = Carbon::parse($shift->end_time)
-            ->setDateFrom(Carbon::parse($attendance->shift_date))->addDay();
-        $end_adjustment = Carbon::parse($shift->end_adjustment)
-            ->setDateFrom(Carbon::parse($attendance->shift_date))->addDay();
-
-        return $time->between($end_time, $end_adjustment);
     }
 
     #[On('updatedData')]

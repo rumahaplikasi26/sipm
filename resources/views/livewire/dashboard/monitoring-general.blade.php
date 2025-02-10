@@ -77,7 +77,7 @@
                     </table>
                 </div>
 
-                <div class="col-12">
+                <div class="col-12 mt-2">
                     <p class="text-muted font-size-10">Keterangan : <br>
                         H = Hadir <br>
                         S = Sakit <br>

@@ -12,11 +12,13 @@ class DashboardIndex extends Component
     public $shifts;
     public $shift_id;
 
+    protected $listeners = ['refreshIndex', '$refresh'];
+
     public function mount()
     {
         $this->date =Carbon::today()->format('Y-m-d');
     }
-    
+
     public function updatedDate($value)
     {
         $this->dispatch('updatedData', $this->date);

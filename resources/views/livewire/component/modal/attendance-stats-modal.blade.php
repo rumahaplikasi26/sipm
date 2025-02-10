@@ -44,7 +44,7 @@
                                     <tbody>
                                         @foreach ($filteredItems as $item)
                                             <tr>
-                                                <td>{{ isset($item['employee']['name']) ? $item['employee']['name'] : '-' }}
+                                                <td>{{ isset($item['name']) ? $item['name'] : '-' }}
                                                 </td>
                                                 <td>{{ isset($item['group']['name']) ? $item['group']['name'] : '-' }}
                                                 </td>

@@ -42,14 +42,14 @@ class AttendanceStatsModal extends Component
         // Filter by group
         if ($this->filterGroup) {
             $this->filteredItems = array_filter($this->filteredItems, function ($item) {
-                return $item['employee']['group_id'] == $this->filterGroup;
+                return $item['group_id'] == $this->filterGroup;
             });
         }
 
         // Filter by name
         if ($this->searchName) {
             $this->filteredItems = array_filter($this->filteredItems, function ($item) {
-                return stripos($item['employee']['name'], $this->searchName) !== false;
+                return stripos($item['name'], $this->searchName) !== false;
             });
         }
 
@@ -64,6 +64,7 @@ class AttendanceStatsModal extends Component
         $this->modal_title = $modal_title;
         $this->items = $data;
 
+        // dd($this->items);
         $this->applyFilters();
         $this->dispatch('showModal');
     }
