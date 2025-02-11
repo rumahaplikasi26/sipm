@@ -19,11 +19,11 @@
                 </div>
             </div>
 
-            <div class="d-flex mt-4 gap-3">
+            {{-- <div class="d-flex mt-4 gap-3">
                 <span class="badge badge-soft-success font-size-12" data-bs-toggle="tooltip" data-bs-placement="top" title="On Time"><i class="mdi mdi-clock me-1"></i> 17</span></span>
                 <span class="badge badge-soft-danger font-size-12" data-bs-toggle="tooltip" data-bs-placement="top" title="Late"><i class="mdi mdi-arrow-down me-1"></i> 17</span></span>
                 <span class="badge badge-soft-info font-size-12" data-bs-toggle="tooltip" data-bs-placement="top" title="Early"><i class="mdi mdi-arrow-up me-1"></i> 17</span></span>
-            </div>
+            </div> --}}
         </div>
     </div>
 </div>

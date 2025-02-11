@@ -48,7 +48,7 @@ class PositionList extends Component
     {
         $positions = Position::with('employees')->when($this->search, function ($query) {
             $query->where('name', 'like', '%' . $this->search . '%');
-        })->paginate($this->perPage);
+        })->onlyActiveEmployees()->paginate($this->perPage);
 
         return view('livewire.position.position-list', compact('positions'));
     }

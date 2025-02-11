@@ -9,7 +9,7 @@
                 </div>
 
                 <div class="overflow-hidden me-auto">
-                    <h5 class="font-size-13 text-truncate mb-1" title="Supervisor">{{ $group->name }}
+                    <h5 class="font-size-13 text-wrap mb-1" title="Supervisor">{{ $group->name }}
                         ({{ $group->supervisor?->name }}) </h5>
                     <p class="text-muted text-truncate mb-0">{{ $group->employees->count() }} Employees</p>
                 </div>

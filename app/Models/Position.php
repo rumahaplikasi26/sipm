@@ -10,6 +10,13 @@ class Position extends Model
         'name',
     ];
 
+    public function scopeOnlyActiveEmployees($query)
+    {
+        return $query->whereHas('employees', function ($query) {
+            $query->whereNull('deleted_at');
+        });
+    }
+
     public function employees()
     {
         return $this->hasMany(Employee::class);

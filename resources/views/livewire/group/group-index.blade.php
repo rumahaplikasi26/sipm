@@ -7,7 +7,7 @@
         </div>
 
         @can('group.create')
-            <div class="col-lg-2">
+            <div class="col-lg-3">
                 @livewire('group.group-form', key('group-form'))
             </div>
         @endcan

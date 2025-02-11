@@ -106,6 +106,7 @@ class ReportAttendanceIndex extends Component
                 $query->whereIn('employee_id', $this->filterEmployee);
             })
             ->whereBetween('timestamp', [$startDate, $endDate]) // Filter rentang tanggal
+            ->onlyActiveEmployees()
             ->get();
 
         // Menghasilkan rentang tanggal

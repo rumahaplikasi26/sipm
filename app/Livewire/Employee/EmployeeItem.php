@@ -10,8 +10,6 @@ use Livewire\Component;
 class EmployeeItem extends Component
 {
     use LivewireAlert;
-
-    #[Reactive]
     public $employee;
 
     public function mount($employee)

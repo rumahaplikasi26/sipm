@@ -32,7 +32,7 @@
                         </span>
                     @enderror
                 </div>
-                <div>
+                <div class="d-flex gap-2 align-items-center">
                     <button type="submit" class="btn btn-primary w-sm">Submit</button>
                     <button type="reset" class="btn btn-secondary w-sm" wire:click="resetForm"> Reset</button>
                 </div>
