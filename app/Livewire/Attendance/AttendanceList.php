@@ -102,7 +102,6 @@ class AttendanceList extends BaseComponent
         $attendances = Attendance::with('employee.group', 'employee.position')
             ->when($this->search, function ($query) {
                 $query->whereHas('employee', function ($query) {
-                    $query->whereNull('deleted_at'); // Hanya mengambil employee yang masih aktif
                     $query->where('name', 'like', '%' . $this->search . '%');
                 });
             });
@@ -127,7 +126,7 @@ class AttendanceList extends BaseComponent
             $query->whereDate('timestamp', '>=', $this->filterStartDate);
         })->when($this->filterEndDate, function ($query) {
             $query->whereDate('timestamp', '<=', $this->filterEndDate);
-        })->latest()->paginate($this->perPage);
+        })->onlyActiveEmployees()->latest()->paginate($this->perPage);
 
         return view('livewire.attendance.attendance-list', compact('attendances'));
     }

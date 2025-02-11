@@ -25,6 +25,13 @@ class Attendance extends Model
         'timestamp' => 'datetime',
     ];
 
+    public function scopeOnlyActiveEmployees($query)
+    {
+        return $query->whereHas('employee', function ($query) {
+            $query->whereNull('deleted_at');
+        });
+    }
+
     public function getDateAttribute()
     {
         return date('Y-m-d', strtotime($this->timestamp));

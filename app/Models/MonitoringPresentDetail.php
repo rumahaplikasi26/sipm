@@ -21,6 +21,12 @@ class MonitoringPresentDetail extends Model
         return $this->belongsTo(Employee::class);
     }
 
+    public function scopeOnlyActiveEmployees($query)
+    {
+        return $query->whereHas('employee', function ($query) {
+            $query->whereNull('deleted_at');
+        });
+    }
 
     public function moveSupervisor()
     {

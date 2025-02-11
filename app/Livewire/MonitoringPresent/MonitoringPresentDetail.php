@@ -13,7 +13,7 @@ class MonitoringPresentDetail extends Component
     #[On('show-modal-details')]
     public function showDetail($monitoring_present_id)
     {
-        $this->details = \App\Models\MonitoringPresentDetail::with('employee')->where('monitoring_present_id', $monitoring_present_id)->get();
+        $this->details = \App\Models\MonitoringPresentDetail::with('employee')->onlyActiveEmployees()->where('monitoring_present_id', $monitoring_present_id)->get();
         $this->monitoring_present_id = $monitoring_present_id;
 
         $this->dispatch('showModalDetails');

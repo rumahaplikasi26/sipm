@@ -68,6 +68,10 @@
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
+
+                            @if($shift_id == $shift_2)
+                                <span class="text-danger">Pengisian data maksimal jam 6 pagi, untuk mengatasi bentrok tanggal karena perpindahan hari.</span>
+                            @endif
                         </div>
 
                         <div class="form-floating mb-3" wire:loading.remove wire:target="shift_date">
@@ -193,7 +197,7 @@
                                                         <select
                                                             class="form-select @error('move_supervisors.{{ $employee->id }}') is-invalid @enderror"
                                                             id="move_supervisors_{{ $employee->id }}"
-                                                            @if (isset($is_presents[$employee->id]) && $reasons[$employee->id] == 'pindah_supervisor') style="display: block" 
+                                                            @if (isset($is_presents[$employee->id]) && $reasons[$employee->id] == 'pindah_supervisor') style="display: block"
                                                             @else style="display: none" @endif
                                                             wire:model.live="move_supervisors.{{ $employee->id }}">
                                                             <option value="">-- Select Supervisor --</option>
