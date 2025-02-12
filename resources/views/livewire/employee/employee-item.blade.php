@@ -16,6 +16,8 @@
                     {{ $employee->group?->name }}</a>
                 <a href="javascript: void(0);" class="badge bg-info font-size-11 m-1">Position:
                     {{ $employee->position?->name }}</a>
+                <a href="javascript: void(0);" class="badge bg-@if($employee->shift == 1) bg-success @else bg-danger @endif font-size-11 m-1">Shift:
+                    {{ $employee->shift }}</a>
             </div>
         </div>
         @can('employee.edit')

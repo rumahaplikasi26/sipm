@@ -45,11 +45,14 @@ class ActivityUpdateProgress extends BaseComponent
         try {
             DB::beginTransaction();
 
+            $percentage = ($this->quantity / $this->totalQuantity) * 100;
+
             ActivityProgress::create([
                 'activity_id' => $this->activity_id,
                 'date' => $this->date,
                 'user_id' => $this->authUser->id,
                 'quantity' => $this->quantity,
+                'percentage' => $percentage
             ]);
 
             $activity = ActivityProgress::where('activity_id', $this->activity_id)->get();

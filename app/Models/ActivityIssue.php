@@ -14,9 +14,12 @@ class ActivityIssue extends Model
         'percentage_dependency',
         'percentage_solution',
         'resolved_at',
-        'notified_site_manager_at',
-        'notified_project_manager_at',
-        'notified_project_director_at',
+        'notified_site_manager_count',
+        'last_notified_site_manager_at',
+        'notified_project_manager_count',
+        'last_notified_project_manager_at',
+        'notified_project_director_count',
+        'last_notified_project_director_at',
     ];
 
     public function categoryDependency()

@@ -99,14 +99,16 @@ class IClockController extends Controller
                     $is_active = false;
                 }
 
+                // $shift_employee = $employee->shift;
                 $machine = Machine::where('serial_number', $request->input('SN'))->first();
+                $shift_employee = $machine->shift;
 
                 $dayOfWeek = Carbon::parse($data[1])->format('l'); // Mendapatkan nama hari
 
-                if ($machine->shift == 1) {
+                if ($shift_employee == 1) {
                     $dayOfWeek = Carbon::parse($data[1])->format('l'); // Mendapatkan nama hari
                     $shiftDate = Carbon::parse($data[1])->toDateString();
-                } else if ($machine->shift == 2) {
+                } else if ($shift_employee == 2) {
                     if (Carbon::parse($data[1])->hour >= 0 && Carbon::parse($data[1])->hour <= 11) {
                         $dayOfWeek = Carbon::parse($data[1])->subDay()->format('l');
                         $shiftDate = Carbon::parse($data[1])->subDay()->toDateString();
@@ -117,7 +119,7 @@ class IClockController extends Controller
                 }
 
                 // Ambil semua shift yang berlaku untuk hari tersebut
-                $shift = Shift::where('day_of_week', strtolower($dayOfWeek))->where('shift', $machine->shift)->first();
+                $shift = Shift::where('day_of_week', strtolower($dayOfWeek))->where('shift', $shift_employee)->first();
 
                 if(!isset($shift)) {
                     \Log::info('Shift Not Found', $request->all());

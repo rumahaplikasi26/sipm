@@ -19,6 +19,7 @@ class Employee extends Model
         'position_id',
         'group_id',
         'phone',
+        'shift'
     ];
 
     public function position()

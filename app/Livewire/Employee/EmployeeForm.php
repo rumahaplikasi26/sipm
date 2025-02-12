@@ -10,8 +10,26 @@ use Livewire\Component;
 class EmployeeForm extends Component
 {
     use LivewireAlert;
-    public $name, $email, $employee_id, $phone, $group, $position, $positions, $groups, $mode = 'create';
+    public $name, $email, $employee_id, $phone, $group, $position, $positions, $shift, $groups, $mode = 'create';
     public $employee;
+
+    protected $rules = [
+        'employee_id' => 'required',
+        'name' => 'required',
+        'email' => 'nullable|email',
+        'position' => 'nullable',
+        'group' => 'nullable',
+        'shift' => 'required|between:1,2'
+    ];
+
+    protected $messages = [
+        'employee_id.required' => 'ID harus diisi',
+        'email.unique' => 'Email sudah digunakan',
+        'name.required' => 'Nama harus diisi',
+        'email.email' => 'Email tidak valid',
+        'shift.required' => 'Shift harus diisi',
+        'shift.between' => 'Shift harus antara 1 dan 2'
+    ];
 
     public function mount()
     {
@@ -30,19 +48,14 @@ class EmployeeForm extends Component
         $this->group = $employee->group_id;
         $this->position = $employee->position_id;
         $this->phone = $employee->phone;
+        $this->shift = $employee->shift;
 
         $this->mode = 'edit';
     }
 
     public function submit()
     {
-        $this->validate([
-            'employee_id' => 'required',
-            'name' => 'required',
-            'email' => 'nullable|email',
-            'position' => 'nullable',
-            'group' => 'nullable',
-        ]);
+        $this->validate();
 
         try {
             switch ($this->mode) {
@@ -54,6 +67,7 @@ class EmployeeForm extends Component
                         'phone' => $this->phone,
                         'position_id' => $this->position,
                         'group_id' => $this->group,
+                        'shift' => $this->shift
                     ]);
 
                     break;
@@ -65,6 +79,7 @@ class EmployeeForm extends Component
                         'phone' => $this->phone,
                         'position_id' => $this->position,
                         'group_id' => $this->group,
+                        'shift' => $this->shift
                     ]);
 
                     break;
@@ -80,7 +95,7 @@ class EmployeeForm extends Component
 
     public function resetForm()
     {
-        $this->reset('name', 'email', 'phone', 'group', 'position', 'employee_id');
+        $this->reset('name', 'email', 'phone', 'group', 'position', 'employee_id', 'shift');
         $this->mode = 'create';
     }
 

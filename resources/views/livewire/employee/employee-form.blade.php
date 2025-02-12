@@ -1,5 +1,5 @@
 <div>
-    
+
     <div class="card">
         <div class="card-body">
             <h4 class="card-title mb-4">{{ $mode == 'create' ? 'Create Employee' : 'Edit Employee ' . $name }}</h4>
@@ -60,6 +60,22 @@
                             @enderror
                         </div>
                     </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="formrow-shifts" class="form-label">Shift</label>
+                    <select class="form-control @error('shift') is-invalid @enderror" wire:model="shift"
+                        data-placeholder="Choose ...">
+                        <option value="">-- Select Shift --</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                    </select>
+
+                    @error('shift')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
 
                 <div class="mb-3">
