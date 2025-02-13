@@ -23,14 +23,14 @@ class Navbar extends BaseComponent
                         'name' => 'Dashboard Attendance',
                         'url' => route('dashboard'),
                         'route' => 'dashboard',
-                        'icon' => 'fas fa-users',
+                        'icon' => 'fas fa-tachometer-alt',
                         'permissions' => ['dashboard.index']
                     ],
                     [
                         'name' => 'Dashboard Activity',
-                        'url' => '#',
-                        'route' => 'dahboard',
-                        'icon' => 'fas fa-users-cog',
+                        'url' => route('dashboard.activity'),
+                        'route' => 'dahboard.activity',
+                        'icon' => 'fas fa-tasks',
                         'permissions' => ['dashboard.index']
                     ],
                 ]

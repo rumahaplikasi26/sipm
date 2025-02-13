@@ -99,9 +99,9 @@ class IClockController extends Controller
                     $is_active = false;
                 }
 
-                // $shift_employee = $employee->shift;
-                $machine = Machine::where('serial_number', $request->input('SN'))->first();
-                $shift_employee = $machine->shift;
+                $shift_employee = $employee->shift;
+                // $machine = Machine::where('serial_number', $request->input('SN'))->first();
+                // $shift_employee = $machine->shift;
 
                 $dayOfWeek = Carbon::parse($data[1])->format('l'); // Mendapatkan nama hari
 
@@ -124,7 +124,7 @@ class IClockController extends Controller
                 if(!isset($shift)) {
                     \Log::info('Shift Not Found', $request->all());
                 }
-                
+
                 // if ($shifts->isNotEmpty()) {
                 //     foreach ($shifts as $potentialShift) {
                 //         // Validasi apakah fingerprint sesuai dengan waktu shift
@@ -205,43 +205,69 @@ class IClockController extends Controller
             $shift = null;
             $shiftDate = null;
 
-            $machine = Machine::where('serial_number', $request->input('SN'))->first();
+            $employee = $this->getEmployee($request->employee_id);
 
-            if (!isset($machine)) {
-                return "ERROR: Machine Not Found";
+            $name = '';
+            $phone = '';
+            $shift = null;
+            $shiftDate = null;
+            $is_active = false;
+
+            if ($employee != null) {
+                $name = $employee->name;
+                $phone = $employee->phone;
+                $is_active = true;
+            } else {
+                $employee = Employee::updateOrCreate([
+                    'id' => $request->employee_id
+                ], [
+                    'name' => $request->employee_id,
+                ]);
+
+                $name = $employee->name;
+                $is_active = false;
             }
 
-            $dayOfWeek = Carbon::parse($request->datetime)->format('l'); // Mendapatkan nama hari
+            $shift_employee = $employee->shift;
+                // $machine = Machine::where('serial_number', $request->input('SN'))->first();
+                // $shift_employee = $machine->shift;
+            // $machine = Machine::where('serial_number', $request->input('SN'))->first();
 
-            if ($machine->shift == 1) {
-                $dayOfWeek = Carbon::parse($request->datetime)->format('l'); // Mendapatkan nama hari
-                $shiftDate = Carbon::parse($request->datetime)->toDateString();
-            } else if ($machine->shift == 2) {
-                if (Carbon::parse($request->datetime)->hour >= 0 && Carbon::parse($request->datetime)->hour <= 12) {
-                    $dayOfWeek = Carbon::parse($request->datetime)->subDay()->format('l');
-                    $shiftDate = Carbon::parse($request->datetime)->subDay()->toDateString();
+            // if (!isset($machine)) {
+            //     return "ERROR: Machine Not Found";
+            // }
+
+            $dayOfWeek = Carbon::parse($request->timestamp)->format('l'); // Mendapatkan nama hari
+
+            if ($shift_employee == 1) {
+                $dayOfWeek = Carbon::parse($request->timestamp)->format('l'); // Mendapatkan nama hari
+                $shiftDate = Carbon::parse($request->timestamp)->toDateString();
+            } else if ($shift_employee == 2) {
+                if (Carbon::parse($request->timestamp)->hour >= 0 && Carbon::parse($request->timestamp)->hour <= 12) {
+                    $dayOfWeek = Carbon::parse($request->timestamp)->subDay()->format('l');
+                    $shiftDate = Carbon::parse($request->timestamp)->subDay()->toDateString();
                 } else {
-                    $dayOfWeek = Carbon::parse($request->datetime)->format('l'); // Mendapatkan nama hari
-                    $shiftDate = Carbon::parse($request->datetime)->toDateString();
+                    $dayOfWeek = Carbon::parse($request->timestamp)->format('l'); // Mendapatkan nama hari
+                    $shiftDate = Carbon::parse($request->timestamp)->toDateString();
                 }
             }
 
             // Ambil semua shift yang berlaku untuk hari tersebut
-            $shift = Shift::where('day_of_week', strtolower($dayOfWeek))->where('shift', $machine->shift)->first();
+            $shift = Shift::where('day_of_week', strtolower($dayOfWeek))->where('shift', $shift_employee)->first();
 
             // dd($shift);
 
             if (isset($shift)) {
 
                 // Tetapkan shift_date berdasarkan waktu fingerprint
-                $timestamp = Carbon::parse($request->datetime);
+                $timestamp = Carbon::parse($request->timestamp);
 
                 $attendanceData = [
                     'sn' => 'TESTSN',
                     'uid' => 'test' . date('dHi'),
                     'employee_id' => $request->employee_id,
                     'state' => 1,
-                    'timestamp' => $request->datetime,
+                    'timestamp' => $request->timestamp,
                     'name' => 'Achmad Fatoni',
                     'phone' => '6289676490971',
                     'group_id' => 1,

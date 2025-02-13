@@ -8,6 +8,7 @@ use App\Livewire\Area\AreaIndex;
 use App\Livewire\Attendance\AttendanceIndex;
 use App\Livewire\Auth\Login;
 use App\Livewire\CategoryDependency\CategoryDependencyIndex;
+use App\Livewire\Dashboard\DashboardActivity;
 use App\Livewire\Dashboard\DashboardIndex;
 use App\Livewire\Employee\EmployeeIndex;
 use App\Livewire\Group\GroupIndex;
@@ -34,6 +35,7 @@ Route::get('/iclock/getrequest', [IClockController::class, 'getrequest']);
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/dashboard', DashboardIndex::class)->name('dashboard');
+    Route::get('/dashboard-activity', DashboardActivity::class)->name('dashboard.activity');
     Route::get('/profile', ProfileIndex::class)->name('profile');
     Route::get('/users', UserIndex::class)->name('master.users');
     Route::get('/groups', GroupIndex::class)->name('master.groups');

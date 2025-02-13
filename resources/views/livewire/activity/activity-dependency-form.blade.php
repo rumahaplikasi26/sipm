@@ -65,10 +65,9 @@
 
                     @if ($isEditDescription)
                         <div class="mb-3">
-                            <label class="form-label">Description</label>
+                            <label class="form-label">Solution</label>
                             <p class="text-muted mb-2 font-size-10">
-                                Deskripsi dapat di isi dengan penjelasan terkait permasalahan dan dapat juga untuk
-                                solusi yang sudah/akan di jalankan
+                                Solusi yang dilakukan untuk memperbaiki masalah pada aktivitas
                             </p>
                             <textarea @if (!$isEditDescription) disabled @endif
                                 class="form-control @error('dependencies.' . $index . '.description') is-invalid @enderror"

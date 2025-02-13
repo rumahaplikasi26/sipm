@@ -27,6 +27,16 @@ class ActivityDependencyForm extends BaseComponent
         'dependencies.*.description' => 'nullable|string|max:255',
     ];
 
+    protected $messages = [
+        'dependencies.*.date.required' => 'Tanggal harus diisi.',
+        'dependencies.*.category_dependency_id.required' => 'Kategori harus dipilih.',
+        'dependencies.*.percentage_dependency.required' => 'Persentase harus diisi.',
+        'dependencies.*.percentage_dependency.numeric' => 'Persentase harus berupa angka.',
+        'dependencies.*.percentage_dependency.min' => 'Persentase minimal adalah 0.',
+        'dependencies.*.percentage_dependency.max' => 'Persentase maksimal adalah 100.',
+        'dependencies.*.description.max' => 'Solusi maksimal 255 karakter.',
+    ];
+
     public function mount()
     {
         if ($this->authUser->hasRole('Supervisor')) {
@@ -108,20 +118,20 @@ class ActivityDependencyForm extends BaseComponent
             }
 
             foreach ($this->dependencies as $dependency) {
+                $resolved_at = null;
+
+                if ($dependency['description'] != '') {
+                    $resolved_at = date('Y-m-d H:i:s');
+                }
+
                 if (!empty($dependency['id'])) {
                     // Update existing dependency
-                    $resolved_at = null;
-
-                    if($dependency['description'] != ''){
-                        $resolved_at = date('Y-m-d H:i:s');
-                    }
-
                     $issue = ActivityIssue::find($dependency['id'])->update([
                         'date' => $dependency['date'],
                         'category_dependency_id' => $dependency['category_dependency_id'],
                         'description' => $dependency['description'],
                         'percentage_dependency' => $dependency['percentage_dependency'],
-                        'resolved_at'=> $resolved_at
+                        'resolved_at' => $resolved_at
                         // 'percentage_solution' => $dependency['percentage_solution'],
                     ]);
                 } else {
@@ -132,6 +142,7 @@ class ActivityDependencyForm extends BaseComponent
                         'category_dependency_id' => $dependency['category_dependency_id'],
                         'description' => $dependency['description'],
                         'percentage_dependency' => $dependency['percentage_dependency'],
+                        'resolved_at' => $resolved_at
                         // 'percentage_solution' => $dependency['percentage_solution'],
                     ]);
 

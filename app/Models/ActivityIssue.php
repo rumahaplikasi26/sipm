@@ -22,6 +22,16 @@ class ActivityIssue extends Model
         'last_notified_project_director_at',
     ];
 
+    public function scopeSolved($query)
+    {
+        return $query->whereNotNull('resolved_at');
+    }
+
+    public function scopeUnsolved($query)
+    {
+        return $query->whereNull('resolved_at');
+    }
+
     public function categoryDependency()
     {
         return $this->belongsTo(CategoryDependency::class);
