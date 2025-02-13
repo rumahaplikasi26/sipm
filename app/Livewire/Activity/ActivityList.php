@@ -121,7 +121,7 @@ class ActivityList extends BaseComponent
     {
         $this->activity_id = $activity_id;
         $this->status_id = Activity::find($activity_id)->status_id;
-        $this->statuses = StatusActivity::all();
+        $this->statuses = StatusActivity::whereNot('id', 4)->get();
         $this->dispatch('showFormValidation');
     }
 

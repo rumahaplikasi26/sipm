@@ -7,7 +7,8 @@
                 @livewire('dashboard.dashboard-activity.activity-by-status', ['date' => $date], key('dashboard-activity-by-status'))
             </div>
             <div class="col-md-4">
-                @livewire('dashboard.dashboard-activity.activity-by-area', ['date' => $date], key('dashboard-activity-by-area'))
+                @livewire('dashboard.dashboard-activity.activity-issue-resolved', ['date' => $date], key('dashboard-activity-issue-resolved'))
+
             </div>
             <div class="col-md-4">
                 @livewire('dashboard.dashboard-activity.activity-issue-by-area', ['date' => $date], key('dashboard-activity-issue-by-area'))
@@ -19,7 +20,7 @@
                 @livewire('dashboard.dashboard-activity.delayed-activity', ['date' => $date], key('dashboard-delayed-activity'))
             </div>
             <div class="col-md-6">
-                @livewire('dashboard.dashboard-activity.activity-issue-resolved', ['date' => $date], key('dashboard-activity-issue-resolved'))
+                @livewire('dashboard.dashboard-activity.activity-by-area', ['date' => $date], key('dashboard-activity-by-area'))
             </div>
         </div>
 

@@ -15,6 +15,7 @@ use App\Livewire\Group\GroupIndex;
 use App\Livewire\MonitoringPresent\MonitoringPresentIndex;
 use App\Livewire\Position\PositionIndex;
 use App\Livewire\Profile\ProfileIndex;
+use App\Livewire\Report\Progress\ReportProgressIndex;
 use App\Livewire\Report\ReportIndex;
 use App\Livewire\ReportAttendance\ReportAttendanceIndex;
 use App\Livewire\Scope\ScopeIndex;
@@ -55,5 +56,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/monitoring-present', MonitoringPresentIndex::class)->name('monitoring.present');
 
     Route::get('/report', ReportIndex::class)->name('activity.report');
+    Route::get('/report-progress', ReportProgressIndex::class)->name('activity.report.progress');
     Route::get('/report/attendance', ReportAttendanceIndex::class)->name('attendance.report');
 });

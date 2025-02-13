@@ -129,9 +129,9 @@ class Navbar extends BaseComponent
                 'route' => 'monitoring.present'
             ],
             [
-                'name' => 'Report',
+                'name' => 'Report Activity',
                 'icon' => 'fas fa-chart-line',
-                'permissions' => ['activity.report.index', 'attendance.report.index'],
+                'permissions' => ['activity.report.index'],
                 'url' => '#',
                 'route' => '#',
                 'menus' => [
@@ -140,8 +140,24 @@ class Navbar extends BaseComponent
                         'icon' => 'fas fa-chart-line',
                         'permissions' => ['activity.report.index'],
                         'url' => route('activity.report'),
-                        'route' => 'activity.report.index'
+                        'route' => 'activity.report'
                     ],
+                    [
+                        'name' => 'Report Activity Progress',
+                        'icon' => 'fas fa-chart-line',
+                        'permissions' => ['activity.report.index'],
+                        'url' => route('activity.report.progress'),
+                        'route' => 'activity.report.progress'
+                    ],
+                ],
+            ],
+            [
+                'name' => 'Report Attendance',
+                'icon' => 'fas fa-chart-line',
+                'permissions' => ['attendance.report.index'],
+                'url' => '#',
+                'route' => '#',
+                'menus' => [
                     [
                         'name' => 'Report Attendance',
                         'icon' => 'fas fa-chart-line',
@@ -149,7 +165,7 @@ class Navbar extends BaseComponent
                         'url' => route('attendance.report'),
                         'route' => 'attendance.report.index'
                     ],
-                ],
+                ]
             ]
         ];
 
