@@ -36,7 +36,7 @@
             document.addEventListener('livewire:init', function() {
                 let chart;
 
-                function renderChart(categories, dataSeries) {
+                function renderChartActivityProgress(categories, dataSeries) {
                     let chartContainer = document.querySelector("#progress_chart");
                     if (!chartContainer) return;
 
@@ -101,12 +101,12 @@
                 }
 
                 // Render pertama kali
-                renderChart(@json($chartCategories), @json($chartData));
+                renderChartActivityProgress(@json($chartCategories), @json($chartData));
 
                 // Update chart saat event diterima dari Livewire
                 Livewire.on('updateProgressChart', (eventData) => {
                     console.log(eventData);
-                    renderChart(eventData.categories, eventData.data);
+                    renderChartActivityProgress(eventData.categories, eventData.data);
                 });
             });
         </script>

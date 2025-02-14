@@ -2,31 +2,44 @@
     @livewire('component.layout.breadcrumb', ['breadcrumbs' => [['name' => 'Dashboard Activity']]], key('breadcrumb-component'))
 
     @can('dashboard.index')
+        <div class="row my-3 justify-content-end">
+            <div class="col-md-4">
+                <div class="d-flex justify-content-end gap-2 align-items-center">
+                    <input type="date" class="form-control flex-grow-1" wire:model="startDate">
+                    <input type="date" class="form-control flex-grow-1" wire:model="endDate">
+
+                    <button type="button" class="btn btn-primary flex-shrink-0 waves-effect waves-light"
+                        wire:click="filterDate">Filter</button>
+                </div>
+            </div>
+        </div>
+
+
         <div class="row">
             <div class="col-md-4">
-                @livewire('dashboard.dashboard-activity.activity-by-status', ['date' => $date], key('dashboard-activity-by-status'))
+                @livewire('dashboard.dashboard-activity.activity-by-status', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-activity-by-status'))
             </div>
             <div class="col-md-4">
-                @livewire('dashboard.dashboard-activity.activity-issue-resolved', ['date' => $date], key('dashboard-activity-issue-resolved'))
+                @livewire('dashboard.dashboard-activity.activity-issue-resolved', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-activity-issue-resolved'))
 
             </div>
             <div class="col-md-4">
-                @livewire('dashboard.dashboard-activity.activity-issue-by-area', ['date' => $date], key('dashboard-activity-issue-by-area'))
+                @livewire('dashboard.dashboard-activity.activity-issue-by-area', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-activity-issue-by-area'))
             </div>
         </div>
 
         <div class="row">
             <div class="col-md-6">
-                @livewire('dashboard.dashboard-activity.delayed-activity', ['date' => $date], key('dashboard-delayed-activity'))
+                @livewire('dashboard.dashboard-activity.delayed-activity', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-delayed-activity'))
             </div>
             <div class="col-md-6">
-                @livewire('dashboard.dashboard-activity.activity-by-area', ['date' => $date], key('dashboard-activity-by-area'))
+                @livewire('dashboard.dashboard-activity.activity-by-area', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-activity-by-area'))
             </div>
         </div>
 
         <div class="row">
             <div class="col-md-6">
-                @livewire('dashboard.dashboard-activity.activity-progress', ['date' => $date], key('dashboard-activity-progress'))
+                @livewire('dashboard.dashboard-activity.activity-progress', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-activity-progress'))
             </div>
             <div class="col-md-6">
 
@@ -34,7 +47,14 @@
         </div>
     @endcan
 
+    @push('styles')
+        <link href="{{ asset('libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css') }}" rel="stylesheet"
+            type="text/css">
+    @endpush
+
     @push('js')
+        <script src="{{ asset('libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
+
         <script src="{{ asset('libs/apexcharts/apexcharts.min.js') }}"></script>
 
         <script>

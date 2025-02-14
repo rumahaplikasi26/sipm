@@ -129,44 +129,54 @@ class Navbar extends BaseComponent
                 'route' => 'monitoring.present'
             ],
             [
-                'name' => 'Report Activity',
+                'name' => 'Report',
                 'icon' => 'fas fa-chart-line',
                 'permissions' => ['activity.report.index'],
                 'url' => '#',
                 'route' => '#',
                 'menus' => [
                     [
-                        'name' => 'Report Activity',
+                        'name' => 'Activity',
                         'icon' => 'fas fa-chart-line',
                         'permissions' => ['activity.report.index'],
-                        'url' => route('activity.report'),
-                        'route' => 'activity.report'
+                        'url' => '#',
+                        'route' => '#',
+                        'menus' => [
+                            [
+                                'name' => 'Report Activity',
+                                'icon' => 'fas fa-chart-line',
+                                'permissions' => ['activity.report.index'],
+                                'url' => route('activity.report'),
+                                'route' => 'activity.report',
+                            ],
+                            [
+                                'name' => 'Report Activity Progress',
+                                'icon' => 'fas fa-chart-line',
+                                'permissions' => ['activity.report.index'],
+                                'url' => route('activity.report.progress'),
+                                'route' => 'activity.report.progress'
+                            ],
+                        ]
                     ],
                     [
-                        'name' => 'Report Activity Progress',
-                        'icon' => 'fas fa-chart-line',
-                        'permissions' => ['activity.report.index'],
-                        'url' => route('activity.report.progress'),
-                        'route' => 'activity.report.progress'
-                    ],
-                ],
-            ],
-            [
-                'name' => 'Report Attendance',
-                'icon' => 'fas fa-chart-line',
-                'permissions' => ['attendance.report.index'],
-                'url' => '#',
-                'route' => '#',
-                'menus' => [
-                    [
-                        'name' => 'Report Attendance',
+                        'name' => 'Attendance',
                         'icon' => 'fas fa-chart-line',
                         'permissions' => ['attendance.report.index'],
-                        'url' => route('attendance.report'),
-                        'route' => 'attendance.report.index'
-                    ],
-                ]
-            ]
+                        'url' => '#',
+                        'route' => '#',
+                        'menus' => [
+                            [
+                                'name' => 'Report Attendance',
+                                'icon' => 'fas fa-chart-line',
+                                'permissions' => ['attendance.report.index'],
+                                'url' => route('attendance.report'),
+                                'route' => 'attendance.report.index'
+                            ],
+                        ]
+                    ]
+                ],
+            ],
+
         ];
 
         $this->menus = array_filter($menus, function ($menu) {

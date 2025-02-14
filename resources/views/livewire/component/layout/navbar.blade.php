@@ -4,7 +4,6 @@
             <ul class="navbar-nav">
                 @foreach ($menus as $menu)
                     @if (!isset($menu['menus']))
-                        <!-- Menu tanpa submenu -->
                         <li class="nav-item">
                             <a class="nav-link" href="{{ $menu['url'] }}" key="t-{{ Str::slug($menu['name']) }}">
                                 <i class="{{ $menu['icon'] }} me-2"></i>
@@ -12,7 +11,6 @@
                             </a>
                         </li>
                     @else
-                        <!-- Menu dengan submenu -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle arrow-none" href="#"
                                 id="menu-{{ Str::slug($menu['name']) }}" role="button" data-bs-toggle="dropdown"
@@ -21,35 +19,30 @@
                                 <span key="t-{{ Str::slug($menu['name']) }}">{{ $menu['name'] }}</span>
                                 <div class="arrow-down"></div>
                             </a>
-                            <ul class="dropdown-menu" aria-labelledby="menu-{{ Str::slug($menu['name']) }}">
+                            <div class="dropdown-menu" aria-labelledby="menu-{{ Str::slug($menu['name']) }}">
                                 @foreach ($menu['menus'] as $subMenu)
-                                    <li>
+                                    <div class="dropdown">
                                         @if (isset($subMenu['menus']))
-                                            <!-- Submenu dengan sub-submenu -->
-                                            <a class="dropdown-item dropdown-toggle" href="#">
-                                                {{-- <i class="{{ $subMenu['icon'] }} me-2"></i> --}}
+                                            <a class="dropdown-item dropdown-toggle arrow-none" href="#">
                                                 {{ $subMenu['name'] }}
+                                                <div class="arrow-down"></div>
                                             </a>
-                                            <ul class="dropdown-submenu">
+                                            <div class="dropdown-menu">
                                                 @foreach ($subMenu['menus'] as $subSubMenu)
-                                                    <li>
-                                                        <a class="dropdown-item" href="{{ $subSubMenu['url'] }}">
-                                                            <i class="{{ $subSubMenu['icon'] }} me-2"></i>
-                                                            {{ $subSubMenu['name'] }}
-                                                        </a>
-                                                    </li>
+                                                    <a class="dropdown-item" href="{{ $subSubMenu['url'] }}">
+                                                        <i class="{{ $subSubMenu['icon'] }} me-2"></i>
+                                                        {{ $subSubMenu['name'] }}
+                                                    </a>
                                                 @endforeach
-                                            </ul>
+                                            </div>
                                         @else
-                                            <!-- Submenu tanpa sub-submenu -->
                                             <a class="dropdown-item" href="{{ $subMenu['url'] }}">
-                                                {{-- <i class="{{ $subMenu['icon'] }} me-2"></i> --}}
                                                 {{ $subMenu['name'] }}
                                             </a>
                                         @endif
-                                    </li>
+                                    </div>
                                 @endforeach
-                            </ul>
+                            </div>
                         </li>
                     @endif
                 @endforeach

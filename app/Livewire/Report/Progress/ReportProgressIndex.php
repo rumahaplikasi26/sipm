@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Report\Progress;
 
+use App\Models\ActivityProgress;
 use App\Models\Area;
 use App\Models\User;
 use App\Models\Scope;
@@ -30,7 +31,7 @@ class ReportProgressIndex extends Component
     public $positions = [];
     public $scopes = [];
     public $supervisors = [];
-    public $activities = [];
+    public $progresses = [];
 
     protected $listeners = [
         'refreshIndex' => 'handleRefresh',
@@ -58,7 +59,7 @@ class ReportProgressIndex extends Component
         $this->filterEndDate = "";
         $this->filterSupervisor = [];
 
-        $this->activities = [];
+        $this->progresses = [];
     }
 
     #[On('filterAreaSelected')]
@@ -87,6 +88,43 @@ class ReportProgressIndex extends Component
 
     public function filter()
     {
+        $this->progresses = ActivityProgress::with('activity.area', 'activity.scope', 'activity.supervisor', 'activity.position', 'activity.status')
+            ->when($this->filterArea, function ($query) {
+                $query->whereHas('activity', function ($query) {
+                    $query->whereIn('area_id', $this->filterArea);
+                });
+            })
+            ->when($this->filterScope, function ($query) {
+                $query->whereHas('activity', function ($query) {
+                    $query->whereIn('scope_id', $this->filterScope);
+                });
+            })
+            ->when($this->filterPosition, function ($query) {
+                $query->whereHas('activity', function ($query) {
+                    $query->where('position_id', $this->filterPosition);
+                });
+            })
+            ->when($this->filterSupervisor, function ($query) {
+                $query->whereHas('activity', function ($query) {
+                    $query->where('supervisor_id', $this->filterSupervisor);
+                });
+            })
+            ->when($this->filterStartDate, function ($query) {
+                $query->where('date', '>=', $this->filterStartDate);
+            })
+            ->when($this->filterEndDate, function ($query) {
+                $query->where('date', '<=', $this->filterEndDate);
+            })
+            ->orderBy('id', 'asc')
+            ->get()->toArray();
+
+        // dd($this->progresses);
+        if (empty($this->progresses)) {
+            $this->alert('warning', 'Data Not Found');
+        }
+
+        $this->dispatch('refreshProgresses', $this->progresses);
+
         // $this->activities = Activity::with('area', 'scope', 'issues.categoryDependency', 'supervisor', 'position', 'status')
         // ->with(['historyProgress' => function ($query) {
         //     $query->orderBy('date', 'asc');

@@ -6,7 +6,13 @@ use Livewire\Component;
 
 class DashboardActivity extends Component
 {
-    public $date;
+    public $startDate;
+    public $endDate;
+
+    public function filterDate()
+    {
+        $this->dispatch('reloadChart');
+    }
 
     public function render()
     {

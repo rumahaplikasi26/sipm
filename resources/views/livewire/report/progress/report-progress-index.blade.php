@@ -106,8 +106,8 @@
 
     </div>
 
-    @if (count($activities) > 0)
-        @livewire('report.progress.report-progress-preview', ['activities' => $activities], key('report-progress-preview' . time()))
+    @if (count($progresses) > 0)
+        @livewire('report.progress.report-progress-preview', ['progresses' => $progresses], key('report-progress-preview' . time()))
     @endif
 
 </div>
