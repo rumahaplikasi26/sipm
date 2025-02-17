@@ -105,31 +105,7 @@ class AttendanceStatsNight extends Component
         $this->totalBreakOut = $this->calculateCategory($attendances, 'break_out');
         $this->totalOUT = $this->calculateCategory($attendances, 'out');
 
-        // dd([
-        //     'totalIN' => $this->totalIN,
-        //     'totalBreakIn' => $this->totalBreakIn,
-        //     'totalBreakOut' => $this->totalBreakOut,
-        //     'totalOUT' => $this->totalOUT,
-
-        //     'employees_early_in' => $this->employees_early_in,
-        //     'employees_late_in' => $this->employees_late_in,
-        //     'employees_ontime_in' => $this->employees_ontime_in,
-        //     'employees_early_break_in' => $this->employees_early_break_in,
-        //     'employees_late_break_in' => $this->employees_late_break_in,
-        //     'employees_ontime_break_in' => $this->employees_ontime_break_in,
-        //     'employees_early_break_out' => $this->employees_early_break_out,
-        //     'employees_late_break_out' => $this->employees_late_break_out,
-        //     'employees_ontime_break_out' => $this->employees_ontime_break_out,
-        //     'employees_early_out' => $this->employees_early_out,
-        //     'employees_late_out' => $this->employees_late_out,
-        //     'employees_ontime_out' => $this->employees_ontime_out,
-
-        //     'totalin' => $this->totalin,
-        //     'totalbreak_in' => $this->totalbreak_in,
-        //     'totalbreak_out' => $this->totalbreak_out,
-        //     'totalout' => $this->totalout
-        // ]);
-
+        $this->dispatch('updateGapAttendanceNight', $this->employees_in, $this->employees_out);
         $this->dispatch('refreshIndex');
     }
 
@@ -214,6 +190,8 @@ class AttendanceStatsNight extends Component
             'early' => $earlyCount,
             'late' => $lateCount
         ];
+
+        $this->{"employees_" . $category} = array_merge($this->{"employees_ontime_" . $category}, $this->{"employees_early_" . $category}, $this->{"employees_late_" . $category});
 
         // dd("On Time: " . $startOnTime . "-" . $endOnTime, "Early: " . $startEarly . "-" . $endEarly, "Late: " . $startLate . "-" . $endLate);
 

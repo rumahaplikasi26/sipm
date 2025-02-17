@@ -8,13 +8,19 @@
                         <div class="col-6">
                             <div>
                                 <p class="text-muted text-truncate mb-2">Not Checkout</p>
-                                <h5 class="mb-0">{{ $totalGapCheckInOnly }}</h5>
+                                <h5 class="mb-0" wire:loading.remove style="cursor: pointer;"
+                                    wire:click="openModal('totalGapCheckInOnly', 'Attendance Gap Checkin Only', 'gapCheckInOnly')">
+                                    {{ $totalGapCheckInOnly }}</h5>
+                                <h6 class="mb-0" wire:loading wire:loading.class="text-muted">Loading...</h6>
                             </div>
                         </div>
                         <div class="col-6">
                             <div>
                                 <p class="text-muted text-truncate mb-2">Not Checkin</p>
-                                <h5 class="mb-0">{{ $totalGapCheckOutOnly }}</h5>
+                                <h5 class="mb-0" wire:loading.remove style="cursor: pointer;"
+                                    wire:click="openModal('totalGapCheckOutOnly', 'Attendance Gap Checkout Only', 'gapCheckOutOnly')">
+                                    {{ $totalGapCheckOutOnly }}</h5>
+                                <h6 class="mb-0" wire:loading wire:loading.class="text-muted">Loading...</h6>
                             </div>
                         </div>
                     </div>

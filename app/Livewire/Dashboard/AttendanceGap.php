@@ -14,6 +14,8 @@ class AttendanceGap extends Component
     public $shift_id;
     public $dateString;
     public $reference;
+    public $employees_in = [];
+    public $employees_out = [];
 
     public $gapCheckInOnly = []; // Karyawan yang check-in tetapi tidak check-out
     public $gapCheckOutOnly = []; // Karyawan yang check-out tetapi tidak check-in
@@ -26,6 +28,13 @@ class AttendanceGap extends Component
         $this->dateString = Carbon::parse($date)->format('d F Y');
         $this->reference = AttendanceReference::where('day_of_week', strtolower(Carbon::parse($this->date)->format('l')))->first();
         $this->shift_id = $this->reference->id;
+    }
+
+    #[On('updateGapAttendance')]
+    public function updateGapAttendance($employees_in, $employees_out)
+    {
+        $this->employees_in = $employees_in;
+        $this->employees_out = $employees_out;
         $this->calculateGap();
     }
 
@@ -33,68 +42,45 @@ class AttendanceGap extends Component
     public function updatedDate($date)
     {
         $this->date = $date;
-
         $this->dateString = Carbon::parse($date)->format('d F Y');
-
         $this->reference = AttendanceReference::where('day_of_week', strtolower(Carbon::parse($this->date)->format('l')))->first();
         $this->shift_id = $this->reference->id;
-
-        $this->calculateGap();
     }
 
     public function calculateGap()
     {
-        $attendances = Attendance::with(['reference', 'employee.group', 'employee.position'])
-            ->whereDate('shift_date', $this->date)
-            ->where('shift_id', $this->shift_id)
-            ->get();
-        // Kelompokkan data berdasarkan employee_id
-        $groupedAttendances = [];
-        foreach ($attendances as $attendance) {
-            $employeeId = $attendance->employee_id;
-            if (!isset($groupedAttendances[$employeeId])) {
-                $groupedAttendances[$employeeId] = [
-                    'check_in' => false,
-                    'check_out' => false,
-                    'employee' => $attendance->employee,
-                ];
-            }
-
-            // Tentukan apakah absensi termasuk check-in atau check-out berdasarkan waktu referensi
-            $attendanceTime = Carbon::parse($attendance->timestamp)->setDateFrom(Carbon::parse($attendance->shift_date));
-
-            $early_in = Carbon::parse($this->reference->early_in)->setDateFrom(Carbon::parse($this->date));
-            $in = Carbon::parse($this->reference->in)->setDateFrom(Carbon::parse($this->date));
-            $late_in = Carbon::parse($this->reference->late_in)->setDateFrom(Carbon::parse($this->date));
-
-            if($attendanceTime->between($early_in, $late_in)) {
-                $groupedAttendances[$employeeId]['check_in'] = true;
-            }
-
-            $early_out = Carbon::parse($this->reference->early_out)->setDateFrom(Carbon::parse($this->date));
-            $out = Carbon::parse($this->reference->out)->setDateFrom(Carbon::parse($this->date));
-            $late_out = Carbon::parse($this->reference->late_out)->setDateFrom(Carbon::parse($this->date));
-
-            if($attendanceTime->between($early_out, $late_out)) {
-                $groupedAttendances[$employeeId]['check_out'] = true;
-            }
-        }
-
-        // Hitung gap
+        // Reset data sebelumnya
         $this->gapCheckInOnly = [];
         $this->gapCheckOutOnly = [];
+        $this->totalGapCheckInOnly = 0;
+        $this->totalGapCheckOutOnly = 0;
 
-        foreach ($groupedAttendances as $employeeId => $data) {
-            if ($data['check_in'] && !$data['check_out']) {
-                $this->gapCheckInOnly[] = $data['employee'];
-            } elseif (!$data['check_in'] && $data['check_out']) {
-                $this->gapCheckOutOnly[] = $data['employee'];
+        // Ambil daftar ID dari employees_in dan employees_out
+        $employeesInIds = array_column($this->employees_in, 'id');
+        $employeesOutIds = array_column($this->employees_out, 'id');
+
+        // Cek karyawan yang hanya check-in tanpa check-out
+        foreach ($this->employees_in as $employee) {
+            if (!in_array($employee['id'], $employeesOutIds)) {
+                $this->gapCheckInOnly[] = $employee;
             }
         }
 
+        // Cek karyawan yang hanya check-out tanpa check-in
+        foreach ($this->employees_out as $employee) {
+            if (!in_array($employee['id'], $employeesInIds)) {
+                $this->gapCheckOutOnly[] = $employee;
+            }
+        }
+
+        // Hitung total gap
         $this->totalGapCheckInOnly = count($this->gapCheckInOnly);
         $this->totalGapCheckOutOnly = count($this->gapCheckOutOnly);
-        // dd($this->gapCheckInOnly, $this->gapCheckOutOnly);
+    }
+
+    public function openModal($modal_id, $modal_title, $data)
+    {
+        $this->dispatch('open-modal', modal_id: $modal_id, modal_title: $modal_title, data: $this->{$data});
     }
 
     public function render()

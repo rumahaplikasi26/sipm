@@ -19,12 +19,12 @@
         </div>
 
         <div class="row">
-            {{-- <div class="col-md">
+            <div class="col-md">
                 @livewire('dashboard.attendance-gap', ['date' => $date], key('attendance-gap'))
             </div>
             <div class="col-md">
                 @livewire('dashboard.attendance-gap-night', ['date' => $date], key('attendance-gap-night'))
-            </div> --}}
+            </div>
         </div>
 
         <div class="row">

@@ -106,8 +106,8 @@ class AttendanceStats extends Component
         $this->totalBreakOut = $this->calculateCategory($attendances, 'break_out');
         $this->totalOUT = $this->calculateCategory($attendances, 'out');
 
-        dd($this->employees_in);
-
+        // dd($this->employees_in);
+        $this->dispatch('updateGapAttendance', $this->employees_in, $this->employees_out);
         $this->dispatch('refreshIndex');
     }
 
