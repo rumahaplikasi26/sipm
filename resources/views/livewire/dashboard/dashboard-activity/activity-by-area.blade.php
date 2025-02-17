@@ -1,17 +1,14 @@
-<div>
-    <div class="card">
-        <div class="card-body">
-            <h4 class="card-title">Activities By Area</h4>
-            <p class="text-muted">Menampilkan jumlah aktivitas per area</p>
-            <div id="activity_by_area" wire:ignore
-                data-colors='["--bs-success","--bs-danger", "--bs-warning","--bs-info", "--bs-primary", "--bs-secondary"]'
-                class="apex-charts mt-4" dir="ltr"></div>
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Activities By Area</h4>
+        <p class="text-muted">Menampilkan jumlah aktivitas per area</p>
+        <div id="activity_by_area" wire:ignore
+            data-colors='["--bs-success","--bs-danger", "--bs-warning","--bs-info", "--bs-primary", "--bs-secondary"]'
+            class="apex-charts mt-4" dir="ltr"></div>
 
-            <!-- Dynamic Data List -->
-            <div id="activity_by_area_list" wire:ignore class="d-flex flex-wrap justify-content-between gap-2"></div>
-        </div>
+        <!-- Dynamic Data List -->
+        <div id="activity_by_area_list" wire:ignore class="d-flex flex-wrap justify-content-between gap-2"></div>
     </div>
-
     @push('js')
         <script>
             document.addEventListener('livewire:init', function() {
@@ -67,13 +64,13 @@
                     categories.forEach((label, index) => {
                         var color = pieChartColors[index % pieChartColors.length];
                         listContainer.innerHTML += `
-                            <div class="flex-grow-1 text-center">
-                                <p class="mb-2 text-truncate">
-                                    <i class="mdi mdi-circle me-2" style="color: ${color};"></i> ${label}
-                                </p>
-                                <h4 class="mb-0" id="solved-count">${dataSeries[index]}</h4>
-                            </div>
-                    `;
+                                <div class="flex-grow-1 text-center">
+                                    <p class="mb-2 text-truncate">
+                                        <i class="mdi mdi-circle me-2" style="color: ${color};"></i> ${label}
+                                    </p>
+                                    <h4 class="mb-0" id="solved-count">${dataSeries[index]}</h4>
+                                </div>
+                        `;
                     });
                 }
 

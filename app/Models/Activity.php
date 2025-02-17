@@ -42,13 +42,13 @@ class Activity extends Model
     // Scope untuk aktivitas yang selesai tepat waktu
     public function scopeOnTime(Builder $query)
     {
-        return $query->whereNotNull('actual_date')->whereColumn('actual_date', '<=', 'plan_date');
+        return $query->whereNotNull('actual_date')->whereColumn('actual_date', '<=', 'forecast_date');
     }
 
     // Scope untuk aktivitas yang terlambat
     public function scopeLate(Builder $query)
     {
-        return $query->whereNotNull('actual_date')->whereColumn('actual_date', '>', 'plan_date');
+        return $query->whereNotNull('actual_date')->whereColumn('actual_date', '>', 'forecast_date');
     }
 
     // Scope untuk aktivitas yang masih berjalan

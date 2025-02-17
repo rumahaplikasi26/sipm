@@ -3,10 +3,28 @@
 namespace App\Livewire\Dashboard\DashboardActivity;
 
 use App\Models\Activity;
+use Livewire\Attributes\On;
+use Livewire\Attributes\Reactive;
 use Livewire\Component;
 
 class DelayedActivity extends Component
 {
+    #[Reactive()]
+    public $startDate;
+
+    #[Reactive()]
+    public $endDate;
+
+
+    public $categories = [];
+    public $data = [];
+
+    #[On('reloadChart')]
+    public function reloadChart()
+    {
+        $this->dispatch('updateChartDelayedActivity', categories: $this->categories, data: $this->data);
+    }
+
     public function render()
     {
         $late = Activity::late()->count();
@@ -15,6 +33,9 @@ class DelayedActivity extends Component
 
         // dd($late, $on_time);
 
-        return view('livewire.dashboard.dashboard-activity.delayed-activity', compact('late', 'on_time', 'in_progress'));
+        $this->categories = ['Late', 'On Time', 'In Progress'];
+        $this->data = [$late, $on_time, $in_progress];
+
+        return view('livewire.dashboard.dashboard-activity.delayed-activity');
     }
 }

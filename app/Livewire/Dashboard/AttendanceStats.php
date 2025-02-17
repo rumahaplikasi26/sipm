@@ -40,6 +40,8 @@ class AttendanceStats extends Component
     public $totalbreak_in = [];
     public $totalbreak_out = [];
     public $totalout = [];
+    public $totalInWithoutOut = [];
+    public $totalOutWithoutIn = [];
 
     public $title_in = [];
     public $title_break_in = [];
@@ -104,30 +106,7 @@ class AttendanceStats extends Component
         $this->totalBreakOut = $this->calculateCategory($attendances, 'break_out');
         $this->totalOUT = $this->calculateCategory($attendances, 'out');
 
-        // dd([
-        //     'totalIN' => $this->totalIN,
-        //     'totalBreakIn' => $this->totalBreakIn,
-        //     'totalBreakOut' => $this->totalBreakOut,
-        //     'totalOUT' => $this->totalOUT,
-
-        //     'employees_early_in' => $this->employees_early_in,
-        //     'employees_late_in' => $this->employees_late_in,
-        //     'employees_ontime_in' => $this->employees_ontime_in,
-        //     'employees_early_break_in' => $this->employees_early_break_in,
-        //     'employees_late_break_in' => $this->employees_late_break_in,
-        //     'employees_ontime_break_in' => $this->employees_ontime_break_in,
-        //     'employees_early_break_out' => $this->employees_early_break_out,
-        //     'employees_late_break_out' => $this->employees_late_break_out,
-        //     'employees_ontime_break_out' => $this->employees_ontime_break_out,
-        //     'employees_early_out' => $this->employees_early_out,
-        //     'employees_late_out' => $this->employees_late_out,
-        //     'employees_ontime_out' => $this->employees_ontime_out,
-
-        //     'totalin' => $this->totalin,
-        //     'totalbreak_in' => $this->totalbreak_in,
-        //     'totalbreak_out' => $this->totalbreak_out,
-        //     'totalout' => $this->totalout
-        // ]);
+        dd($this->employees_in);
 
         $this->dispatch('refreshIndex');
     }
@@ -140,6 +119,7 @@ class AttendanceStats extends Component
 
         // Array untuk menyimpan karyawan yang sudah diproses
         $processedEmployees = [];
+        $employeesData = [];
 
         $startOnTime = null;
         $endOnTime = null;
@@ -200,6 +180,8 @@ class AttendanceStats extends Component
             'early' => $earlyCount,
             'late' => $lateCount
         ];
+
+        $this->{"employees_" . $category} = array_merge($this->{"employees_ontime_" . $category}, $this->{"employees_early_" . $category}, $this->{"employees_late_" . $category});
 
         $this->{"title_" . $category} = [
             'ontime' => 'Total ' . strtoupper($category) . ' (On Time ' . $startOnTime?->format('H:i') . '-' . $endOnTime?->format('H:i') . ')',

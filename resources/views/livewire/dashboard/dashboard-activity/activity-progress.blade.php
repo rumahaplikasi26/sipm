@@ -1,33 +1,31 @@
-<div>
-    <div class="card">
-        <div class="card-body">
-            <div class="d-flex">
-                <h4 class="card-title mb-4">Activities Progress</h4>
-                <div class="ms-auto">
-                    <div class="btn-group" role="group">
-                        <button wire:click="filterByToday" type="button" class="btn btn-sm btn-primary">Hari Ini</button>
-                        <button wire:click="filterByWeek" type="button" class="btn btn-sm btn-secondary">Dalam
-                            Seminggu</button>
-                        <button wire:click="filterByMonth" type="button" class="btn btn-sm btn-success">Dalam
-                            Sebulan</button>
-                    </div>
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex">
+            <h4 class="card-title mb-4">Activities Progress</h4>
+            <div class="ms-auto">
+                <div class="btn-group" role="group">
+                    <button wire:click="filterByToday" type="button" class="btn btn-sm btn-primary">Hari Ini</button>
+                    <button wire:click="filterByWeek" type="button" class="btn btn-sm btn-secondary">Dalam
+                        Seminggu</button>
+                    <button wire:click="filterByMonth" type="button" class="btn btn-sm btn-success">Dalam
+                        Sebulan</button>
                 </div>
             </div>
+        </div>
 
-            <p class="text-muted">Menampilkan progress per scope aktivitas dengan nilai berdasarkan quantity.</p>
+        <p class="text-muted">Menampilkan progress per scope aktivitas dengan nilai berdasarkan quantity.</p>
 
-            <div wire:loading wire:target="filterByToday, filterByWeek, filterByMonth">
-                <div class="d-flex justify-content-center mt-3">
-                    <div class="spinner-border" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
+        <div wire:loading wire:target="filterByToday, filterByWeek, filterByMonth">
+            <div class="d-flex justify-content-center mt-3">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
                 </div>
             </div>
+        </div>
 
-            <div id="progress_chart" wire:ignore
-                data-colors='["--bs-success","--bs-danger", "--bs-warning","--bs-info", "--bs-primary"]'
-                class="apex-charts" dir="ltr">
-            </div>
+        <div id="progress_chart" wire:ignore
+            data-colors='["--bs-success","--bs-danger", "--bs-warning","--bs-info", "--bs-primary"]' class="apex-charts"
+            dir="ltr">
         </div>
     </div>
 

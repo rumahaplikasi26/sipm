@@ -9,8 +9,23 @@
             </div>
         </div>
 
-        @livewire('dashboard.attendance-stats', ['date' => $date], key('attendance-stats'))
-        @livewire('dashboard.attendance-stats-night', ['date' => $date], key('attendance-stats-night'))
+        <div class="row">
+            <div class="col-md-6">
+                @livewire('dashboard.attendance-stats', ['date' => $date], key('attendance-stats'))
+            </div>
+            <div class="col-md-6">
+                @livewire('dashboard.attendance-stats-night', ['date' => $date], key('attendance-stats-night'))
+            </div>
+        </div>
+
+        <div class="row">
+            {{-- <div class="col-md">
+                @livewire('dashboard.attendance-gap', ['date' => $date], key('attendance-gap'))
+            </div>
+            <div class="col-md">
+                @livewire('dashboard.attendance-gap-night', ['date' => $date], key('attendance-gap-night'))
+            </div> --}}
+        </div>
 
         <div class="row">
             <div class="col-md">

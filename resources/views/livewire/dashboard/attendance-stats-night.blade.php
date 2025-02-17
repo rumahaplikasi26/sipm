@@ -1,7 +1,7 @@
 <div>
     <div class="row">
         <h4 class="card-title">Attendance Status Date {{ $dateString }} {{ $reference->name }}</h4>
-        <div class="col-md-3">
+        <div class="col-md-6">
             <div class="card mini-stats-wid">
                 <div class="card-body">
                     <div class="d-flex">
@@ -41,7 +41,7 @@
             </div>
         </div>
 
-        <div class="col-md-3">
+        {{-- <div class="col-md-3">
             <div class="card mini-stats-wid">
                 <div class="card-body">
                     <div class="d-flex">
@@ -119,9 +119,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
-        <div class="col-md-3">
+        <div class="col-md-6">
             <div class="card mini-stats-wid">
                 <div class="card-body">
                     <div class="d-flex">

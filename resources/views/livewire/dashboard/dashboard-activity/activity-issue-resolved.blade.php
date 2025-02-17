@@ -1,15 +1,13 @@
-<div>
-    <div class="card">
-        <div class="card-body">
-            <h4 class="card-title">Activity Issue Resolved</h4>
-            <p class="text-muted">Menampilkan jumlah issue yang sudah dan belum selesai.</p>
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Activity Issue Resolved</h4>
+        <p class="text-muted">Menampilkan jumlah issue yang sudah dan belum selesai.</p>
 
-            <div id="activity_issue_resolved" wire:ignore
-                data-colors='["--bs-success","--bs-danger", "--bs-warning","--bs-info", "--bs-primary"]'
-                class="apex-charts mt-4" dir="ltr"></div>
+        <div id="activity_issue_resolved" wire:ignore
+            data-colors='["--bs-success","--bs-danger", "--bs-warning","--bs-info", "--bs-primary"]'
+            class="apex-charts mt-4" dir="ltr"></div>
 
-            <div id="activity_issue_resolved_list" wire:ignore class="d-flex flex-wrap justify-content-between">
-            </div>
+        <div id="activity_issue_resolved_list" wire:ignore class="d-flex flex-wrap justify-content-between">
         </div>
     </div>
 

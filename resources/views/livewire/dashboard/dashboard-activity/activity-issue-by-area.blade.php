@@ -1,15 +1,13 @@
-<div>
-    <div class="card">
-        <div class="card-body">
-            <h4 class="card-title">Activity Issue By Area</h4>
-            <p class="text-muted">Menampilkan jumlah issue per area</p>
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Activity Issue By Area</h4>
+        <p class="text-muted">Menampilkan jumlah issue per area</p>
 
-            <div id="dependency_by_area_chart" wire:ignore
-                data-colors='["--bs-success","--bs-danger", "--bs-warning","--bs-info", "--bs-primary"]'
-                class="apex-charts mt-4" dir="ltr"></div>
+        <div id="dependency_by_area_chart" wire:ignore
+            data-colors='["--bs-success","--bs-danger", "--bs-warning","--bs-info", "--bs-primary"]'
+            class="apex-charts mt-4" dir="ltr"></div>
 
-            <div id="dependency_by_area_chart_list" wire:ignore class="d-flex flex-wrap justify-content-between">
-            </div>
+        <div id="dependency_by_area_chart_list" wire:ignore class="d-flex flex-wrap justify-content-between">
         </div>
     </div>
 

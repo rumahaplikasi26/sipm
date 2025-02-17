@@ -15,33 +15,26 @@
         </div>
 
 
-        <div class="row">
-            <div class="col-md-4">
-                @livewire('dashboard.dashboard-activity.activity-by-status', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-activity-by-status'))
-            </div>
-            <div class="col-md-4">
-                @livewire('dashboard.dashboard-activity.activity-issue-resolved', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-activity-issue-resolved'))
-
-            </div>
-            <div class="col-md-4">
-                @livewire('dashboard.dashboard-activity.activity-issue-by-area', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-activity-issue-by-area'))
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6">
+        <div class="row" data-masonry='{"percentPosition": true }' id="dashboard-activity">
+            <div class="col-xl-4 item-dashboard-activity col-lg-6">
                 @livewire('dashboard.dashboard-activity.delayed-activity', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-delayed-activity'))
             </div>
-            <div class="col-md-6">
+            <div class="col-xl-4 item-dashboard-activity col-lg-6">
+                @livewire('dashboard.dashboard-activity.activity-issue-resolved', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-activity-issue-resolved'))
+            </div>
+            <div class="col-xl-4 item-dashboard-activity col-lg-6">
+                @livewire('dashboard.dashboard-activity.activity-issue-by-area', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-activity-issue-by-area'))
+            </div>
+            <div class="col-xl-6 item-dashboard-activity">
+                @livewire('dashboard.dashboard-activity.activity-by-status', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-activity-by-status'))
+            </div>
+            <div class="col-xl-6 item-dashboard-activity">
                 @livewire('dashboard.dashboard-activity.activity-by-area', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-activity-by-area'))
             </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6">
+            <div class="col-xl-6 item-dashboard-activity">
                 @livewire('dashboard.dashboard-activity.activity-progress', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-activity-progress'))
             </div>
-            <div class="col-md-6">
+            <div class="col-xl-6 item-dashboard-activity">
 
             </div>
         </div>
@@ -54,8 +47,8 @@
 
     @push('js')
         <script src="{{ asset('libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
-
         <script src="{{ asset('libs/apexcharts/apexcharts.min.js') }}"></script>
+        <script src="{{ asset('libs/masonry-layout/masonry.pkgd.min.js') }}"></script>
 
         <script>
             function getChartColorsArray(e) {
@@ -84,6 +77,14 @@
                     console.warn("data-colors Attribute not found on:", e);
                 }
             }
+        </script>
+
+        <script>
+            document.addEventListener('livewire:init', function() {
+                $('#dashboard-activity').masonry({
+                    itemSelector: '.item-dashboard-activity',
+                });
+            })
         </script>
     @endpush
 </div>
