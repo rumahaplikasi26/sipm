@@ -4,6 +4,8 @@ use App\Http\Controllers\IClockController;
 use App\Livewire\Activity\ActivityForm;
 use App\Livewire\Activity\ActivityImport;
 use App\Livewire\Activity\ActivityIndex;
+use App\Livewire\Announcement\AnnouncementForm;
+use App\Livewire\Announcement\AnnouncementIndex;
 use App\Livewire\Area\AreaIndex;
 use App\Livewire\Attendance\AttendanceIndex;
 use App\Livewire\Auth\Login;
@@ -54,6 +56,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/activities/import', ActivityImport::class)->name('activity.import');
     Route::get('/activities/edit/{activity_id}', ActivityForm::class)->name('activity.edit');
     Route::get('/monitoring-present', MonitoringPresentIndex::class)->name('monitoring.present');
+
+    Route::get('/announcements', AnnouncementIndex::class)->name('announcement');
+    Route::get('/announcements/create', AnnouncementForm::class)->name('announcement.create');
 
     Route::get('/report', ReportIndex::class)->name('activity.report');
     Route::get('/report-progress', ReportProgressIndex::class)->name('activity.report.progress');

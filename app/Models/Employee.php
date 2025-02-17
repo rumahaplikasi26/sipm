@@ -46,4 +46,9 @@ class Employee extends Model
     {
         return $this->belongsToMany(Activity::class, 'activity_employees', 'employee_id', 'activity_id');
     }
+
+    public function announcementRecipients()
+    {
+        return $this->morphMany(AnnouncementRecipient::class, 'recipient');
+    }
 }

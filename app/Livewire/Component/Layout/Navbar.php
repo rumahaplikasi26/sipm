@@ -129,6 +129,13 @@ class Navbar extends BaseComponent
                 'route' => 'monitoring.present'
             ],
             [
+                'name' => 'Announcement',
+                'icon' => 'fas fa-bullhorn',
+                'permissions' => ['announcement.index'],
+                'url' => route('announcement'),
+                'route' => 'announcement'
+            ],
+            [
                 'name' => 'Report',
                 'icon' => 'fas fa-chart-line',
                 'permissions' => ['activity.report.index'],

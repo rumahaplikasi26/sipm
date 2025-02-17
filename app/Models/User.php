@@ -58,4 +58,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Group::class);
     }
+
+    public function announcementRecipients()
+    {
+        return $this->morphMany(AnnouncementRecipient::class, 'recipient');
+    }
 }
