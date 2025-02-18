@@ -83,12 +83,6 @@
             document.addEventListener('livewire:init', function() {
                 $('#dashboard-activity').masonry({
                     itemSelector: '.item-dashboard-activity',
-                    columnWidth: '.item-dashboard-activity',
-                    percentPosition: true,
-                    // gutter: 20,
-                    fitWidth: true,
-                    horizontalOrder: true,
-                    initLayout: true
                 });
             })
         </script>
