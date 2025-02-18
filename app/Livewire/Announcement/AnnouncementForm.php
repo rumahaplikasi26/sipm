@@ -73,7 +73,7 @@ class AnnouncementForm extends BaseComponent
                 $phone = $recipient->phone;
 
                 if ($phone != null) {
-                    // dispatch(new SendWhatsappJob($phone, $message));
+                    dispatch(new SendWhatsappJob($phone, $message));
 
                     $announcement->recipients()->create([
                         'recipientable_id' => $recipient->id,

@@ -25,16 +25,16 @@
             <div class="col-xl-4 item-dashboard-activity col-lg-6">
                 @livewire('dashboard.dashboard-activity.activity-issue-by-area', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-activity-issue-by-area'))
             </div>
-            <div class="col-xl-6 item-dashboard-activity">
+            <div class="col-xl-6 col-lg item-dashboard-activity">
                 @livewire('dashboard.dashboard-activity.activity-by-status', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-activity-by-status'))
             </div>
-            <div class="col-xl-6 item-dashboard-activity">
+            <div class="col-xl-6 col-lg item-dashboard-activity">
                 @livewire('dashboard.dashboard-activity.activity-by-area', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-activity-by-area'))
             </div>
-            <div class="col-xl-6 item-dashboard-activity">
+            <div class="col-xl-6 col-lg item-dashboard-activity">
                 @livewire('dashboard.dashboard-activity.activity-progress', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-activity-progress'))
             </div>
-            <div class="col-xl-6 item-dashboard-activity">
+            <div class="col-xl-6 col-lg item-dashboard-activity">
 
             </div>
         </div>
@@ -83,6 +83,12 @@
             document.addEventListener('livewire:init', function() {
                 $('#dashboard-activity').masonry({
                     itemSelector: '.item-dashboard-activity',
+                    columnWidth: '.item-dashboard-activity',
+                    percentPosition: true,
+                    // gutter: 20,
+                    fitWidth: true,
+                    horizontalOrder: true,
+                    initLayout: true
                 });
             })
         </script>
