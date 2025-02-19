@@ -15,7 +15,7 @@
         </div>
 
 
-        <div class="row" data-masonry='{"percentPosition": true }' id="dashboard-activity">
+        <div class="row" id="dashboard-activity">
             <div class="col-xl-4 item-dashboard-activity col-lg-6">
                 @livewire('dashboard.dashboard-activity.delayed-activity', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-delayed-activity'))
             </div>
@@ -81,9 +81,9 @@
 
         <script>
             document.addEventListener('livewire:init', function() {
-                $('#dashboard-activity').masonry({
-                    itemSelector: '.item-dashboard-activity',
-                });
+                // $('#dashboard-activity').masonry({
+                //     itemSelector: '.item-dashboard-activity',
+                // });
             })
         </script>
     @endpush
