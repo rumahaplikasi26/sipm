@@ -84,6 +84,8 @@ class IClockController extends Controller
                 $shiftDate = null;
                 $is_active = false;
 
+                \Log::info('Receive Records'. json_encode($employee));
+
                 if ($employee != null) {
                     $name = $employee->name;
                     $phone = $employee->phone;
@@ -196,7 +198,7 @@ class IClockController extends Controller
 
     protected function getEmployee($id)
     {
-        return Employee::find($id) ?? null;
+        return Employee::where('id', $id)->first() ?? null;
     }
 
     public function testAttendance(Request $request)
@@ -213,6 +215,7 @@ class IClockController extends Controller
             $shiftDate = null;
             $is_active = false;
 
+            dd($employee);
             if ($employee != null) {
                 $name = $employee->name;
                 $phone = $employee->phone;
