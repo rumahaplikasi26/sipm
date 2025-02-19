@@ -44,43 +44,43 @@ class AttendanceJob implements ShouldQueue
             $isFirstAttendance = Attendance::whereDate('shift_date', date('Y-m-d', strtotime($data['timestamp'])))
                 ->where('employee_id', $data['employee_id'])->first();
 
-            // if (empty($isFirstAttendance)) {
-            //     if ($data['is_active'] == true) {
-            //         $activities = Activity::with('employees', 'scope', 'area', 'supervisor')
-            //             ->where('status_id', 1)
-            //             ->where('progress', '<', 100)
-            //             ->whereHas('employees', function ($query) use ($employeeExists) {
-            //                 $query->where('employee_id', $employeeExists->id);
-            //             })
-            //             ->get();
+            if (empty($isFirstAttendance)) {
+                if ($data['is_active'] == true) {
+                    $activities = Activity::with('employees', 'scope', 'area', 'supervisor')
+                        ->where('status_id', 1)
+                        ->where('progress', '<', 100)
+                        ->whereHas('employees', function ($query) use ($employeeExists) {
+                            $query->where('employee_id', $employeeExists->id);
+                        })
+                        ->get();
 
-            //         if ($data['phone'] != null && $activities->count() > 0) {
+                    if ($data['phone'] != null && $activities->count() > 0) {
 
-            //             foreach ($activities as $activity) {
-            //                 $activeActivity = $activity;
-            //                 $message = "*Notifikasi Aktivitas Hari Ini*\n\n" .
-            //                     "Halo *{$data['name']}*,\n\n" .
-            //                     "📋 *Detail Aktivitas*\n" .
-            //                     "------------------------\n" .
+                        foreach ($activities as $activity) {
+                            $activeActivity = $activity;
+                            $message = "*Notifikasi Aktivitas Hari Ini*\n\n" .
+                                "Halo *{$data['name']}*,\n\n" .
+                                "📋 *Detail Aktivitas*\n" .
+                                "------------------------\n" .
 
-            //                     "🔹 *Judul Aktivitas:* {$activity->scope->name}\n" .
-            //                     "📅 *Forecast Date:* " . date('d M Y', strtotime($activity->forecast_date)) . "\n" .
-            //                     "📆 *Plan Date:* " . date('d M Y', strtotime($activity->plan_date)) . "\n" .
-            //                     "📊 *Progress:* {$activity->progress}%" . $this->getProgressIcon($activity->progress) . "\n" .
-            //                     "👥 *Supervisor:* {$activity->supervisor->name}\n" .
-            //                     "📍 *Area:* {$activity->area->name}\n" .
-            //                     "📝 *Deskripsi:* {$activity->description}\n\n" .
+                                "🔹 *Judul Aktivitas:* {$activity->scope->name}\n" .
+                                "📅 *Forecast Date:* " . date('d M Y', strtotime($activity->forecast_date)) . "\n" .
+                                "📆 *Plan Date:* " . date('d M Y', strtotime($activity->plan_date)) . "\n" .
+                                "📊 *Progress:* {$activity->progress}%" . $this->getProgressIcon($activity->progress) . "\n" .
+                                "👥 *Supervisor:* {$activity->supervisor->name}\n" .
+                                "📍 *Area:* {$activity->area->name}\n" .
+                                "📝 *Deskripsi:* {$activity->description}\n\n" .
 
-            //                     "_Terima kasih_";
+                                "_Terima kasih_";
 
-            //                 $this->sendWhatsAppNotification($data['phone'], $message);
-            //                 \Log::info(date('Y-m-d H:i:s') . ' ' . 'Sent Whatsapp ' . $data['phone'] . ' Successfully');
-            //             }
+                            $this->sendWhatsAppNotification($data['phone'], $message);
+                            \Log::info(date('Y-m-d H:i:s') . ' ' . 'Sent Whatsapp ' . $data['phone'] . ' Successfully');
+                        }
 
-            //             \Log::info(date('Y-m-d H:i:s') . ' ' . 'Attendance Sync Job Completed With Send Activity Successfully');
-            //         }
-            //     }
-            // }
+                        \Log::info(date('Y-m-d H:i:s') . ' ' . 'Attendance Sync Job Completed With Send Activity Successfully');
+                    }
+                }
+            }
 
             $attendance = Attendance::updateOrCreate(
                 ['uid' => $data['uid']],
