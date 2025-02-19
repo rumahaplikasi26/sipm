@@ -29,12 +29,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', Login::class)->name('login')->middleware('guest');
 Route::get('/login', Login::class)->name('login')->middleware('guest');
 
-// Route::get('/iclock/cdata', [IClockController::class, 'handshake']);
-// Route::post('/iclock/cdata', [IClockController::class, 'receiveRecords']);
+Route::get('/iclock/cdata', [IClockController::class, 'handshake']);
+Route::post('/iclock/cdata', [IClockController::class, 'receiveRecords']);
 Route::post('/test-attendance', [IClockController::class, 'testAttendance']);
 
-// Route::get('/iclock/test', [IClockController::class, 'test']);
-// Route::get('/iclock/getrequest', [IClockController::class, 'getrequest']);
+Route::get('/iclock/test', [IClockController::class, 'test']);
+Route::get('/iclock/getrequest', [IClockController::class, 'getrequest']);
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/dashboard', DashboardIndex::class)->name('dashboard');

@@ -52,6 +52,8 @@ class IClockController extends Controller
             $sn = $request->input('SN');
             $arr = preg_split('/\\r\\n|\\r|,|\\n/', $request->getContent());
 
+            // \Log::info('Arr: '. json_encode($arr));
+
             $tot = 0;
 
             //operation log
@@ -84,7 +86,7 @@ class IClockController extends Controller
                 $shiftDate = null;
                 $is_active = false;
 
-                \Log::info('Receive Records'. json_encode($employee));
+                \Log::info('Data: '. json_encode($data));
 
                 if ($employee != null) {
                     $name = $employee->name;
@@ -198,7 +200,7 @@ class IClockController extends Controller
 
     protected function getEmployee($id)
     {
-        return Employee::where('id', $id)->first() ?? null;
+        return Employee::withTrashed()->find($id) ?? null;
     }
 
     public function testAttendance(Request $request)
