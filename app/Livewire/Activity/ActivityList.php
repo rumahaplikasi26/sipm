@@ -147,7 +147,8 @@ class ActivityList extends BaseComponent
             $activity->status_id = $this->status_id;
             $activity->save();
 
-            $supervisors = User::where('id', 1)->get();
+            // $supervisors = User::where('id', 1)->get();
+            $supervisors = User::role('Supervisor')->get();
             foreach ($supervisors as $supervisor) {
                 $phone = $supervisor->phone;
                 $message = "🔔 *Activity Update!*\n"

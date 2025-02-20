@@ -33,23 +33,23 @@ class CheckUnresolvedIssues extends Command
 
         try {
             // Notifikasi ke Site Manager setiap 10 menit selama 30 menit (total 3 kali)
-            // $issuesForSM = ActivityIssue::whereNull('resolved_at')
-            //     ->where('created_at', '<=', $now) // Issue sudah dibuat
-            //     ->where('notified_site_manager_count', '<', 3) // Batasi notifikasi ke 3 kali
-            //     ->where(function ($query) use ($now) {
-            //         $query->whereNull('last_notified_site_manager_at') // Belum pernah dikirim
-            //             ->orWhere('last_notified_site_manager_at', '<=', $now->subMinutes(10)); // Terakhir dikirim lebih dari 10 menit yang lalu
-            //     })
-            //     ->get();
-
             $issuesForSM = ActivityIssue::whereNull('resolved_at')
                 ->where('created_at', '<=', $now) // Issue sudah dibuat
                 ->where('notified_site_manager_count', '<', 3) // Batasi notifikasi ke 3 kali
                 ->where(function ($query) use ($now) {
                     $query->whereNull('last_notified_site_manager_at') // Belum pernah dikirim
-                        ->orWhere('last_notified_site_manager_at', '<=', $now->subMinutes(1)); // Terakhir dikirim lebih dari 10 menit yang lalu
+                        ->orWhere('last_notified_site_manager_at', '<=', $now->subMinutes(10)); // Terakhir dikirim lebih dari 10 menit yang lalu
                 })
                 ->get();
+
+            // $issuesForSM = ActivityIssue::whereNull('resolved_at')
+            //     ->where('created_at', '<=', $now) // Issue sudah dibuat
+            //     ->where('notified_site_manager_count', '<', 3) // Batasi notifikasi ke 3 kali
+            //     ->where(function ($query) use ($now) {
+            //         $query->whereNull('last_notified_site_manager_at') // Belum pernah dikirim
+            //             ->orWhere('last_notified_site_manager_at', '<=', $now->subMinutes(1)); // Terakhir dikirim lebih dari 10 menit yang lalu
+            //     })
+            //     ->get();
 
             foreach ($issuesForSM as $issue) {
                 $activity = $issue->activity;
@@ -71,8 +71,8 @@ class CheckUnresolvedIssues extends Command
 
                     . "Please resolve this issue as soon as possible, click {$url} for more details.";
 
-                $siteManagers = User::where('id', 1)->get();
-                // $siteManagers = User::role('Site Manager')->get();
+                // $siteManagers = User::where('id', 1)->get();
+                $siteManagers = User::role('Site Manager')->get();
                 foreach ($siteManagers as $sm) {
                     \Log::info('Message sent to Site Manager: ' . $sm->name);
                     SendWhatsappJob::dispatch($sm->phone, $message);
@@ -86,23 +86,23 @@ class CheckUnresolvedIssues extends Command
             }
 
             // Notifikasi ke Project Manager setiap 1 jam selama 3 jam (total 3 kali), dimulai setelah 30 menit sejak issue dibuat
-            // $issuesForPM = ActivityIssue::whereNull('resolved_at')
-            //     ->where('created_at', '<=', $now->subMinutes(30)) // Issue sudah lebih dari 30 menit
-            //     ->where('notified_project_manager_count', '<', 3) // Batasi notifikasi ke 3 kali
-            //     ->where(function ($query) use ($now) {
-            //         $query->whereNull('last_notified_project_manager_at') // Belum pernah dikirim ke Project Manager
-            //             ->orWhere('last_notified_project_manager_at', '<=', $now->subHours(1)); // Terakhir dikirim lebih dari 1 jam yang lalu
-            //     })
-            //     ->get();
-
             $issuesForPM = ActivityIssue::whereNull('resolved_at')
-                ->where('created_at', '<=', $now->subMinutes(3)) // Issue sudah lebih dari 30 menit
+                ->where('created_at', '<=', $now->subMinutes(30)) // Issue sudah lebih dari 30 menit
                 ->where('notified_project_manager_count', '<', 3) // Batasi notifikasi ke 3 kali
                 ->where(function ($query) use ($now) {
                     $query->whereNull('last_notified_project_manager_at') // Belum pernah dikirim ke Project Manager
-                        ->orWhere('last_notified_project_manager_at', '<=', $now->subMinutes(1)); // Terakhir dikirim lebih dari 1 jam yang lalu
+                        ->orWhere('last_notified_project_manager_at', '<=', $now->subHours(1)); // Terakhir dikirim lebih dari 1 jam yang lalu
                 })
                 ->get();
+
+            // $issuesForPM = ActivityIssue::whereNull('resolved_at')
+            //     ->where('created_at', '<=', $now->subMinutes(3)) // Issue sudah lebih dari 30 menit
+            //     ->where('notified_project_manager_count', '<', 3) // Batasi notifikasi ke 3 kali
+            //     ->where(function ($query) use ($now) {
+            //         $query->whereNull('last_notified_project_manager_at') // Belum pernah dikirim ke Project Manager
+            //             ->orWhere('last_notified_project_manager_at', '<=', $now->subMinutes(1)); // Terakhir dikirim lebih dari 1 jam yang lalu
+            //     })
+            //     ->get();
 
             foreach ($issuesForPM as $issue) {
                 $activity = $issue->activity;
@@ -123,8 +123,8 @@ class CheckUnresolvedIssues extends Command
                     . "*Description:* {$issue->description}\n\n"
                     . "Please follow up with the Site Manager and update solution as soon as possible, click {$url} for more details.";
 
-                $projectManagers = User::where('id', 1)->get();
-                // $projectManagers = User::role('Project Manager')->get();
+                // $projectManagers = User::where('id', 1)->get();
+                $projectManagers = User::role('Project Manager')->get();
                 foreach ($projectManagers as $pm) {
                     \Log::info('Message sent to Project Manager: ' . $pm->name);
                     SendWhatsappJob::dispatch($pm->phone, $message);
@@ -138,23 +138,23 @@ class CheckUnresolvedIssues extends Command
             }
 
             // Notifikasi ke Project Director setiap 1 jam selama 3 jam (total 3 kali), dimulai setelah 3 jam sejak issue dibuat
-            // $issuesForPD = ActivityIssue::whereNull('resolved_at')
-            //     ->where('created_at', '<=', $now->subHours(3)) // Issue sudah lebih dari 3 jam
-            //     ->where('notified_project_director_count', '<', 3) // Batasi notifikasi ke 3 kali
-            //     ->where(function ($query) use ($now) {
-            //         $query->whereNull('last_notified_project_director_at') // Belum pernah dikirim ke Project Director
-            //             ->orWhere('last_notified_project_director_at', '<=', $now->subHours(1)); // Terakhir dikirim lebih dari 1 jam yang lalu
-            //     })
-            //     ->get();
-
             $issuesForPD = ActivityIssue::whereNull('resolved_at')
-                ->where('created_at', '<=', $now->subMinutes(10)) // Issue sudah lebih dari 3 jam
+                ->where('created_at', '<=', $now->subHours(3)) // Issue sudah lebih dari 3 jam
                 ->where('notified_project_director_count', '<', 3) // Batasi notifikasi ke 3 kali
                 ->where(function ($query) use ($now) {
                     $query->whereNull('last_notified_project_director_at') // Belum pernah dikirim ke Project Director
-                        ->orWhere('last_notified_project_director_at', '<=', $now->subMinutes(1)); // Terakhir dikirim lebih dari 1 jam yang lalu
+                        ->orWhere('last_notified_project_director_at', '<=', $now->subHours(1)); // Terakhir dikirim lebih dari 1 jam yang lalu
                 })
                 ->get();
+
+            // $issuesForPD = ActivityIssue::whereNull('resolved_at')
+            //     ->where('created_at', '<=', $now->subMinutes(10)) // Issue sudah lebih dari 3 jam
+            //     ->where('notified_project_director_count', '<', 3) // Batasi notifikasi ke 3 kali
+            //     ->where(function ($query) use ($now) {
+            //         $query->whereNull('last_notified_project_director_at') // Belum pernah dikirim ke Project Director
+            //             ->orWhere('last_notified_project_director_at', '<=', $now->subMinutes(1)); // Terakhir dikirim lebih dari 1 jam yang lalu
+            //     })
+            //     ->get();
 
             foreach ($issuesForPD as $issue) {
                 $activity = $issue->activity;
@@ -175,8 +175,8 @@ class CheckUnresolvedIssues extends Command
                     . "*Description:* {$issue->description}\n\n"
                     . "Immediate action is required!, click {$url} for more details.";
 
-                $projectDirectors = User::where('id', 1)->get();
-                // $projectDirectors = User::role('Project Director')->get();
+                // $projectDirectors = User::where('id', 1)->get();
+                $projectDirectors = User::role('Project Director')->get();
                 foreach ($projectDirectors as $pd) {
                     \Log::info('Message sent to Project Director: ' . $pd->name);
                     SendWhatsappJob::dispatch($pd->phone, $message);
