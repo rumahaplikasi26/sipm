@@ -11,6 +11,7 @@ class ActivityIssue extends Model
         'activity_id',
         'category_dependency_id',
         'description',
+        'solution',
         'percentage_dependency',
         'percentage_solution',
         'resolved_at',

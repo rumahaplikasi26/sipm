@@ -27,6 +27,12 @@
             {{ $activity->description }}
         </div>
 
+        <div class="d-flex flex-wrap gap-2">
+            <div class="badge badge-soft-info font-size-12">{{ $activity->employees->count() }} Workers</div>
+            <div class="badge badge-soft-warning font-size-12">{{ $activity->issues->count() }} Issues</div>
+            <div class="badge badge-soft-primary font-size-12">{{ $activity->historyProgress->count() }} History Progress</div>
+        </div>
+
         <div class="d-flex flex-wrap justify-content-center gap-2 mt-auto" id="btn-other-card">
             <!-- Button Section - Fixed at Bottom -->
             <div class="btn-group btn-group-sm flex-shrink-0 w-100 dropup">
@@ -165,8 +171,8 @@
 
                     <div class="d-block mb-3">
                         @can('activity.issue.update')
-                            <a href="javascript:void(0);" class="btn btn-primary btn-sm w-100"
-                                wire:click="$dispatch('show-canvas-dependency',{activity_id: {{ $activity->id }}})">
+                            <a href="{{ route('activity.issues', ['activity_id' => $activity->id]) }}"
+                                class="btn btn-primary btn-sm w-100">
                                 <i class="mdi mdi-bug"></i> Manage Dependency</a>
                         @endcan
                     </div>

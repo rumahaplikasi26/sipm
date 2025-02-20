@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\IClockController;
+use App\Livewire\Activity\ActivityDependencyForm;
 use App\Livewire\Activity\ActivityForm;
 use App\Livewire\Activity\ActivityImport;
 use App\Livewire\Activity\ActivityIndex;
@@ -55,6 +56,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/activities/create', ActivityForm::class)->name('activity.create');
     Route::get('/activities/import', ActivityImport::class)->name('activity.import');
     Route::get('/activities/edit/{activity_id}', ActivityForm::class)->name('activity.edit');
+    Route::get('/activities/issues/{activity_id}', ActivityDependencyForm::class)->name('activity.issues');
     Route::get('/monitoring-present', MonitoringPresentIndex::class)->name('monitoring.present');
 
     Route::get('/announcements', AnnouncementIndex::class)->name('announcement');

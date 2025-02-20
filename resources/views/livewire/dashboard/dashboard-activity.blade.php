@@ -35,7 +35,6 @@
                 @livewire('dashboard.dashboard-activity.activity-progress', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-activity-progress'))
             </div>
             <div class="col-xl-6 col-lg item-dashboard-activity">
-
             </div>
         </div>
     @endcan
