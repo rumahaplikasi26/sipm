@@ -50,6 +50,20 @@
                                 )
                             </div>
                             <div class="col-xxl-2 col-lg-4">
+                                <label for="filterShift">Filter Shift</label>
+                                <select wire:model="filterShift" class="form-control form-select" id="">
+                                    <option value="">All</option>
+                                    <option value="1">Shift 1</option>
+                                    <option value="2">Shift 2</option>
+                                </select>
+                                @error('filterShift')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
+                            <div class="col-xxl-1 col-lg-4">
                                 <label for="filterStartDate">Filter Start Date</label>
                                 <input type="date" class="form-control @error('filterStartDate') is-invalid @enderror" id="filterStartDate"
                                     wire:model="filterStartDate">
@@ -60,7 +74,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <div class="col-xxl-2 col-lg-4">
+                            <div class="col-xxl-1 col-lg-4">
                                 <label for="filterEndDate">Filter End Date</label>
                                 <input type="date" class="form-control @error('filterEndDate') is-invalid @enderror" id="filterEndDate"
                                     wire:model="filterEndDate">

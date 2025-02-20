@@ -15,6 +15,7 @@ class ReportAttendanceIndex extends Component
     public $filterStartDate = '';
     public $filterEndDate = '';
     public $filterEmployee = [];
+    public $filterShift = '';
 
     public $groups = [];
     public $positions = [];
@@ -36,6 +37,7 @@ class ReportAttendanceIndex extends Component
         'filterStartDate' => ['except' => ''],
         'filterEndDate' => ['except' => ''],
         'filterEmployee' => ['except' => []],
+        'filterShift' => ['except' => ''],
     ];
 
     public function resetFilter()
@@ -45,6 +47,7 @@ class ReportAttendanceIndex extends Component
         $this->filterStartDate = '';
         $this->filterEndDate = '';
         $this->filterEmployee = [];
+        $this->filterShift = '';
 
         $this->dispatch('reset-select2');
     }
@@ -95,6 +98,11 @@ class ReportAttendanceIndex extends Component
             ->when($this->filterGroup, function ($query) {
                 $query->whereHas('employee.group', function ($query) {
                     $query->whereIn('id', $this->filterGroup);
+                });
+            })
+            ->when($this->filterShift !== '', function ($query) {
+                $query->whereHas('employee', function ($query) {
+                    $query->where('shift', $this->filterShift);
                 });
             })
             ->when($this->filterPosition, function ($query) {
