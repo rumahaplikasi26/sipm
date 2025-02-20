@@ -126,7 +126,7 @@ class AttendanceList extends BaseComponent
             $query->whereDate('timestamp', '>=', $this->filterStartDate);
         })->when($this->filterEndDate, function ($query) {
             $query->whereDate('timestamp', '<=', $this->filterEndDate);
-        })->onlyActiveEmployees()->latest()->paginate($this->perPage);
+        })->onlyActiveEmployees()->orderBy('timestamp', 'desc')->paginate($this->perPage);
 
         return view('livewire.attendance.attendance-list', compact('attendances'));
     }

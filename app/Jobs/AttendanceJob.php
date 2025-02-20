@@ -77,6 +77,8 @@ class AttendanceJob implements ShouldQueue
                             \Log::info(date('Y-m-d H:i:s') . ' ' . 'Sent Whatsapp ' . $data['phone'] . ' Successfully');
                         }
 
+                        $message = "Anda tercatat hadir pada waktu {$data['timestamp']} pada mesin {$data['sn']}.";
+                        $this->sendWhatsAppNotification($data['phone'], $message);
                         \Log::info(date('Y-m-d H:i:s') . ' ' . 'Attendance Sync Job Completed With Send Activity Successfully');
                     }
                 }
@@ -93,12 +95,6 @@ class AttendanceJob implements ShouldQueue
                     'shift_date' => $data['shift_date'],
                 ]
             );
-
-            if($data['phone'] != null){
-                $message = "Anda tercatat hadir pada waktu {$data['timestamp']} pada mesin {$data['sn']}.";
-                $this->sendWhatsAppNotification($data['phone'], $message);
-                \Log::info(date('Y-m-d H:i:s') . ' ' . 'Sent Whatsapp ' . $data['phone'] . ' Successfully');
-            }
 
             \Log::info(date('Y-m-d H:i:s') . ' ' . 'Attendance Sync Job Completed Successfully');
         } catch (\Throwable $th) {
