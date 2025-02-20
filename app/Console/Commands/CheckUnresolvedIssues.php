@@ -54,7 +54,7 @@ class CheckUnresolvedIssues extends Command
             foreach ($issuesForSM as $issue) {
                 $activity = $issue->activity;
                 $supervisorName = $activity->supervisor ? $activity->supervisor->name : 'Unknown Supervisor';
-                $url = route('activity.issues', ['activity_id' => $activity->id]);
+                $url = urldecode(route('activity.issues', ['activity_id' => $activity->id], true));
 
                 $title = "🔔 *Reminder: Issue Pending!*";
                 $message = $title . "\n\n"
@@ -107,6 +107,7 @@ class CheckUnresolvedIssues extends Command
             foreach ($issuesForPM as $issue) {
                 $activity = $issue->activity;
                 $supervisorName = $activity->supervisor ? $activity->supervisor->name : 'Unknown Supervisor';
+                $url = urldecode(route('activity.issues', ['activity_id' => $activity->id], true));
 
                 $title = "🔔 *Reminder: Issue Pending for Over 30 Minutes!*";
                 $message = $title . "\n\n"
@@ -158,6 +159,7 @@ class CheckUnresolvedIssues extends Command
             foreach ($issuesForPD as $issue) {
                 $activity = $issue->activity;
                 $supervisorName = $activity->supervisor ? $activity->supervisor->name : 'Unknown Supervisor';
+                $url = urldecode(route('activity.issues', ['activity_id' => $activity->id], true));
 
                 $title = "🚨 *Urgent: Issue Pending for Over 3 Hours!*";
                 $message = $title . "\n\n"
