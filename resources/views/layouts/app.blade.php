@@ -3,7 +3,8 @@
 
 @include('layouts.partials.head')
 
-<body data-topbar="dark" data-layout="horizontal">
+<body data-topbar="dark" data-layout="horizontal" data-layout-mode="light" data-layout-width="fluid"
+    data-layout-position="fixed" data-preloader="disable" data-layout-style="default">
 
     <!-- Begin page -->
     <div id="layout-wrapper">

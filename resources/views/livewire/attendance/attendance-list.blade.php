@@ -6,34 +6,46 @@
                     <form action="javascript:void(0);">
                         <div class="row g-3">
                             <div class="col-xxl-2 col-lg-6">
-                                @livewire('component.form.select2', [
-                                    'label' => 'Filter Employee',
-                                    'model' => 'filterEmployee',
-                                    'options' => $employees->map(fn($e) => ['value' => $e->id, 'text' => $e->name])->toArray(),
-                                    'selected' => $filterEmployee,
-                                    'placeholder' => '-- Select Employee --',
-                                    'multiple' => true
-                                ], key('filterEmployee'))
+                                @livewire(
+                                    'component.form.select2',
+                                    [
+                                        'label' => 'Filter Employee',
+                                        'model' => 'filterEmployee',
+                                        'options' => $employees->map(fn($e) => ['value' => $e->id, 'text' => $e->name])->toArray(),
+                                        'selected' => $filterEmployee,
+                                        'placeholder' => '-- Select Employee --',
+                                        'multiple' => true,
+                                    ],
+                                    key('filterEmployee')
+                                )
                             </div>
                             <div class="col-xxl-2 col-lg-6">
-                                @livewire('component.form.select2', [
-                                    'label' => 'Filter Group',
-                                    'model' => 'filterGroup',
-                                    'options' => $groups->map(fn($e) => ['value' => $e->id, 'text' => $e->name.' | '.$e->supervisor->name])->toArray(),
-                                    'selected' => $filterGroup,
-                                    'placeholder' => '-- Select Group --',
-                                    'multiple' => true
-                                ], key('filterGroup'))
+                                @livewire(
+                                    'component.form.select2',
+                                    [
+                                        'label' => 'Filter Group',
+                                        'model' => 'filterGroup',
+                                        'options' => $groups->map(fn($e) => ['value' => $e->id, 'text' => $e->name . ' | ' . $e->supervisor->name])->toArray(),
+                                        'selected' => $filterGroup,
+                                        'placeholder' => '-- Select Group --',
+                                        'multiple' => true,
+                                    ],
+                                    key('filterGroup')
+                                )
                             </div>
                             <div class="col-xxl-2 col-lg-4">
-                                @livewire('component.form.select2', [
-                                    'label' => 'Filter Position',
-                                    'model' => 'filterPosition',
-                                    'options' => $positions->map(fn($e) => ['value' => $e->id, 'text' => $e->name])->toArray(),
-                                    'selected' => $filterPosition,
-                                    'placeholder' => '-- Select Position --',
-                                    'multiple' => true
-                                ], key('filterPosition'))
+                                @livewire(
+                                    'component.form.select2',
+                                    [
+                                        'label' => 'Filter Position',
+                                        'model' => 'filterPosition',
+                                        'options' => $positions->map(fn($e) => ['value' => $e->id, 'text' => $e->name])->toArray(),
+                                        'selected' => $filterPosition,
+                                        'placeholder' => '-- Select Position --',
+                                        'multiple' => true,
+                                    ],
+                                    key('filterPosition')
+                                )
                             </div>
                             <div class="col-xxl-2 col-lg-4">
                                 <label for="filterStartDate">Filter Start Date</label>
@@ -67,7 +79,7 @@
         </div>
     </div>
 
-    <div class="row gy-2 gx-3 mb-2 align-items-center">
+    <div class="row gy-2 gx-3 mb-2 align-items-center justify-content-between">
         <div class="col-sm-auto">
             <select class="form-select" id="selectLimit" wire:model.live="perPage">
                 <option value="10">10</option>
@@ -77,6 +89,34 @@
                 <option value="200">200</option>
             </select>
         </div>
+
+        @hasrole('Super Admin')
+            <div class="col-sm-auto">
+                <form wire:submit.prevent="import" class="needs-validation" novalidate>
+                    <div class="d-flex gap-2 align-items-center">
+                        <div class="flex-grow-1">
+                            <a href="javascript: void(0);" class="btn btn-info" wire:click="downloadTemplate">Template</a>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <input type="file" class="form-control @error('file') is-invalid @enderror" wire:model="file"
+                                id="formrow-file-input" placeholder="Enter File" autocomplete="off">
+
+                            @error('file')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                        <div class="flex-shrink-1">
+                            <button type="submit" class="btn btn-primary w-md" wire:loading.attr="disabled"
+                                wire:target="file">Submit</button>
+                            <button type="reset" class="btn btn-secondary w-md" wire:click="resetForm"> Reset</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        @endhasrole
     </div>
 
     <div class="row">

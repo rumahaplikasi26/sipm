@@ -2,17 +2,20 @@
 
 namespace App\Livewire\Attendance;
 
+use App\Exports\AttendanceExport;
 use App\Livewire\BaseComponent;
 use App\Models\Attendance;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AttendanceList extends BaseComponent
 {
-    use LivewireAlert, WithPagination;
+    use LivewireAlert, WithPagination, WithFileUploads;
 
     protected $paginationTheme = 'bootstrap';
 
@@ -30,6 +33,7 @@ class AttendanceList extends BaseComponent
     public $groups = [];
     public $positions = [];
     public $employees = [];
+    public $file = null;
 
     protected $listeners = [
         'refreshIndex' => 'handleRefresh',
@@ -95,6 +99,27 @@ class AttendanceList extends BaseComponent
     {
         $this->filterPosition = $value;
         $this->filter();
+    }
+
+    public function downloadTemplate()
+    {
+       return Excel::download(new AttendanceExport, 'Attendance Import Template.xlsx');
+    }
+
+    public function import()
+    {
+        $this->validate([
+            'file' => 'required|mimes:xlsx'
+        ]);
+
+        try {
+            Excel::import(new \App\Imports\AttendanceImport, $this->file);
+            $this->alert('success', 'Data Imported Successfully');
+            $this->reset('file');
+            $this->dispatch('refreshIndex');
+        } catch (\Exception $e) {
+            $this->alert('error', $e->getMessage());
+        }
     }
 
     public function render()

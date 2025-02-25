@@ -16,14 +16,14 @@ class Navbar extends BaseComponent
                 'name' => 'Dashboard',
                 'url' => '#',
                 'route' => 'dashboard',
-                'icon' => 'fas fa-tachometer-alt',
+                'icon' => 'bx bx-grid-alt',
                 'permissions' => ['dashboard.index'],
                 'menus' => [
                     [
                         'name' => 'Dashboard Attendance',
                         'url' => route('dashboard'),
                         'route' => 'dashboard',
-                        'icon' => 'fas fa-tachometer-alt',
+                        'icon' => 'bx bx-grid-alt',
                         'permissions' => ['dashboard.index']
                     ],
                     [
@@ -37,128 +37,142 @@ class Navbar extends BaseComponent
             ],
             [
                 'name' => 'Master Data',
-                'icon' => 'fas fa-database',
+                'icon' => 'bx bx-data',
                 'permissions' => ['user.index', 'role.index', 'group.index', 'position.index', 'employee.index'],
                 'url' => '#',
                 'route' => '#',
                 'menus' => [
                     [
+                        'name' => 'Role',
+                        'url' => route('master.roles'),
+                        'route' => 'master.roles',
+                        'icon' => 'bx bx-user',
+                        'permissions' => ['role.index']
+                    ],
+                    [
+                        'name' => 'Permission',
+                        'url' => route('master.permissions'),
+                        'route' => 'master.permissions',
+                        'icon' => 'bx bx-user',
+                        'permissions' => ['role.index']
+                    ],
+                    [
                         'name' => 'User',
                         'url' => route('master.users'),
                         'route' => 'master.users',
-                        'icon' => 'fas fa-users',
+                        'icon' => 'bx bx-user',
                         'permissions' => ['user.index', 'role.index']
                     ],
                     [
                         'name' => 'Group',
                         'url' => route('master.groups'),
                         'route' => 'master.groups',
-                        'icon' => 'fas fa-users-cog',
+                        'icon' => 'bx bx-user',
                         'permissions' => ['group.index']
                     ],
                     [
                         'name' => 'Area',
                         'url' => route('master.areas'),
                         'route' => 'master.areas',
-                        'icon' => 'fas fa-map-marker-alt',
+                        'icon' => 'bx bx-map',
                         'permissions' => ['area.index']
                     ],
                     [
                         'name' => 'Position',
                         'url' => route('master.positions'),
                         'route' => 'master.positions',
-                        'icon' => 'fas fa-user-tag',
+                        'icon' => 'bx bx-user-pin',
                         'permissions' => ['position.index']
                     ],
                     [
                         'name' => 'Employee',
                         'url' => route('master.employees'),
                         'route' => 'master.employees',
-                        'icon' => 'fas fa-user-tie',
+                        'icon' => 'bx bx-user',
                         'permissions' => ['employee.index']
                     ],
                     [
                         'name' => 'Scope',
                         'url' => route('master.scopes'),
                         'route' => 'master.scopes',
-                        'icon' => 'fas fa-tag',
+                        'icon' => 'bxs-tachometer',
                         'permissions' => ['scope.index']
                     ],
                     [
                         'name' => 'Category Dependency',
                         'url' => route('master.category-dependencies'),
                         'route' => 'master.category-dependencies',
-                        'icon' => 'fas fa-chart-line',
+                        'icon' => 'bxs-tachometer',
                         'permissions' => ['category.dependency.index']
                     ],
                     [
                         'name' => 'Shift',
                         'url' => route('master.shifts'),
                         'route' => 'master.shifts',
-                        'icon' => 'fas fa-clock',
+                        'icon' => 'bxs-tachometer',
                         'permissions' => ['shift.index']
                     ],
                 ],
             ],
             [
                 'name' => 'Attendance',
-                'icon' => 'fas fa-clock',
+                'icon' => 'bx bx-time-five',
                 'permissions' => ['attendance.index'],
                 'url' => route('attendance'),
                 'route' => 'attendance'
             ],
             [
                 'name' => 'Activity',
-                'icon' => 'fas fa-tag',
+                'icon' => 'bx bx-task',
                 'permissions' => ['activity.index'],
                 'url' => route('activity'),
                 'route' => 'activity'
             ],
             [
                 'name' => 'Daily Image',
-                'icon' => 'fas fa-camera',
+                'icon' => 'bx bx-image-add',
                 'permissions' => ['collection.image.index'],
                 'url' => route('collection.images'),
                 'route' => 'collection.images'
             ],
             [
-                'name' => 'Monitoring Present',
-                'icon' => 'fas fa-check-square',
+                'name' => 'Monitoring',
+                'icon' => 'bx bx-time-five',
                 'permissions' => ['monitoring.present.index'],
                 'url' => route('monitoring.present'),
                 'route' => 'monitoring.present'
             ],
             [
                 'name' => 'Announcement',
-                'icon' => 'fas fa-bullhorn',
+                'icon' => 'bx bx-bell',
                 'permissions' => ['announcement.index'],
                 'url' => route('announcement'),
                 'route' => 'announcement'
             ],
             [
                 'name' => 'Report',
-                'icon' => 'fas fa-chart-line',
+                'icon' => 'bx bx-report',
                 'permissions' => ['activity.report.index'],
                 'url' => '#',
                 'route' => '#',
                 'menus' => [
                     [
                         'name' => 'Activity',
-                        'icon' => 'fas fa-chart-line',
+                        'icon' => 'bx bx-report',
                         'permissions' => ['activity.report.index'],
                         'url' => '#',
                         'route' => '#',
                         'menus' => [
                             [
                                 'name' => 'Report Activity',
-                                'icon' => 'fas fa-chart-line',
+                                'icon' => 'bx bx-report',
                                 'permissions' => ['activity.report.index'],
                                 'url' => route('activity.report'),
                                 'route' => 'activity.report',
                             ],
                             [
                                 'name' => 'Report Activity Progress',
-                                'icon' => 'fas fa-chart-line',
+                                'icon' => 'bx bx-report',
                                 'permissions' => ['activity.report.index'],
                                 'url' => route('activity.report.progress'),
                                 'route' => 'activity.report.progress'
@@ -167,14 +181,14 @@ class Navbar extends BaseComponent
                     ],
                     [
                         'name' => 'Attendance',
-                        'icon' => 'fas fa-chart-line',
+                        'icon' => 'bx bx-report',
                         'permissions' => ['attendance.report.index'],
                         'url' => '#',
                         'route' => '#',
                         'menus' => [
                             [
                                 'name' => 'Report Attendance',
-                                'icon' => 'fas fa-chart-line',
+                                'icon' => 'bx bx-report',
                                 'permissions' => ['attendance.report.index'],
                                 'url' => route('attendance.report'),
                                 'route' => 'attendance.report.index'
