@@ -26,6 +26,7 @@
             <i class="fa fa-fw fa-bars"></i>
         </button>
 
+        @livewire('component.layout.header-menu', key('header-menu'))
     </div>
 
     <div class="d-flex">

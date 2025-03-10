@@ -43,67 +43,87 @@ class Navbar extends BaseComponent
                 'route' => '#',
                 'menus' => [
                     [
-                        'name' => 'Role',
-                        'url' => route('master.roles'),
-                        'route' => 'master.roles',
-                        'icon' => 'bx bx-user',
-                        'permissions' => ['role.index']
-                    ],
-                    [
-                        'name' => 'Permission',
-                        'url' => route('master.permissions'),
-                        'route' => 'master.permissions',
-                        'icon' => 'bx bx-user',
-                        'permissions' => ['role.index']
-                    ],
-                    [
                         'name' => 'User',
                         'url' => route('master.users'),
                         'route' => 'master.users',
                         'icon' => 'bx bx-user',
-                        'permissions' => ['user.index', 'role.index']
-                    ],
-                    [
-                        'name' => 'Group',
-                        'url' => route('master.groups'),
-                        'route' => 'master.groups',
-                        'icon' => 'bx bx-user',
-                        'permissions' => ['group.index']
-                    ],
-                    [
-                        'name' => 'Area',
-                        'url' => route('master.areas'),
-                        'route' => 'master.areas',
-                        'icon' => 'bx bx-map',
-                        'permissions' => ['area.index']
-                    ],
-                    [
-                        'name' => 'Position',
-                        'url' => route('master.positions'),
-                        'route' => 'master.positions',
-                        'icon' => 'bx bx-user-pin',
-                        'permissions' => ['position.index']
+                        'permissions' => ['user.index', 'role.index'],
+                        'menus' => [
+                            [
+                                'name' => 'User',
+                                'url' => route('master.users'),
+                                'route' => 'master.users',
+                                'icon' => 'bx bx-user',
+                                'permissions' => ['user.index', 'role.index'],
+                            ],
+                            [
+                                'name' => 'Role',
+                                'url' => route('master.roles'),
+                                'route' => 'master.roles',
+                                'icon' => 'bx bx-user',
+                                'permissions' => ['role.index']
+                            ],
+                            [
+                                'name' => 'Permission',
+                                'url' => route('master.permissions'),
+                                'route' => 'master.permissions',
+                                'icon' => 'bx bx-user',
+                                'permissions' => ['role.index']
+                            ],
+                        ]
                     ],
                     [
                         'name' => 'Employee',
                         'url' => route('master.employees'),
                         'route' => 'master.employees',
                         'icon' => 'bx bx-user',
-                        'permissions' => ['employee.index']
+                        'permissions' => ['employee.index', 'group.index', 'position.index'],
+                        'menus' => [
+                            [
+                                'name' => 'Group',
+                                'url' => route('master.groups'),
+                                'route' => 'master.groups',
+                                'icon' => 'bx bx-user',
+                                'permissions' => ['group.index']
+                            ],
+                            [
+                                'name' => 'Position',
+                                'url' => route('master.positions'),
+                                'route' => 'master.positions',
+                                'icon' => 'bx bx-user-pin',
+                                'permissions' => ['position.index']
+                            ],
+                        ]
                     ],
                     [
-                        'name' => 'Scope',
-                        'url' => route('master.scopes'),
-                        'route' => 'master.scopes',
-                        'icon' => 'bxs-tachometer',
-                        'permissions' => ['scope.index']
-                    ],
-                    [
-                        'name' => 'Category Dependency',
-                        'url' => route('master.category-dependencies'),
-                        'route' => 'master.category-dependencies',
-                        'icon' => 'bxs-tachometer',
-                        'permissions' => ['category.dependency.index']
+                        'name' => 'Activity',
+                        'icon' => 'bx bx-report',
+                        'permissions' => ['area.index', 'scope.index', 'category.dependency.index'],
+                        'url' => '#',
+                        'route' => '#',
+                        'menus' => [
+                            [
+                                'name' => 'Area',
+                                'url' => route('master.areas'),
+                                'route' => 'master.areas',
+                                'icon' => 'bx bx-map',
+                                'permissions' => ['area.index']
+                            ],
+                            [
+                                'name' => 'Scope',
+                                'url' => route('master.scopes'),
+                                'route' => 'master.scopes',
+                                'icon' => 'bx bx-tag',
+                                'permissions' => ['scope.index']
+                            ],
+                            [
+                                'name' => 'Category Dependency',
+                                'url' => route('master.category-dependencies'),
+                                'route' => 'master.category-dependencies',
+                                'icon' => 'bx bx-list-ol',
+                                'permissions' => ['category.dependency.index']
+                            ],
+                        ]
                     ],
                     [
                         'name' => 'Shift',
@@ -151,7 +171,7 @@ class Navbar extends BaseComponent
             ],
             [
                 'name' => 'Report',
-                'icon' => 'bx bx-report',
+                'icon' => 'bx bxs-report',
                 'permissions' => ['activity.report.index'],
                 'url' => '#',
                 'route' => '#',
@@ -197,7 +217,13 @@ class Navbar extends BaseComponent
                     ]
                 ],
             ],
-
+            [
+                'name' => 'File Manager',
+                'icon' => 'bx bx-folder',
+                'permissions' => ['file.index'],
+                'url' => route('files'),
+                'route' => 'files'
+            ],
         ];
 
         $this->menus = array_filter($menus, function ($menu) {

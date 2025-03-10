@@ -11,11 +11,17 @@ use App\Livewire\Area\AreaIndex;
 use App\Livewire\Attendance\AttendanceIndex;
 use App\Livewire\Auth\Login;
 use App\Livewire\CategoryDependency\CategoryDependencyIndex;
+use App\Livewire\CategoryInventory\CategoryInventoryIndex;
 use App\Livewire\Dashboard\DashboardActivity;
 use App\Livewire\Dashboard\DashboardIndex;
+use App\Livewire\Dashboard\Inventory\DashboardInventoryIndex;
 use App\Livewire\Employee\EmployeeIndex;
+use App\Livewire\FileManager\FileManagerIndex;
 use App\Livewire\Group\GroupIndex;
+use App\Livewire\Inventory\InventoryForm;
+use App\Livewire\Inventory\InventoryIndex;
 use App\Livewire\MonitoringPresent\MonitoringPresentIndex;
+use App\Livewire\Outbound\OutboundForm;
 use App\Livewire\Permission\PermissionIndex;
 use App\Livewire\Position\PositionIndex;
 use App\Livewire\Profile\ProfileIndex;
@@ -27,6 +33,7 @@ use App\Livewire\Scope\ScopeIndex;
 use App\Livewire\ShiftEmployee\ShiftEmployeeIndex;
 use App\Livewire\User\UserIndex;
 use App\Livewire\CollectionImage\CollectionImageIndex;
+use App\Livewire\Warehouse\WarehouseIndex;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', Login::class)->name('login')->middleware('guest');
@@ -65,8 +72,22 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/announcements', AnnouncementIndex::class)->name('announcement');
     Route::get('/announcements/create', AnnouncementForm::class)->name('announcement.create');
+    Route::get('/files', FileManagerIndex::class)->name('files');
+    Route::get('/files/{slug}', FileManagerIndex::class)->name('files.category');
 
     Route::get('/report', ReportIndex::class)->name('activity.report');
     Route::get('/report-progress', ReportProgressIndex::class)->name('activity.report.progress');
     Route::get('/report/attendance', ReportAttendanceIndex::class)->name('attendance.report');
+});
+
+Route::prefix('inventory')->name('inventory.')->middleware('auth')->group(function () {
+    Route::get('/dashboard', DashboardInventoryIndex::class)->name('dashboard');
+    Route::get('/categories', CategoryInventoryIndex::class)->name('category');
+    Route::get('/inventories', InventoryIndex::class)->name('inventory');
+    Route::get('/warehouse', WarehouseIndex::class)->name('warehouse');
+
+    Route::get('/inventories/create', InventoryForm::class)->name('inventory.create');
+
+    Route::get('/inbound', DashboardInventoryIndex::class)->name('inbound');
+    Route::get('/outbound', OutboundForm::class)->name('outbound');
 });

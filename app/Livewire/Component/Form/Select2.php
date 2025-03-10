@@ -14,10 +14,11 @@ class Select2 extends Component
     public $model;
     public $width = '100%';
     public $multiple = false;
+    public $dropdownParent;
 
     protected $listeners = ['updateSelect2'];
 
-    public function mount($model, $options = [], $selected = [], $placeholder = 'Select an option', $multiple = false, $width = '100%')
+    public function mount($model, $options = [], $selected = [], $placeholder = 'Select an option', $multiple = false, $width = '100%', $dropdownParent = null)
     {
         $this->width = $width;
         $this->model = $model;
@@ -25,6 +26,7 @@ class Select2 extends Component
         $this->selected = is_array($selected) ? $selected : [$selected]; // Pastikan array
         $this->placeholder = $placeholder;
         $this->multiple = $multiple;
+        $this->dropdownParent = $dropdownParent;
     }
 
     public function updateSelect2($model, $value)

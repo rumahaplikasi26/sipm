@@ -28,10 +28,10 @@
             <div class="col-xl-6 col-lg item-dashboard-activity">
                 @livewire('dashboard.dashboard-activity.activity-by-status', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-activity-by-status'))
             </div>
-            <div class="col-xl-6 col-lg item-dashboard-activity">
+            <div class="col-xl-6 col-lg-12 col-md item-dashboard-activity">
                 @livewire('dashboard.dashboard-activity.activity-by-area', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-activity-by-area'))
             </div>
-            <div class="col-xl-6 col-lg item-dashboard-activity">
+            <div class="col-xl-6 col-lg-12 item-dashboard-activity">
                 @livewire('dashboard.dashboard-activity.activity-progress', ['startDate' => $startDate, 'endDate' => $endDate], key('dashboard-activity-progress'))
             </div>
             <div class="col-xl-6 col-lg item-dashboard-activity">
