@@ -93,6 +93,13 @@ class Navbar extends BaseComponent
                                 'icon' => 'bx bx-user-pin',
                                 'permissions' => ['position.index']
                             ],
+                            [
+                                'name' => 'Employee',
+                                'url' => route('master.employees'),
+                                'route' => 'master.employees',
+                                'icon' => 'bx bx-user',
+                                'permissions' => ['employee.index']
+                            ],
                         ]
                     ],
                     [

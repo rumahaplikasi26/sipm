@@ -24,6 +24,7 @@ class OutboundForm extends Component
     public $groups, $employees;
 
     public $inventory_id, $supervisor_id, $group_id, $employee_id, $quantity, $is_group = false, $condition, $borrow_date, $description, $created_by;
+    public array $selectedInventories = [];
 
     protected $listeners = [
         'refreshIndex' => 'handleRefresh',
@@ -36,6 +37,25 @@ class OutboundForm extends Component
     public function updatingSearch()
     {
         $this->resetPage();
+    }
+
+    public function resetForm()
+    {
+        $this->search = '';
+        $this->inventory_id = null;
+        $this->supervisor_id = null;
+        $this->group_id = null;
+        $this->employee_id = null;
+        $this->quantity = null;
+        $this->is_group = false;
+        $this->condition = null;
+        $this->borrow_date = null;
+        $this->description = null;
+        $this->created_by = null;
+
+        $this->selectedInventories = [];
+
+        $this->dispatch('refreshSelect2');
     }
 
     public function handleRefresh()
@@ -72,6 +92,37 @@ class OutboundForm extends Component
     {
         $this->$model = $value;
         $this->dispatch('refreshSelect2');
+    }
+
+    public function selectInventory($inventoryId)
+    {
+        $inventory = Inventory::find($inventoryId);
+
+        if (!$inventory)
+            return;
+
+        // Cek apakah item sudah ada di cart
+        if (isset($this->selectedInventories[$inventoryId])) {
+            $this->selectedInventories[$inventoryId]['quantity']++;
+        } else {
+            $this->selectedInventories[$inventoryId] = [
+                'id' => $inventory->id,
+                'name' => $inventory->name,
+                'serial_number' => $inventory->serial_number,
+                'stock' => $inventory->stock,
+                'unit' => $inventory->unit,
+                'quantity' => 1,
+            ];
+        }
+
+        $this->dispatch('refreshSelect2');
+        $this->dispatch('refreshCart');
+    }
+
+    public function removeInventory($inventoryId)
+    {
+        unset($this->selectedInventories[$inventoryId]);
+        $this->dispatch('refreshCart');
     }
 
     public function render()

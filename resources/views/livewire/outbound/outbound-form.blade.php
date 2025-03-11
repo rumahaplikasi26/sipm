@@ -2,11 +2,11 @@
     @livewire('component.layout.breadcrumb', ['breadcrumbs' => [['name' => 'Outbound Create', 'url' => route('inventory.outbound')]]], key('breadcrumb'))
 
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="card">
                 <div class="card-body">
 
-                    <h4 class="card-title mb-4">Option</h4>
+                    <h4 class="card-title mb-4">OPTION</h4>
 
                     <div class="mb-3">
                         <label for="formrow-firstname-input" class="form-label">Date</label>
@@ -79,7 +79,7 @@
 
             <div class="row">
                 @foreach ($inventories as $inventory)
-                    <div class="col-xl-4 col-sm-6">
+                    <div class="col-xl-6">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
@@ -95,8 +95,9 @@
 
                                     <div class="flex-grow-1 overflow-hidden">
                                         <h5 class="text-truncate font-size-15"><a href="javascript: void(0);"
-                                                class="text-dark">{{ $inventory->name }}</a></h5>
-                                        <p class="text-muted mb-1">{{ $inventory->serial_number }}</p>
+                                                class="text-dark">{{ $inventory->name }}
+                                                ({{ $inventory->serial_number }})
+                                            </a></h5>
                                         <p class="text-muted mb-1">{{ $inventory->warehouse->name }}</p>
                                         <p class="text-muted mb-1">{{ $inventory->category->name }}</p>
                                         {{-- <div class="avatar-group">
@@ -140,21 +141,22 @@
                                             @endif
                                         </li>
                                         <li class="list-inline-item me-3">
-                                            <i class="bx bx-calendar me-1"></i> {{ $inventory->created_at->diffForHumans() }}
+                                            <i class="bx bx-calendar me-1"></i>
+                                            {{ $inventory->created_at->diffForHumans() }}
                                         </li>
                                         <li class="list-inline-item me-3">
-                                            <i class="bx bx-briefcase me-1"></i> {{ $inventory->stock }} {{ $inventory->unit}}
+                                            <i class="bx bx-briefcase me-1"></i> {{ $inventory->stock }}
+                                            {{ $inventory->unit }}
                                         </li>
                                     </ul>
                                 </div>
                             </div>
-                            <div class="px-4 py-3 border-top">
-                                <ul class="list-inline mb-0">
-                                    <li class="list-inline-item me-3">
-                                        <button class="btn btn-sm btn-info" wire:click="editInventory({{ $inventory->id }})"><span class="bx bx-pencil"></span></button>
-                                    </li>
+                            <div class="px-4 py-1 border-top">
+                                <ul class="list-inline mb-0 text-end">
                                     <li class="list-inline-item">
-                                        <button class="btn btn-sm btn-danger" wire:click="deleteInventory({{ $inventory->id }})"><span class="bx bx-trash"></span></button>
+                                        <button class="btn btn-sm btn-primary"
+                                            wire:click="selectInventory({{ $inventory->id }})"><span
+                                                class="bx bx-send"></span> Select</button>
                                     </li>
                                 </ul>
                             </div>
@@ -163,6 +165,47 @@
                 @endforeach
             </div>
         </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+
+                    <h4 class="card-title mb-4">PROCESS SUBMIT OUTBOUND</h4>
+
+                    <div class="table-responsive">
+                        <table class="table w-100 table-nowrap align-middle table-hover mb-0">
+                            <tbody>
+                                @if (count($selectedInventories) > 0)
+                                    @foreach ($selectedInventories as $inventory)
+                                        <tr>
+                                            <td>
+                                                <h5 class="text-truncate font-size-14 mb-1"><a
+                                                        href="javascript: void(0);" class="text-dark"></a>
+                                                    {{ $inventory['name'] }}</h5>
+                                                <p class="text-muted mb-0">Stock: {{ $inventory['stock'] }}
+                                                    {{ $inventory['unit'] }}</p>
+                                            </td>
+                                            <td width="20%">
+                                                <input type="number" class="form-control"
+                                                    wire:model="selectedInventories.{{ $inventory['id'] }}.quantity"
+                                                    min="1" max="{{ $inventory['stock'] }}">
+                                            </td>
+                                            <td width="10%">
+                                                <a href="javascript: void(0);"
+                                                    wire:click="removeInventory({{ $inventory['id'] }})"
+                                                    class="text-danger p-1"><i class="bx bxs-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
     </div>
     @push('styles')
         <link href="{{ asset('libs/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css" />
@@ -187,7 +230,6 @@
             }
 
             document.addEventListener('livewire:init', function() {
-
                 initSelect2();
 
                 selectGroup.on('change', function() {
@@ -208,13 +250,20 @@
                     setTimeout(function() {
                         initSelect2();
                     }, 500);
-
-                    console.log('refreshSelect2');
                 });
             });
 
-            document.addEventListener("DOMContentLoaded", initSelect2);
-            document.addEventListener("livewire:navigated", initSelect2);
+            document.addEventListener("DOMContentLoaded", function() {
+                setTimeout(function() {
+                    initSelect2();
+                }, 500);
+            });
+
+            document.addEventListener("livewire:navigated", function() {
+                setTimeout(function() {
+                    initSelect2();
+                }, 500);
+            });
         </script>
     @endpush
 </div>
