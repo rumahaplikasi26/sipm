@@ -23,16 +23,22 @@
 
                     <div class="mb-3">
                         <label for="formrow-firstname-input" class="form-label">Is Group?</label>
-                        <select class="form-select" wire:model.live="is_group">
+                        <select class="form-select @error('is_group') is-invalid @enderror" wire:model.live="is_group">
                             <option value="">-- Select --</option>
                             <option value="0">No</option>
                             <option value="1">Yes</option>
                         </select>
+
+                        @error('is_group')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div>
 
                     <div class="mb-3">
                         <label for="formrow-firstname-input" class="form-label">Group</label>
-                        <select class="form-select" wire:model="group_id" id="group_id"
+                        <select class="form-select @error('group_id') is-invalid @enderror" wire:model="group_id" id="group_id"
                             @if (!$is_group) disabled @endif>
                             <option value="">-- Select Group --</option>
                             @foreach ($groups as $group)
@@ -40,17 +46,29 @@
                                 </option>
                             @endforeach
                         </select>
+
+                        @error('group_id')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div>
 
                     <div class="mb-3">
                         <label for="formrow-firstname-input" class="form-label">Employee</label>
-                        <select class="form-select" wire:model="employee_id" id="employee_id"
+                        <select class="form-select @error('employee_id') is-invalid @enderror" wire:model="employee_id" id="employee_id"
                             @if ($is_group) disabled @endif>
                             <option value="">-- Select Employee --</option>
                             @foreach ($employees as $employee)
                                 <option value="{{ $employee->id }}">{{ $employee->name }}</option>
                             @endforeach
                         </select>
+
+                        @error('employee_id')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div>
                 </div>
             </div>
@@ -164,6 +182,12 @@
                     </div>
                 @endforeach
             </div>
+
+            <div class="row">
+                <div class="col-12">
+                    {{ $inventories->links() }}
+                </div>
+            </div>
         </div>
 
         <div class="col-md-4">
@@ -173,7 +197,7 @@
                     <h4 class="card-title mb-4">PROCESS SUBMIT OUTBOUND</h4>
 
                     <div class="table-responsive">
-                        <table class="table w-100 table-nowrap align-middle table-hover mb-0">
+                        <table class="table w-100 table-nowrap align-middle table-hover mb-3">
                             <tbody>
                                 @if (count($selectedInventories) > 0)
                                     @foreach ($selectedInventories as $inventory)
@@ -186,9 +210,15 @@
                                                     {{ $inventory['unit'] }}</p>
                                             </td>
                                             <td width="20%">
-                                                <input type="number" class="form-control"
+                                                <input type="number" class="form-control @error('quantity') is-invalid @enderror"
                                                     wire:model="selectedInventories.{{ $inventory['id'] }}.quantity"
                                                     min="1" max="{{ $inventory['stock'] }}">
+
+                                                @error('quantity')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
                                             </td>
                                             <td width="10%">
                                                 <a href="javascript: void(0);"
@@ -200,6 +230,16 @@
                                 @endif
                             </tbody>
                         </table>
+
+                        <div class="mb-3">
+                            <label for="description">Description</label>
+                            <textarea class="form-control" wire:model="description" rows="3"></textarea>
+                        </div>
+
+                        <div class="mb-3 d-flex gap-2 align-items-stretch">
+                            <button class="btn btn-primary w-100" wire:click="submit">Submit</button>
+                            <button class="btn btn-secondary w-100" wire:click="resetForm">Reset</button>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -2,16 +2,18 @@
 
 namespace App\Livewire\Outbound;
 
+use App\Livewire\BaseComponent;
 use App\Models\Employee;
 use App\Models\Group;
 use App\Models\Inventory;
+use App\Models\TransactionInventory;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class OutboundForm extends Component
+class OutboundForm extends BaseComponent
 {
     use LivewireAlert, WithPagination;
 
@@ -23,7 +25,7 @@ class OutboundForm extends Component
     public $perPage = 30;
     public $groups, $employees;
 
-    public $inventory_id, $supervisor_id, $group_id, $employee_id, $quantity, $is_group = false, $condition, $borrow_date, $description, $created_by;
+    public $supervisor_id, $group_id, $employee_id, $is_group = false, $condition, $borrow_date, $description, $created_by;
     public array $selectedInventories = [];
 
     protected $listeners = [
@@ -32,6 +34,26 @@ class OutboundForm extends Component
 
     protected $queryString = [
         'search' => ['except' => ''],
+    ];
+
+    protected $rules = [
+        'selectedInventories.*.id' => 'required',
+        'selectedInventories.*.quantity' => 'required',
+        'is_group' => 'required',
+        'employee_id' => 'required_if:is_group,false',
+        'group_id' => 'required_if:is_group,true',
+        'created_by' => 'required',
+        'borrow_date' => 'required',
+    ];
+
+    protected $messages = [
+        'selectedInventories.*.id.required' => 'Inventory is required',
+        'selectedInventories.*.quantity.required' => 'Quantity is required',
+        'is_group.required' => 'Group is required',
+        'employee_id.required_if' => 'Employee is required',
+        'group_id.required_if' => 'Group is required',
+        'created_by.required' => 'Created by is required',
+        'borrow_date.required' => 'Borrow date is required',
     ];
 
     public function updatingSearch()
@@ -51,7 +73,6 @@ class OutboundForm extends Component
         $this->condition = null;
         $this->borrow_date = null;
         $this->description = null;
-        $this->created_by = null;
 
         $this->selectedInventories = [];
 
@@ -74,6 +95,8 @@ class OutboundForm extends Component
     {
         $this->groups = Group::with('supervisor')->get();
         $this->employees = Employee::get();
+
+        $this->created_by = $this->authUser->id;
     }
 
     public function updatedIsGroup($value)
@@ -91,6 +114,14 @@ class OutboundForm extends Component
     public function updatedSelect2($model, $value)
     {
         $this->$model = $value;
+
+        if($model == 'group_id') {
+            $this->employee_id = null;
+
+            $group = Group::find($value);
+            $this->supervisor_id = $group->supervisor_id;
+        }
+
         $this->dispatch('refreshSelect2');
     }
 
@@ -123,6 +154,39 @@ class OutboundForm extends Component
     {
         unset($this->selectedInventories[$inventoryId]);
         $this->dispatch('refreshCart');
+    }
+
+    public function submit()
+    {
+        $this->validate();
+
+        try {
+            foreach ($this->selectedInventories as $item) {
+                if($item['quantity'] > $item['stock']) {
+                    return $this->alert('error', 'Quantity is greater than stock');
+                }
+
+                TransactionInventory::create([
+                    'inventory_id' => $item['id'],
+                    'employee_id' => $this->employee_id,
+                    'supervisor_id' => $this->supervisor_id,
+                    'is_group' => $this->is_group,
+                    'group_id' => $this->group_id,
+                    'quantity' => $item['quantity'],
+                    'borrow_date' => $this->borrow_date,
+                    'description' => $this->description,
+                    'created_by' => $this->created_by,
+                ]);
+
+                Inventory::find($item['id'])->decrement('stock', $item['quantity']);
+            }
+
+            $this->resetForm();
+            $this->alert('success', 'Outbound created successfully');
+            $this->dispatch('refreshIndex');
+        } catch (\Exception $e) {
+            $this->alert('error', $e->getMessage());
+        }
     }
 
     public function render()
