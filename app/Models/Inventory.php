@@ -40,4 +40,19 @@ class Inventory extends Model
         return $this->belongsTo(Warehouse::class, 'warehouse_id');
     }
 
+    public function transactions()
+    {
+        return $this->hasMany(TransactionInventoryDetail::class);
+    }
+
+    public function outbounds()
+    {
+        return $this->hasMany(TransactionInventoryDetail::class)->where('return_date', null);
+    }
+
+    public function inbounds()
+    {
+        return $this->hasMany(TransactionInventoryDetail::class)->whereNotNull('return_date');
+    }
+
 }

@@ -159,8 +159,8 @@
                                             @endif
                                         </li>
                                         <li class="list-inline-item me-3">
-                                            <i class="bx bx-calendar me-1"></i>
-                                            {{ $inventory->created_at->diffForHumans() }}
+                                            <i class="bx bx-send me-1"></i>
+                                            {{ $inventory->outbounds->count() }} Outbound
                                         </li>
                                         <li class="list-inline-item me-3">
                                             <i class="bx bx-briefcase me-1"></i> {{ $inventory->stock }}

@@ -7,6 +7,8 @@ use App\Models\Employee;
 use App\Models\Group;
 use App\Models\Inventory;
 use App\Models\TransactionInventory;
+use App\Models\TransactionInventoryDetail;
+use Illuminate\Support\Facades\DB;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
@@ -115,7 +117,7 @@ class OutboundForm extends BaseComponent
     {
         $this->$model = $value;
 
-        if($model == 'group_id') {
+        if ($model == 'group_id') {
             $this->employee_id = null;
 
             $group = Group::find($value);
@@ -161,37 +163,46 @@ class OutboundForm extends BaseComponent
         $this->validate();
 
         try {
+            DB::beginTransaction();
+
+            $transaction = TransactionInventory::create([
+                'employee_id' => $this->employee_id,
+                'supervisor_id' => $this->supervisor_id,
+                'is_group' => $this->is_group,
+                'group_id' => $this->group_id,
+                'description' => $this->description,
+            ]);
+
             foreach ($this->selectedInventories as $item) {
-                if($item['quantity'] > $item['stock']) {
+                if ($item['quantity'] > $item['stock']) {
                     return $this->alert('error', 'Quantity is greater than stock');
                 }
 
-                TransactionInventory::create([
-                    'inventory_id' => $item['id'],
-                    'employee_id' => $this->employee_id,
-                    'supervisor_id' => $this->supervisor_id,
-                    'is_group' => $this->is_group,
-                    'group_id' => $this->group_id,
-                    'quantity' => $item['quantity'],
+                TransactionInventoryDetail::create([
+                    'transaction_inventory_id' => $transaction->id,
                     'borrow_date' => $this->borrow_date,
-                    'description' => $this->description,
                     'created_by' => $this->created_by,
+                    'inventory_id' => $item['id'],
+                    'quantity' => $item['quantity'],
                 ]);
 
                 Inventory::find($item['id'])->decrement('stock', $item['quantity']);
             }
 
-            $this->resetForm();
+            // $this->resetForm();
             $this->alert('success', 'Outbound created successfully');
-            $this->dispatch('refreshIndex');
+            DB::commit();
+
+            return redirect()->route('inventory.receipt', ['uuid' => $transaction->id]);
         } catch (\Exception $e) {
             $this->alert('error', $e->getMessage());
+            DB::rollBack();
         }
     }
 
     public function render()
     {
-        $inventories = Inventory::with('category', 'warehouse')->when($this->search, function ($query) {
+        $inventories = Inventory::with('category', 'warehouse', 'outbounds')->when($this->search, function ($query) {
             $query->where('name', 'like', '%' . $this->search . '%')->orWhere('serial_number', 'like', '%' . $this->search . '%');
         })->paginate($this->perPage);
 

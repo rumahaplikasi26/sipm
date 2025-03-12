@@ -2,29 +2,25 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 
 class TransactionInventory extends Model
 {
+    use HasUuids;
+
+    protected $table = 'transaction_inventories';
     protected $fillable = [
-        'transaction_id',
-        'inventory_id',
-        'quantity',
         'employee_id',
         'supervisor_id',
         'is_group',
         'group_id',
-        'borrow_date',
-        'return_date',
         'description',
-        'created_by',
-        'updated_by',
-        'condition',
     ];
 
-    public function inventory()
+    public function uniqueId()
     {
-        return $this->belongsTo(Inventory::class);
+        return $this->id;
     }
 
     public function employee()
@@ -40,16 +36,6 @@ class TransactionInventory extends Model
     public function group()
     {
         return $this->belongsTo(Group::class);
-    }
-
-    public function createdBy()
-    {
-        return $this->belongsTo(User::class, 'created_by');
-    }
-
-    public function updatedBy()
-    {
-        return $this->belongsTo(User::class, 'updated_by');
     }
 
 }

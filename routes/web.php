@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\IClockController;
+use App\Http\Controllers\ReceiptController;
 use App\Livewire\Activity\ActivityDependencyForm;
 use App\Livewire\Activity\ActivityForm;
 use App\Livewire\Activity\ActivityImport;
@@ -25,6 +26,7 @@ use App\Livewire\Outbound\OutboundForm;
 use App\Livewire\Permission\PermissionIndex;
 use App\Livewire\Position\PositionIndex;
 use App\Livewire\Profile\ProfileIndex;
+use App\Livewire\Receipt\ReceiptIndex;
 use App\Livewire\Report\Progress\ReportProgressIndex;
 use App\Livewire\Report\ReportIndex;
 use App\Livewire\ReportAttendance\ReportAttendanceIndex;
@@ -90,4 +92,6 @@ Route::prefix('inventory')->name('inventory.')->middleware('auth')->group(functi
 
     Route::get('/inbound', DashboardInventoryIndex::class)->name('inbound');
     Route::get('/outbound', OutboundForm::class)->name('outbound');
+
+    Route::get('/transaction/receipt/{uuid}', [ReceiptController::class, 'index'])->name('receipt');
 });

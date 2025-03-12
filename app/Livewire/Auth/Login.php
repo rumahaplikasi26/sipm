@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Auth;
 
-use Illuminate\Support\Facades\Http;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
 
@@ -22,24 +21,12 @@ class Login extends Component
         if (auth()->attempt(['email' => $this->email, 'password' => $this->password], $this->remember_me)) {
             $this->alert('success', 'Login berhasil');
 
-            if (
-                $this->previous_url != $this->url_base . '/login' &&
-                substr($this->previous_url, 0, strlen($this->url_base)) == $this->url_base
-            ) {
-
-                // Cek apakah previous_url tidak mengarah ke halaman 404
-                try {
-                    $response = Http::head($this->previous_url);
-                    if ($response->status() != 404) {
-                        return redirect($this->previous_url);
-                    }
-                } catch (\Exception $e) {
-                    // Jika terjadi error (misal domain tidak bisa diakses), langsung ke dashboard
-                }
+            if($this->previous_url != $this->url_base . '/login' && (substr($this->previous_url, 0, strlen($this->url_base)) == $this->url_base)){
+                return redirect($this->previous_url);
             }
 
             return redirect()->route('dashboard');
-        } else {
+        }else{
             $this->alert('error', 'Email atau password salah');
         }
 

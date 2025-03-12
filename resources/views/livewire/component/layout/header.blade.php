@@ -2,7 +2,7 @@
     <div class="d-flex">
         <!-- LOGO -->
         <div class="navbar-brand-box">
-            <a href="index.html" class="logo logo-dark">
+            <a href="javascript: void(0);" class="logo logo-dark">
                 <span class="logo-sm">
                     <img src="https://kmspros.com/wp-content/uploads/2022/12/KMS-Logo-White-Shadow-01.png" alt="" height="22">
                 </span>
@@ -11,7 +11,7 @@
                 </span>
             </a>
 
-            <a href="index.html" class="logo logo-light">
+            <a href="javascript: void(0);" class="logo logo-light">
                 <span class="logo-sm">
                     <img src="https://kmspros.com/wp-content/uploads/2022/12/KMS-Logo-White-Shadow-01.png" alt="" height="22">
                 </span>
