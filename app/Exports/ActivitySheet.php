@@ -62,5 +62,5 @@ class ActivitySheet implements FromCollection, WithHeadings, WithMapping, WithTi
     {
         return 'Activities';
     }
-    
+
 }

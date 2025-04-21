@@ -55,10 +55,10 @@ class ReportAttendancePreview extends Component
     public function exportExcel()
     {
         if($this->employees == null) return;
-        
+
         $employees = $this->employees;
         $dateArray = $this->dateArray;
-        return Excel::download(new AttendanceReport($this->employees, $this->dateArray), 'Report Activities.xlsx');
+        return Excel::download(new AttendanceReport($this->employees, $this->dateArray), 'Report Attendances.xlsx');
     }
 
     public function render()

@@ -19,7 +19,9 @@ use App\Livewire\Dashboard\Inventory\DashboardInventoryIndex;
 use App\Livewire\Employee\EmployeeIndex;
 use App\Livewire\FileManager\FileManagerIndex;
 use App\Livewire\Group\GroupIndex;
+use App\Livewire\Inbound\InboundForm;
 use App\Livewire\Inventory\InventoryForm;
+use App\Livewire\Inventory\InventoryImport;
 use App\Livewire\Inventory\InventoryIndex;
 use App\Livewire\MonitoringPresent\MonitoringPresentIndex;
 use App\Livewire\Outbound\OutboundForm;
@@ -86,12 +88,15 @@ Route::prefix('inventory')->name('inventory.')->middleware('auth')->group(functi
     Route::get('/dashboard', DashboardInventoryIndex::class)->name('dashboard');
     Route::get('/categories', CategoryInventoryIndex::class)->name('category');
     Route::get('/inventories', InventoryIndex::class)->name('inventory');
+    Route::get('/inventories/import', InventoryImport::class)->name('inventory.import');
     Route::get('/warehouse', WarehouseIndex::class)->name('warehouse');
 
     Route::get('/inventories/create', InventoryForm::class)->name('inventory.create');
 
     Route::get('/inbound', DashboardInventoryIndex::class)->name('inbound');
     Route::get('/outbound', OutboundForm::class)->name('outbound');
+    Route::get('/inbound', InboundForm::class)->name('inbound');
 
-    Route::get('/transaction/receipt/{uuid}', [ReceiptController::class, 'index'])->name('receipt');
+    Route::get('/transaction/receipt/outbound/{uuid}', [ReceiptController::class, 'index'])->name('receipt');
+    Route::get('/transaction/receipt/inbound', [ReceiptController::class, 'inbound'])->name('receipt.inbound');
 });

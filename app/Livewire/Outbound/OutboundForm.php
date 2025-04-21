@@ -206,6 +206,6 @@ class OutboundForm extends BaseComponent
             $query->where('name', 'like', '%' . $this->search . '%')->orWhere('serial_number', 'like', '%' . $this->search . '%');
         })->paginate($this->perPage);
 
-        return view('livewire.outbound.outbound-form', compact('inventories'))->layout('layouts.app-inventory', ['title' => 'Outbound Create']);
+        return view('livewire.outbound.outbound-form', compact('inventories'))->layout('layouts.app-inventory', ['title' => 'Peminjaman Barang']);
     }
 }

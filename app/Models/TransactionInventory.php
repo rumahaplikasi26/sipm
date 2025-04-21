@@ -38,4 +38,9 @@ class TransactionInventory extends Model
         return $this->belongsTo(Group::class);
     }
 
+    public function details()
+    {
+        return $this->hasMany(TransactionInventoryDetail::class, 'transaction_inventory_id');
+    }
+
 }

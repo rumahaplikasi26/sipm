@@ -165,6 +165,7 @@ class ReportAttendanceIndex extends Component
                 'position_name' => $employee->position?->name,
                 'name' => $employee->name,
                 'phone' => $employee->phone,
+                'shift' => $employee->shift,
                 'attendance' => $dates, // Tanggal dengan jam absensi
                 'attendance_count' => $attendanceCount, // Tambahkan jumlah absensi
             ];

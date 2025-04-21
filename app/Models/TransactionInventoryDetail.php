@@ -18,7 +18,14 @@ class TransactionInventoryDetail extends Model
         'return_date',
         'created_by',
         'updated_by',
-        'condition',
+        'condition_borrow',
+        'condition_return',
+        'note',
+    ];
+
+    protected $casts = [
+        'borrow_date' => 'date',
+        'return_date' => 'date',
     ];
 
     public function uniqueId()

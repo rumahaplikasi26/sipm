@@ -50,14 +50,14 @@ class NavbarInventory extends BaseComponent
                 ],
             ],
             [
-                'name' => 'Outbound',
+                'name' => 'Peminjaman',
                 'icon' => 'bx bx-export',
                 'permissions' => ['outbound.index'],
                 'url' => route('inventory.outbound'),
                 'route' => 'inventory.outbound',
             ],
             [
-                'name' => 'Inbound',
+                'name' => 'Pengembalian',
                 'icon' => 'bx bx-import',
                 'permissions' => ['inbound.index'],
                 'url' => route('inventory.inbound'),

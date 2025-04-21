@@ -32,7 +32,7 @@ class AttendanceReport implements FromCollection,WithHeadings,WithMapping
     public function headings(): array
     {
         // Membuat heading untuk kolom, termasuk kolom tanggal
-        $headings = ['Employee ID', 'Name', 'Supervisor Name', 'Position Name', 'Phone'];
+        $headings = ['Employee ID', 'Name', 'Supervisor Name', 'Position Name', 'Phone', 'Shift'];
 
         foreach ($this->dateArray as $date) {
             $headings[] = \Carbon\Carbon::parse($date)->format('d/m'); // Format 'd/m'
@@ -54,6 +54,7 @@ class AttendanceReport implements FromCollection,WithHeadings,WithMapping
             $employee['supervisor_name'],
             $employee['position_name'],
             $employee['phone'],
+            $employee['shift'],
         ];
 
         foreach ($this->dateArray as $date) {

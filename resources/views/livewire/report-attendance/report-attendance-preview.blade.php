@@ -39,6 +39,7 @@
                                     <th rowspan="2">Supervisor</th>
                                     <th rowspan="2">Position</th>
                                     <th rowspan="2">Phone</th>
+                                    <th rowspan="2">Shift</th>
                                     <th class="text-center" colspan="{{ $countDays }}">Tanggan/Bulan</th>
                                 </tr>
                                 <tr>
@@ -58,6 +59,7 @@
                                             <td>{{ $employee['supervisor_name'] ?? '-' }}</td>
                                             <td>{{ $employee['position_name'] ?? '-' }}</td>
                                             <td>{{ $employee['phone'] ?? '-' }}</td>
+                                            <td>{{ $employee['shift'] ?? '-' }}</td>
                                             @foreach ($employee['attendance'] as $date => $timeRange)
                                                 <td>{{ $timeRange }}</td>
                                             @endforeach
